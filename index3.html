@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>معرض الصور والفيديو</title>
+  <link rel="icon" href="شعار.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: #f0f0f0;
+      direction: rtl;
+      text-align: center;
+      color: #333;
+    }
+
+    h2 {
+      margin: 60px 0 20px 0;
+      font-size: 28px;
+      color: #222;
+      margin-top: 100px;
+
+    }
+
+    /* كرت الفيديو */
+    .video-card {
+      width: 90%;
+      max-width: 600px;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 20px auto;
+    }
+
+    .video-card video {
+      width: 100%;
+      height: auto;
+      max-height: 450px;
+      display: block;
+    }
+
+    .video-card .caption {
+      padding: 12px;
+      font-weight: bold;
+      background: #fafafa;
+      font-size: 16px;
+      border-top: 1px solid #eee;
+    }
+
+    /* معرض الصور */
+    .gallery {
+     display: grid;
+     grid-template-columns: repeat(4, 1fr); /* 4 صور في كل سطر */
+     gap: 15px;
+     max-width: 1200px;
+     margin: 30px auto;
+     padding: 0 10px;
+     margin-bottom: 60px; /* المسافة اللي تحبها */
+
+    }
+
+    .image-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    
+.gallery .image-card:nth-last-child(-n+4) img {
+  height: 360px; /* حجم مختلف */
+}
+
+    .image-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .image-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-card .caption {
+      padding: 8px;
+      font-weight: bold;
+      background: #f9f9f9;
+      font-size: 14px;
+      border-top: 1px solid #eee;
+    }
+
+    /* النافذة المنبثقة */
+    .popup {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s;
+    }
+
+    .popup img {
+      max-width: 90%;
+      max-height: 85%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #fff;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 35px;
+      color: white;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <img src="images (1).png" alt="صورة 2" class="small" />
+    <img src="شعار.png" alt="شعار الجمعية" class="large" />
+    <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer">
+      جمعية متطوعون في خدمة الحماية المدنية بن عروس
+    </a>
+  </div>
+
+  <!-- القائمة الجانبية -->
+  <nav class="side-menu" id="sideMenu">
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="index1.html">ℹ️ أهداف الجمعية </a></li>
+      <li><a href="index3.html">📷 معرض الصور و فديو</a></li>
+      <li><a href="https://forms.office.com/r/0c9EtvtE4r">📝 التسجيل في تطوع</a></li>
+      <li><a href="résultats.html">👁️ الإطلاع على النتائج</a></li>
+      <li><a href="https://maps.app.goo.gl/PqiA7zasEwRNsPk87">📍 خريطة الموقع</a></li>
+      <li><a href="index4.html">📞 اتصل بنا</a></li>
+    </ul>
+  </nav>
+
+  <h2>📷 معرض الصور والفيديو</h2>
+
+  <!-- فيديو -->
+  <div class="video-card">
+    <video controls>
+      <source src="video1.mp4" type="video/mp4">
+      المتصفح لا يدعم تشغيل الفيديو.
+    </video>
+    <div class="caption">فيديو حصري على مهام متطوع</div>
+  </div>
+
+  <!-- الصور -->
+  <div class="gallery">
+    <div class="image-card"><img src="التكوين الساسي.jpg" alt=""><div class="caption">التكوين الساسي</div></div>
+    <div class="image-card"><img src="التكوين الأطفاء.jpg" alt=""><div class="caption">تكوين في مادة الأطفاء</div></div>
+    <div class="image-card"><img src="التكوين أسعاف.jpg" alt=""><div class="caption">تكوين في مادة أسعاف</div></div>
+    <div class="image-card"><img src="التكوين انقاذ.jpg" alt=""><div class="caption">تكوين في مادة إنقاذ</div></div>
+    <div class="image-card"><img src="تحسيس.jpeg" alt=""><div class="caption">تحسيس</div></div>
+    <div class="image-card"><img src="تدخل الأطفاء.jpg" alt=""><div class="caption">تدخل الأطفاء</div></div>
+    <div class="image-card"><img src="وزارة الدخلية.jpg" alt=""><div class="caption">زيارة رئيسة الحكومة ووزير الداخلية</div></div>
+    <div class="image-card"><img src="FB_IMG_1675327854262.jpg" alt=""><div class="caption">زيارة رئيس الجمهورية</div></div>
+    <div class="image-card"><img src="IMG-20231221-WA0032.jpg" alt=""><div class="caption">تكوين في حريق الغابات</div></div>
+    <div class="image-card"><img src="440816186_1181588552865927_1568879716795949706_n.jpg" alt=""><div class="caption">تمرين مع الوحدة المختصة في الجزائر</div></div>
+    <div class="image-card"><img src="حراسة وقاية.jpeg" alt=""><div class="caption">حراسة وقاية</div></div>
+    <div class="image-card"><img src="490993627_2391485394541002_5076663579663900279_n.jpg" alt=""><div class="caption">تدخل اسعاف</div></div>
+    <div class="image-card"><img src="405568545_857194529531496_2637560838966354133_n.jpg" alt=""><div class="caption">تكوين في إنقاذ بحري</div></div>
+    <div class="image-card"><img src="494575905_1778209299428996_5228800660909931856_n.jpg" alt=""><div class="caption">تدخل إطفاء</div></div>
+    <div class="image-card"><img src="494687732_671127975917374_6241943171790390108_n.jpg" alt=""><div class="caption">تدخل إنقاذ</div></div>
+    <div class="image-card"><img src="488024268_9453629334744581_7880995250410002898_n.jpg" alt=""><div class="caption">حراسة وقاية في ملعب رادس</div></div>
+  </div>
+
+  <!-- نافذة التكبير -->
+  <div class="popup" id="popup">
+    <span class="close-btn" onclick="closePopup()">×</span>
+    <img id="popup-img" src="" alt="صورة مكبرة">
+  </div>
+
+  <div class="footer">
+    <p>حقوق الطبع والنشر © 2025 جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll(".image-card img");
+    const popup = document.getElementById("popup");
+    const popupImg = document.getElementById("popup-img");
+
+    cards.forEach(img => {
+      img.addEventListener("click", () => {
+        popup.style.display = "flex";
+        popupImg.src = img.src;
+      });
+    });
+
+    function closePopup() {
+      popup.style.display = "none";
+    }
+
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) closePopup();
+    });
+  </script>
+
+</body>
+</html>

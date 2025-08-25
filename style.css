@@ -1,0 +1,217 @@
+/* 🌐 تنسيقات عامة */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f9f9f9;
+  direction: rtl;
+}
+
+/* 🔝 الشريط العلوي */
+.top-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  padding: 8px 12px;
+  background-color: #212532;
+  color: white;
+  height: 70px;
+  box-sizing: border-box;
+  flex-wrap: nowrap; /* سطر واحد */
+}
+
+.top-bar img.small,
+.top-bar img.large {
+  width: 40px;
+  height: auto;
+  margin: 0;
+  gap: 7px;
+}
+
+.top-bar a {
+  color: #ff9900;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 15px;
+  white-space: nowrap;      
+  overflow: hidden;         
+  text-overflow: ellipsis;  
+  gap: 7px;
+}
+
+.top-bar a:hover {
+  text-decoration: underline;
+  color: #ff9900;
+}
+
+.menu-toggle {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+}
+
+/* 📋 القائمة الجانبية */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -260px;
+  width: 250px;
+  height: 100%;
+  background: #222;
+  transition: 0.3s ease;
+  padding-top: 70px;
+  z-index: 1000;
+}
+
+.side-menu.active {
+  right: 0;
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu ul li {
+  border-bottom: 1px solid #444;
+}
+
+.side-menu ul li a {
+  display: block;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.side-menu ul li a:hover {
+  background: #ff9900;
+  padding-right: 25px;
+}
+
+/* 📱 المحتوى يتحرك عند فتح القائمة */
+.shifted {
+  margin-right: 250px;
+  transition: 0.3s;
+}
+
+/* ⚓ التذييل */
+.footer {
+  background-color: #212532;   /* لون خلفية داكن */
+  color: white;               /* لون النص */
+  text-align: center;         /* توسيط النص */
+  padding: 12px 15px;         /* مسافة داخلية */
+  font-size: 14px;            /* حجم الخط */
+  font-weight: bold;          /* خط عريض */
+  position: fixed;            /* يثبت في أسفل الصفحة */
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+}
+
+.footer p {
+  margin: 0; /* نحي المسافة الافتراضية */
+}
+
+/* 📱 شاشات الهواتف الكبيرة / التابلت */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .top-bar {
+    padding: 10px 15px;
+    height: 60px;
+    gap: 3px;
+  }
+
+  .top-bar img.small,
+  .top-bar img.large {
+    width: 35px;
+    margin: 0;
+    gap: 7px;
+  }
+
+  .top-bar a {
+    font-size: 13px;
+    max-width: 250px;
+    gap: 7px;
+  }
+
+  .side-menu {
+    width: 100%;
+    right: -100%;
+    padding-top: 60px;
+  }
+
+  .side-menu.active {
+    right: 0;
+  }
+
+  .side-menu ul li a {
+    font-size: 18px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .shifted {
+    margin-right: 0;
+  }
+
+  .footer {
+    padding: 14px 18px;  /* زيادة المسافة الداخلية */
+    font-size: 15px;     /* حجم الخط أكبر من الموبايل الصغير */
+  }
+}
+
+/* 📱 شاشة صغيرة جدا (الهاتف portrait < 480px) */
+@media (max-width: 480px) {
+  .top-bar {
+    height: 55px;
+    padding: 6px 8px;
+  }
+
+  .top-bar img.small,
+  .top-bar img.large {
+    width: 28px;
+    height: auto;
+    gap: 7px;
+  }
+
+  .top-bar a {
+    font-size: 12px;
+    max-width: 250px;   /* باش النص ما يخرجش */
+    gap: 7px;
+  }
+
+    .side-menu {
+    width: 100%;
+    right: -100%;
+    padding-top: 60px;
+  }
+
+    .side-menu.active {
+    right: 0;
+  }
+
+  .side-menu ul li a {
+    font-size: 18px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .shifted {
+    margin-right: 0;
+  }
+
+  .footer {
+    padding: 16px 20px;   /* تكبير المسافة الداخلية */
+    font-size: 16px;      /* تكبير حجم الخط */
+  }
+}

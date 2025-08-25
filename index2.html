@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVSPCBNAROUS</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 0;
+      font-size: 18px;
+      line-height: 1.6;
+      direction: rtl;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .form-container {
+      max-width: 1200px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      flex: 1 1 22%;
+      min-width: 200px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .form-group1 {
+      flex: 1 1 30%;
+      min-width: 200px;
+    }
+
+    .form-group1 label {
+      display: flex;  
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group1 input,
+    .form-group1 select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #0891b2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 20px 0 0;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .print-button {
+      background-color: #f39c12;
+    }
+
+    .print-button:hover {
+      background-color: #e67e22;
+    }
+
+    .footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px 10px;
+      font-weight: bold;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 15px;
+    }
+
+    .footer p {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    header {
+      color: white;
+      padding: 9px 0;
+      margin: 0;
+      text-align: right;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      position: absolute;
+      top: 0;
+      right: 5px;
+      width: 99%;
+    }
+
+    header h1 {
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.1em;
+    }
+
+    .home-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .home-button:hover {
+      background-color: #0056b3;
+    }
+
+    .menu {
+  margin-right: auto; /* تدفع القائمة إلى أقصى اليمين */
+  display: flex;
+  gap: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  justify-content: flex-end;
+  direction: rtl;
+}
+
+.menu a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.menu a:hover {
+  background-color: #ff9900;
+}
+.footer1 {
+      background-color: #333;
+      color: white;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 10px 20px;
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .footer1 img {
+      object-fit: contain;
+      margin: 0 ;
+    }
+
+    .footer1 img:first-child {
+      margin-right: 30px;
+    }
+
+    .footer1 .image.small {
+      width: 35px;
+      height: 25px;
+    }
+
+    .footer1 .image.large {
+      width: 35px;
+      height: 35px;
+    }
+    
+    a.fw-semibold {
+    font-weight: 600;
+    color: #ff9900;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+a.fw-semibold:hover {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* دعم الهواتف المحمولة */
+@media (max-width: 768px) {
+  .form-group,
+  .form-group1 {
+    flex: 1 1 100%;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+}
+
+  </style>
+<link rel="icon" href="شعار.png" type="image/png"></head>
+
+<body>
+
+  <div class="footer1">
+    <img src="images (1).png" alt="صورة 2" class="image small">
+    <img src="شعار.png" alt="صورة 1" class="image large">
+    <a class="fw-semibold" href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer" aria-label="زيارة صفحة الفيسبوك على موقع خارجي">
+   جمعية متطوعون في خدمة الحماية المدنية بن عروس
+</a>
+
+    <div class="menu" id="menu">
+      <a href="index.html">الرئيسية</a>
+      <a href="index1.html">تعريف</a>
+      <a href="index2.html">تسجيل في تطوع</a>
+      <a href="résultats.html">الإطلاع على النتائج</a> 
+
+  </div>
+    </div>
+  
+  <div class="form-container">
+    <h1>تسجيل في تطوع</h1>
+    <form action="register.php" method="POST">
+            <div class="form-row">
+        <div class="form-group1">
+          <label for="idNumber">رقم بطاقة التعريف:</label>
+          <input type="text" id="idNumber" name="idNumber" required="" pattern="\d{8}">
+        </div>
+        <div class="form-group1">
+          <label for="idIssueDate">تاريخ الإصدار:</label>
+          <input type="date" id="idIssueDate" name="idIssueDate" required=""><br>        
+        </div>
+      <div class="form-group1">
+        <label for="phone">رقم الهاتف الشخصي:</label>
+        <input type="text" id="phone" name="phone" required="" pattern="^\d{8}$">
+      </div>
+        <div class="form-group">
+          <label for="firstName">الاسم:</label>
+          <input type="text" id="firstName" name="firstName" required="">
+          </div>
+        <div class="form-group">
+        <label for="lastName">اللقب:</label>
+        <input type="text" id="lastName" name="lastName" required="">
+      </div>
+      <div class="form-group">
+        <label for="fatherName">اسم الأب:</label>
+        <input type="text" id="fatherName" name="fatherName" required="">
+      </div>      
+      <div class="form-group">
+        <label for="grandFatherName">اسم الجد:</label>
+        <input type="text" id="grandFatherName" name="grandFatherName" required="">
+      </div>
+      <div class="form-group">
+        <label for="motherFirstName">اسم الأم:</label>
+        <input type="text" id="motherFirstName" name="motherFirstName" required="">
+      </div>
+      <div class="form-group">
+        <label for="motherLastName">لقب الأم:</label>
+        <input type="text" id="motherLastName" name="motherLastName" required="">
+      </div>
+
+      <div class="form-group">
+        <label for="birthDate">تاريخ الولادة:</label>
+        <input type="date" id="birthDate" name="birthDate" required="">
+      </div>
+        <div class="form-group">
+          <label for="gender">الجنس:</label>
+          <select id="gender" name="gender" required="">
+            <option value="">اختر</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="maritalstatus">الحالة العائلية:</label>
+          <select id="maritalstatus" name="maritalstatus" required="">
+            <option value="">اختر</option>
+            <option value="single">أعزب</option>
+            <option value="married">متزوج</option>
+            <option value="divorced">مطلق</option>
+            <option value="widowed">أرمل</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="children">عدد الأبناء:</label>
+          <input type="number" id="children" name="children" min="0" max="5" required="">
+        </div>
+        <div class="form-group">
+          <label for="profession">المهنة:</label>
+          <input type="text" id="profession" name="profession" required="">
+        </div>
+        <div class="form-group">
+          <label for="fatherphone">رقم هاتف الأب:</label>
+          <input type="text" id="fatherphone" name="fatherphone" pattern="^\d{8}$">
+        </div>
+      </div>
+
+      <div class="form-row">
+
+        <div class="form-group">
+          <label for="region">المنطقة</label>
+          <select id="region" name="region">
+            <option value="">اختر المنطقة</option>
+            <option value="بومهل">بومهل</option>
+            <option value="الزهراء">الزهراء</option>
+            <option value="حمام الأنف">حمام الأنف</option>
+            <option value="حمام الشط">حمام الشط</option>
+            <option value="رادس">رادس</option>
+            <option value="المروج">المروج</option>
+            <option value="فوشانة">فوشانة</option>
+            <option value="مرناق">مرناق</option>
+            <option value="المحمدية">المحمدية</option>
+            <option value="بن عروس">بن عروس</option>
+            <option value="نعسان">نعسان</option>
+            <option value="شبدة">شبدة</option>
+            <option value="مقرين">مقرين</option>
+            <option value="المدينة الجديدة">المدينة الجديدة</option>
+            <option value="الياسمينات">الياسمينات</option>
+            <option value="برج السدرية">برج السدرية</option>
+            <option value="الخليدية">الخليدية</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="address">العنوان الشخصي:</label>
+          <input type="text" id="address" name="address" required="">
+        </div>
+
+        <div class="form-group">
+          <label for="educationlevel">المستوى التعليمي:</label>
+          <select id="educationlevel" name="educationlevel" required="">
+            <option value=""></option>
+            <option value="primary">ابتدائي</option>
+            <option value="secondary">إعدادي</option>
+            <option value="highschool">ثانوي</option>
+            <option value="bachelor">بكالوريا</option>
+            <option value="university">جامعي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="supportingdocument">شهائد الإثبات:</label>
+          <select id="supportingdocument" name="supportingdocument" required="">
+            <option value="">اختر</option>
+            <option value="attendance-grades">شهادة حضور و بطاقة الأعداد الأخيرة للسنة المنقضية</option>
+            <option value="baccalaureate">شهادة البكالوريا</option>
+            <option value="university">شهادة تعليم جامعي</option>
+            <option value="other">شهادة أخرى</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit">تسجيل</button>
+    </form>
+  </div>
+
+  <div class="footer">
+    <p>حقوق الطبع والنشر © 2025 جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
+  </div>
+  <script>
+      function toggleMenu() {
+        const menu = document.getElementById('menu');
+        if (menu.style.display === 'block') {
+          menu.style.display = 'none';
+        } else {
+          menu.style.display = 'block';
+        }
+      }
+      window.onafterprint = function () {
+  window.location.href = "confirmation.php";
+};
+
+
+</script>
+</body>
+</html>

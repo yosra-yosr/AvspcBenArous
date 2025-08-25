@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الإطلاع على النتائج</title>
+  <link rel="icon" href="شعار.png" type="image/png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background-color: #ced4da;
+      margin: 0;
+      padding: 0;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      background-color: #212532;
+      color: white;
+      padding: 8px 12px;
+      gap: 10px;
+      height: 50px;
+    }
+
+    .top-bar button {
+      background-color: #ff9900;
+      border: none;
+      color: white;
+      font-size: 18px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .top-bar img.small {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+    }
+
+    .top-bar img.large {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .top-bar a {
+      color: #ffcc00;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .top-bar a:hover {
+      color: #fff;
+    }
+
+    .side-menu {
+      width: 180px;
+      background-color: #212532;
+      color: white;
+      padding: 10px;
+      position: fixed;
+      right: -200px;
+      top: 50px;
+      bottom: 0;
+      overflow-y: auto;
+      z-index: 999;
+      transition: right 0.4s ease;
+    }
+
+    .side-menu.active {
+      right: 0;
+    }
+
+    .side-menu ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .side-menu li {
+      margin-bottom: 8px;
+    }
+
+    .side-menu a {
+      background-color: #007bff;
+      color: white;
+      padding: 8px 12px;
+      display: block;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .side-menu a:hover {
+      background-color: #0056b3;
+    }
+
+    .container {
+      max-width: 500px;
+      background: white;
+      margin: 90px auto 60px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      font-size: 22px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      border-color: #fd8a07;
+      outline: none;
+      box-shadow: 0 0 5px rgba(253, 138, 7, 0.5);
+    }
+
+    button[type="submit"] {
+            width: 40%; /* تحديد عرض الزر ليكون 60% من عرض الحاوية */
+            padding: 12px;
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-bottom: 10px; /* إضافة مسافة بين الأزرار */
+            display: block; /* جعل الأزرار تأخذ عرض كامل بدون التداخل */
+            margin-right: auto; /* لجعل الأزرار متمركزة */    
+            margin-top: 20px; /* إضافة مسافة بين الزر والحقول */
+            margin-left: 0; /* وضع الأزرار على اليسار */
+    }
+
+    button:hover {
+      background-color: #ee9c20;
+      transform: translateY(-2px);
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: red;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+
+    .footer {
+      color: #000;
+      text-align: center;
+      padding: 8px 10px; /* تقليل الحشو */
+      font-weight: bold;
+      user-select: none;
+      font-size: 14px; /* تصغير حجم الخط */
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        width: 90%;
+      }
+      button[type="submit"] {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <button onclick="toggleMenu()">☰</button>
+    <img src="images (1).png" class="small" alt="شعار" />
+    <img src="شعار.png" class="large" alt="شعار الجمعية" />
+    <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank">جمعية متطوعون في خدمة الحماية المدنية بن عروس</a>
+  </div>
+
+  <!-- القائمة الجانبية -->
+  <nav class="side-menu" id="sideMenu">
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="index1.html">ℹ️ أهداف الجمعية </a></li>
+      <li><a href="index3.html">📷 معرض الصور و فديو</a></li>
+      <li><a href="https://forms.office.com/r/0c9EtvtE4r">📝 التسجيل في تطوع</a></li>
+      <li><a href="résultats.html">👁️ الإطلاع على النتائج</a></li>
+      <li><a href="https://maps.app.goo.gl/PqiA7zasEwRNsPk87">📍 خريطة الموقع</a></li>
+      <li><a href="index4.html">📞 اتصل بنا</a></li>
+    </ul>
+  </nav>
+
+  <!-- نموذج النتائج -->
+  <div class="container">
+    <h1>الإطلاع على النتائج</h1>
+    <form id="resultForm">
+      <label for="idNumber">رقم بطاقة التعريف الوطنية:</label>
+      <input type="text" id="idNumber" name="idNumber" placeholder="رقم بطاقة التعريف الوطنية" required />
+
+      <label for="dob">تاريخ الولادة:</label>
+      <input type="date" id="dob" name="dob" required />
+
+      <button type="submit">عرض النتيجة</button>
+    </form>
+
+    <div id="result" class="error" style="display:none;"></div>
+  </div>
+
+  <!-- الفوتر -->
+  <div class="footer">
+    <p>حقوق الطبع والنشر © 2025 - جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
+  </div>
+
+  <!-- الجافاسكريبت -->
+  <script>
+    function toggleMenu() {
+      document.getElementById("sideMenu").classList.toggle("active");
+    }
+
+    document.getElementById("resultForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const id = document.getElementById("idNumber").value.trim();
+      const dob = document.getElementById("dob").value;
+      const resultDiv = document.getElementById("result");
+
+      if (!/^\d{8}$/.test(id)) {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "⚠️ رقم بطاقة التعريف يجب أن يكون 8 أرقام.";
+        return;
+      }
+
+      const selectedDate = new Date(dob);
+      const today = new Date();
+      if (selectedDate > today) {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "⚠️ تاريخ الولادة لا يمكن أن يكون في المستقبل.";
+        return;
+      }
+
+      // كل شيء صحيح → نمرر البيانات إلى result.html
+      window.location.href = `result.html?id=${id}&dob=${dob}`;
+    });
+  </script>
+</body>
+</html>

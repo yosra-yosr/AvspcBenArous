@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>اتصل بنا - جمعية متطوعون في خدمة الحماية المدنية</title>
+    <link rel="icon" href="شعار.png" type="image/png" />
+  <!-- إضافة تحميل خط Cairo -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&amp;display=swap" rel="stylesheet">
+  <style>
+    /* تفعيل box-sizing للجميع */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 70px 20px 20px; /* Padding top يعوض الشريط العلوي */
+      direction: rtl;
+      color: #212532;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto; /* تم إزالة margin-top لأن padding-body يكفي */
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: bold;
+      font-size: 28px;
+      color: #212532;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #333;
+      font-size: 16px;
+    }
+
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    textarea:focus {
+      border-color: #ff9900;
+      outline: none;
+      box-shadow: 0 0 5px #ff9900aa;
+    }
+
+    textarea {
+      min-height: 120px;
+    }
+
+    button:hover {
+      background-color: #ff6600;
+    }
+
+    .contact-info {
+      margin-top: 30px;
+      font-size: 16px;
+      color: #212532;
+      text-align: center;
+      line-height: 1.7;
+      user-select: text;
+    }
+
+    .contact-info a {
+      color: #ff9900;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .contact-info a:hover {
+      color: #cc7a00;
+      text-decoration: underline;
+    }
+
+    /* استجابة لأحجام الشاشات الصغيرة */
+    @media (max-width: 480px) {
+      body {
+        padding: 90px 15px 20px;
+      }
+      .container {
+        padding: 20px 15px;
+      }    }
+
+    /* الشريط العلوي ثابت */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      background-color: #212532;
+      color: white;
+      height: 50px;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+    }
+
+    /* زر القائمة */
+    .menu-toggle {
+      background-color: #ff9900;
+      color: white;
+      padding: 6px 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      flex-shrink: 0;
+    }
+    .button-link {
+      display: inline-block;
+      background-color: #ff9900;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px; /* تصغير الحشو */
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 14px; /* تصغير حجم الخط */
+      margin: 8px 5px 0 0; /* تقليل المسافات */
+      transition: 0.3s;
+    }
+    /* صور الشريط */
+    .top-bar img.small {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+    }
+
+    .top-bar img.large {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    /* رابط الجمعية في الشريط */
+    .top-bar a {
+      color: #ffcc00;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .top-bar a:hover {
+      color: white;
+    }
+
+    /* القائمة الجانبية */
+    .side-menu {
+      width: 180px;
+      background-color: #212532;
+      color: white;
+      padding: 8px 8px;
+      position: fixed;
+      right: -200px;
+      top: 50px;
+      bottom: 0;
+      overflow-y: auto;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+      z-index: 1050;
+      transition: right 0.4s ease;
+      font-size: 14px;
+    }
+
+    .side-menu.active {
+      right: 0;
+    }
+
+    .side-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .side-menu li {
+      margin-bottom: 6px;
+    }
+
+    .side-menu a {
+      text-decoration: none;
+      color: white;
+      display: block;
+      padding: 6px 10px;
+      background-color: #007bff;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+      font-size: 13px;
+    }
+
+    .side-menu a:hover {
+      background-color: #0056b3;
+    }
+
+    /* تحريك المحتوى عند فتح القائمة */
+    .main-content {
+      padding: 70px 15px 20px;
+      margin-right: 0;
+      transition: margin 0.4s ease;
+      font-size: 14px;
+    }
+
+    .side-menu.active ~ .main-content {
+      margin-right: 240px;
+    }
+    .footer {
+      color: #000;
+      text-align: center;
+      padding: 8px 10px; /* تقليل الحشو */
+      font-weight: bold;
+      user-select: none;
+      font-size: 14px; /* تصغير حجم الخط */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <img src="images (1).png" alt="صورة 2" class="small">
+    <img src="شعار.png" alt="شعار الجمعية" class="large">
+    <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer">
+      جمعية متطوعون في خدمة الحماية المدنية بن عروس
+    </a>
+  </div>
+
+  <!-- القائمة الجانبية -->
+  <nav class="side-menu" id="sideMenu">
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="index1.html">ℹ️ أهداف الجمعية </a></li>
+      <li><a href="index3.html">📷 معرض الصور و فديو</a></li>
+      <li><a href="https://forms.office.com/r/0c9EtvtE4r">📝 التسجيل في تطوع</a></li>
+      <li><a href="résultats.html">👁️ الإطلاع على النتائج</a></li>
+      <li><a href="https://maps.app.goo.gl/PqiA7zasEwRNsPk87">📍 خريطة الموقع</a></li>
+      <li><a href="index4.html">📞 اتصل بنا</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>اتصل بنا</h1>
+
+    <div class="contact-info">
+      <p>📧 البريد الإلكتروني: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=avspcbenarous2023@gmail.com" target="_blank" rel="noopener noreferrer">avspcbenarous2023@gmail.com</a></p>
+      <p>📞 رقم الهاتف: 
+      <a href="tel:+21656202702">21656202702+</a> - 
+      <a href="tel:+21690769362">21690769362+</a>
+      </p>      
+      <p>🌐 صفحة فيسبوك: <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer">AVSPCBNAROUS</a></p>
+    </div>
+  </div>
+
+    <footer class="footer">
+    <p>حقوق الطبع والنشر © 2025 - جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("sideMenu");
+      menu.classList.toggle("active");
+    }
+
+    function validateForm() {
+      const form = document.getElementById('contactForm');
+      const phone = form.phone.value.trim();
+      const phonePattern = /^[0-9]{8,15}$/;
+
+      if (!phonePattern.test(phone)) {
+        alert('يرجى إدخال رقم هاتف صالح مكون من 8 إلى 15 رقم.');
+        form.phone.focus();
+        return false;
+      }
+
+      alert('شكراً لتواصلك معنا! سيتم الرد عليك قريباً.');
+      return true;
+    }
+  </script>
+
+
+
+</body>
+</html>

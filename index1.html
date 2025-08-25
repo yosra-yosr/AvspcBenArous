@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎯 أهداف الجمعية</title>
+  <link rel="icon" href="شعار.png" type="image/png" />
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background-color: #f7f9fb;
+      min-height: 100vh;
+      direction: rtl;
+      font-size: 14px;
+    }
+
+     .main-content {
+padding: 70px 15px 20px; 
+margin-right: 0; 
+transition: margin 0.4s ease; 
+font-size: 14px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background-color: white;
+      padding: 25px;     /* المسافة من الأعلى والأسفل */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+        margin-top: 100px;
+    }
+
+    .container ul {
+      list-style-type: "✔️ ";
+      padding-right: 20px;
+      margin-top: 35px;
+
+    }
+
+    .container ul li {
+      margin-bottom: 10px;
+      line-height: 1.8;
+    }
+
+   .main-content h2 {
+     text-align: center;        /* توسيط العنوان */
+     margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <img src="images (1).png" alt="صورة 2" class="small" />
+    <img src="شعار.png" alt="شعار الجمعية" class="large" />
+    <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer">
+      جمعية متطوعون في خدمة الحماية المدنية بن عروس
+    </a>
+  </div>
+
+  <!-- القائمة الجانبية -->
+  <nav class="side-menu" id="sideMenu">
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="index1.html">ℹ️ أهداف الجمعية </a></li>
+      <li><a href="index3.html">📷 معرض الصور و فديو</a></li>
+      <li><a href="https://forms.office.com/r/0c9EtvtE4r">📝 التسجيل في تطوع</a></li>
+      <li><a href="résultats.html">👁️ الإطلاع على النتائج</a></li>
+      <li><a href="https://maps.app.goo.gl/PqiA7zasEwRNsPk87">📍 خريطة الموقع</a></li>
+      <li><a href="index4.html">📞 اتصل بنا</a></li>
+    </ul>
+  </nav>
+
+  <!-- المحتوى الرئيسي -->
+  <div class="main-content">
+    <div class="container" id="mainContent">
+      <h2>🎯 أهداف الجمعية</h2>
+      <ul>
+        <li>دعم تكوين المتطوعين في ميادين الإسعاف والإطفاء والإنقاذ.</li>
+        <li>معاضدة مجهود الحماية المدنية والتدخل السريع والناجع.</li>
+        <li>التعريف بأنشطة وبرامج الحماية المدنية.</li>
+        <li>نشر ثقافة التطوع للعموم وبخاصة لدى الشباب والطلبة.</li>
+        <li>تنشئة الطفولة وفق المبادئ الأساسية للصحة والسلامة والوقاية.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>حقوق الطبع والنشر © 2025 جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("sideMenu");
+      menu.classList.toggle("active");
+    }
+  </script>
+</body>
+</html>

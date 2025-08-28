@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>بوابة متطوع - جمعية متطوعون في خدمة الحماية المدنية بن عروس</title>
+  <link rel="icon" href="assets/images/شعار.png" type="image/png" />
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+ <style>
+    :root {
+      --primary-color: #1a202c;
+      --primary-dark: #0d1117;
+      --secondary-color: #ff6b35;
+      --accent-color: #ff8c42;
+      --success-color: #10b981;
+      --background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      --surface-color: #ffffff;
+      --text-primary: #1a202c;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+      --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --border-radius: 12px;
+      --transition: all 0.2s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--background);
+      min-height: 100vh;
+      direction: rtl;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    /* Navbar optimisée */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      transition: var(--transition);
+    }
+
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-section img {
+      height: 30px;
+      border-radius: 20%;
+    }
+
+    .logo-avspc {
+      height: 70px !important;
+      border-radius: 20% !important;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background: var(--secondary-color);
+      color: white;
+    }
+
+    .nav-link.active {
+      background: var(--secondary-color);
+      color: white;
+    }
+
+    .nav-link i {
+      font-size: 16px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 14px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--text-primary);
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Mobile Menu */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 16px;
+    }
+
+    .menu-toggle:hover {
+      background: var(--border-color);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 70px;
+      right: -100%;
+      width: 280px;
+      height: calc(100vh - 70px);
+      background: white;
+      border-left: 1px solid var(--border-color);
+      box-shadow: var(--shadow-medium);
+      transition: var(--transition);
+      z-index: 999;
+      overflow-y: auto;
+    }
+
+    .mobile-menu.active {
+      right: 0;
+    }
+
+    .mobile-nav {
+      padding: 20px 0;
+    }
+
+    .mobile-nav ul {
+      list-style: none;
+    }
+
+    .mobile-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .mobile-nav a:hover {
+      background: var(--secondary-color);
+      color: white;
+    }
+
+    .mobile-actions {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 70px);
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Hero Section améliorée */
+    .hero-section {
+      background: 
+        linear-gradient(135deg, rgba(26, 32, 44, 0.2) 0%, rgba(13, 17, 23, 0.9) 100%),
+        url('../assets/images/avspc_team.jpg') center/cover no-repeat;
+      color: white;
+      padding: 120px 40px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-top: 70px;
+       background-size: cover;
+          background-position: center;
+          background-attachment: fixed;
+          
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 32, 44, 0.3);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-section h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero-section p {
+      font-size: 1.3rem;
+      opacity: 0.95;
+      margin-bottom: 40px;
+      line-height: 1.8;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 16px;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .hero-btn-primary {
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      color: white;
+    }
+
+    .hero-btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+
+    .hero-btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-btn-secondary:hover {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      text-decoration: none;
+      transform: translateY(-3px);
+    }
+
+    /* Sections avec container uniforme */
+    .section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .section-title p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Features Section */
+    .features-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      text-align: center;
+      transition: var(--transition);
+      box-shadow: var(--shadow-light);
+      height: 100%;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-medium);
+      border-color: var(--secondary-color);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 25px;
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .stat-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      padding: 40px 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-light);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-medium);
+      border-color: var(--secondary-color);
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--secondary-color);
+      display: block;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+
+    .footer p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .navbar {
+        padding: 0 20px;
+      }
+      
+      .nav-link {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      .section {
+        padding: 60px 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        height: 60px;
+        padding: 0 16px;
+      }
+      
+      .nav-center,
+      .nav-actions .btn-secondary {
+        display: none;
+      }
+      
+      .menu-toggle {
+        display: block;
+      }
+      
+      .mobile-menu {
+        top: 60px;
+        height: calc(100vh - 60px);
+        width: 100%;
+      }
+      
+      .overlay {
+        top: 60px;
+        height: calc(100vh - 60px);
+      }
+
+      .hero-section {
+        padding: 80px 20px 60px;
+        margin-top: 60px;
+      }
+
+      .hero-section h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-section p {
+        font-size: 1.1rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-btn {
+        padding: 14px 28px;
+        font-size: 14px;
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+
+      .features-section,
+      .stats-section {
+        margin: 20px 10px;
+        padding: 40px 20px;
+        border-radius: 0;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .stat-card {
+        padding: 30px 15px;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo-avspc {
+        height: 60px !important;
+      }
+      
+      .hero-section h1 {
+        font-size: 1.9rem;
+      }
+      
+      .hero-section p {
+        font-size: 1rem;
+      }
+
+      .section-title h2 {
+        font-size: 1.8rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="home-page">
+  <!-- Navbar -->
+  <!-- <nav class="navbar" id="navbar">
+    <div class="logo-section">
+      <img src="../assets/images/tunisiaFlag.png" alt="tunisiaFlag" />
+      <img class="logo-avspc" src="../assets/images/شعار.png" alt="شعار الجمعية" />
+    </div>
+    
+    <div class="nav-center">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link active">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="objectives.html" class="nav-link">
+            <i class="fas fa-bullseye"></i>
+            <span>أهداف الجمعية</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="gallery.html" class="nav-link">
+            <i class="fas fa-image"></i>
+            <span>معرض الصور</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="https://maps.app.goo.gl/PqiA7zasEwRNsPk87" target="_blank" class="nav-link">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>خريطة الموقع</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="fas fa-phone"></i>
+            <span>اتصل بنا</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="nav-actions">
+      <a href="résultats.html" class="btn-secondary">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>تسجيل الدخول</span>
+      </a>
+      <a href="https://forms.office.com/r/0c9EtvtE4r" target="_blank" class="btn-primary">
+        <i class="fas fa-user-plus"></i>
+        <span>التسجيل في تطوع</span>
+      </a>
+    </div>
+    
+    <button class="menu-toggle" onclick="toggleMobileMenu()">
+      <i class="fas fa-bars"></i>
+    </button>
+  </nav> -->
+
+  <!-- Overlay -->
+  <!-- <div class="overlay" id="overlay" onclick="toggleMobileMenu()"></div> -->
+
+  <!-- Mobile Menu -->
+  <!-- <nav class="mobile-menu" id="mobileMenu">
+    <div class="mobile-nav">
+      <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+        <li><a href="objectives.html"><i class="fas fa-bullseye"></i> أهداف الجمعية</a></li>
+        <li><a href="gallery.html"><i class="fas fa-image"></i> معرض الصور</a></li>
+        <li><a href="https://maps.app.goo.gl/PqiA7zasEwRNsPk87" target="_blank"><i class="fas fa-map-marker-alt"></i> خريطة الموقع</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> اتصل بنا</a></li>
+      </ul>
+    </div>
+    
+    <div class="mobile-actions">
+      <a href="résultats.html" class="btn-secondary">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>تسجيل الدخول</span>
+      </a>
+      <a href="https://forms.office.com/r/0c9EtvtE4r" target="_blank" class="btn-primary">
+        <i class="fas fa-user-plus"></i>
+        <span>التسجيل في تطوع</span>
+      </a>
+    </div>
+  </nav> -->
+  
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>مرحباً بكم في جمعية متطوعون في خدمة الحماية المدنية ببن عروس</h1>
+      <p>
+        نحن جمعية تطوعية تهدف إلى دعم ومساعدة الحماية المدنية في خدمة المجتمع<br>
+        انضم إلينا لتكون جزءاً من فريق يحدث فرقاً حقيقياً في المجتمع
+      </p>
+      
+      <div class="hero-actions">
+        <a href="https://forms.office.com/r/0c9EtvtE4r" target="_blank" class="hero-btn hero-btn-primary">
+          <i class="fas fa-user-plus"></i>
+          انضم كمتطوع
+        </a>
+        <a href="objectives.html" class="hero-btn hero-btn-secondary">
+          <i class="fas fa-info-circle"></i>
+          تعرف على أهدافنا
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="section-title">
+      <h2>ما نقدمه</h2>
+      <p>خدمات ومهام متنوعة في خدمة المجتمع والحماية المدنية</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <h3>التدريب والتكوين</h3>
+        <p>برامج تدريبية متخصصة في مجالات الإسعافات الأولية، الإطفاء، والإنقاذ لإعداد متطوعين مؤهلين</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-hands-helping"></i>
+        </div>
+        <h3>التدخل السريع</h3>
+        <p>فرق مدربة للتدخل السريع في حالات الطوارئ ومساعدة الحماية المدنية في مهامها</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3>خدمة المجتمع</h3>
+        <p>أنشطة تطوعية متنوعة تهدف إلى خدمة المجتمع ونشر ثقافة التطوع بين الشباب</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="section-title">
+      <h2>أرقامنا تتحدث</h2>
+      <p>إنجازات وأرقام تعكس تأثيرنا الإيجابي في المجتمع</p>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-number">200+</span>
+        <span class="stat-label">متطوع نشط</span>
+      </div>
+      
+      <div class="stat-card">
+        <span class="stat-number">50+</span>
+        <span class="stat-label">عملية إنقاذ</span>
+      </div>
+      
+      <div class="stat-card">
+        <span class="stat-number">100+</span>
+        <span class="stat-label">دورة تدريبية</span>
+      </div>
+      
+      <div class="stat-card">
+        <span class="stat-number">5</span>
+        <span class="stat-label">سنوات خبرة</span>
+      </div>
+    </div>
+  </section>
+   <div class="container" id="contact-us">
+    <h1>اتصل بنا</h1>
+
+    <div class="contact-info">
+      <p>📧 البريد الإلكتروني: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=avspcbenarous2023@gmail.com" target="_blank" rel="noopener noreferrer">avspcbenarous2023@gmail.com</a></p>
+      <p>📞 رقم الهاتف: 
+      <a href="tel:+21656202702">21656202702+</a> - 
+      <a href="tel:+21690769362">21690769362+</a>
+      </p>      
+      <p>🌐 صفحة فيسبوك: <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer">AVSPCBNAROUS</a></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <!-- <div class="footer">
+    <p>حقوق الطبع والنشر © 2025 جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
+  </div> -->
+
+  <script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById("mobileMenu");
+      const overlay = document.getElementById("overlay");
+      const isActive = menu.classList.contains("active");
+      
+      menu.classList.toggle("active");
+      overlay.classList.toggle("active");
+      document.body.style.overflow = isActive ? "auto" : "hidden";
+    }
+
+    // Close menu when clicking on links
+    document.querySelectorAll('.mobile-nav a').forEach(link => {
+      link.addEventListener('click', toggleMobileMenu);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const menu = document.getElementById("mobileMenu");
+        if (menu.classList.contains("active")) {
+          toggleMobileMenu();
+        }
+      }
+    });
+
+    // Navbar scroll effect
+    let lastScrollY = window.scrollY;
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+
+    // Smooth scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add animation on scroll for stats
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeInUp 0.6s ease-out';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.stat-card, .feature-card').forEach(card => {
+      observer.observe(card);
+    });
+  </script>
+  <script src="../assets/js/components.js"></script>
+</body>
+</html>

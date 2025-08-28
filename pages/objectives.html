@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>أهداف الجمعية - جمعية متطوعون في خدمة الحماية المدنية بن عروس</title>
+  <link rel="icon" href="../assets/images/شعار.png" type="image/png" />
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #1a202c;
+      --primary-dark: #0d1117;
+      --secondary-color: #ff6b35;
+      --accent-color: #ff8c42;
+      --success-color: #10b981;
+      --background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      --surface-color: #ffffff;
+      --text-primary: #1a202c;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+      --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --border-radius: 12px;
+      --transition: all 0.2s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--background);
+      min-height: 100vh;
+      direction: rtl;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding-top: 40px;
+      min-height: 100vh;
+    }
+
+    /* Hero Section adaptée pour objectifs */
+    .hero-section {
+      background: 
+        linear-gradient(135deg, rgba(26, 32, 44, 0.2) 0%, rgba(13, 17, 23, 0.9) 100%),
+        url('../assets/images/avspc_team.jpg') center/cover no-repeat;
+      color: white;
+      padding: 120px 40px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 32, 44, 0.4);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-section h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero-section p {
+      font-size: 1.4rem;
+      opacity: 0.95;
+      margin-bottom: 40px;
+      line-height: 1.8;
+      animation: fadeInUp 1s ease-out 0.2s both;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Impact Stats dans le hero */
+    .impact-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    .stat-hero {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--border-radius);
+      padding: 25px 15px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-hero:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .stat-hero .number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-color);
+      display: block;
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .stat-hero .label {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    /* Sections avec container uniforme */
+    .section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .section-title p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Vision Section */
+    .vision-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vision-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    }
+
+    .vision-content {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .vision-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 25px;
+    }
+
+    .vision-text {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }
+
+    /* Objectives Grid */
+    .objectives-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
+    }
+
+    .objectives-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+    }
+
+    .objective-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      transition: var(--transition);
+      box-shadow: var(--shadow-light);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .objective-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .objective-card:hover::before {
+      left: 100%;
+    }
+
+    .objective-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-medium);
+      border-color: var(--secondary-color);
+    }
+
+    .objective-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 25px;
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .objective-card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .objective-card p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* Benefits Section */
+    .benefits-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .benefit-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 25px;
+      text-align: center;
+      transition: var(--transition);
+      box-shadow: var(--shadow-light);
+      height: 100%;
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-medium);
+      border-color: var(--secondary-color);
+    }
+
+    .benefit-icon {
+      font-size: 3rem;
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+    }
+
+    .benefit-card h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .benefit-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    /* Call to Action Section */
+    .cta-section {
+      background: 
+        linear-gradient(135deg, rgba(26, 32, 44, 0.9) 0%, rgba(255, 107, 53, 0.9) 100%),
+        url('../assets/images/avspc_team.jpg') center/cover no-repeat;
+      color: white;
+      border-radius: var(--border-radius);
+      padding: 80px 40px;
+      text-align: center;
+      margin: 40px 20px;
+      box-shadow: var(--shadow-large);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 32, 44, 0.3);
+      z-index: 1;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .cta-text {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      line-height: 1.8;
+      opacity: 0.95;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 16px;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .cta-btn-primary {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .cta-btn-primary:hover {
+      background: rgba(255,255,255,0.3);
+      color: white;
+      text-decoration: none;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .cta-btn-secondary {
+      background: white;
+      color: var(--text-primary);
+      border: none;
+    }
+
+    .cta-btn-secondary:hover {
+      background: var(--surface-color);
+      color: var(--text-primary);
+      text-decoration: none;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .cta-info {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .slide-left {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .slide-right {
+      animation: slideInRight 0.8s ease-out;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .section {
+        padding: 60px 20px;
+      }
+      
+      .objectives-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 80px 20px 60px;
+      }
+
+      .hero-section h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-section p {
+        font-size: 1.1rem;
+      }
+
+      .impact-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .vision-section,
+      .objectives-section,
+      .benefits-section,
+      .cta-section {
+        margin: 20px 10px;
+        padding: 40px 20px;
+        border-radius: 0;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+      }
+
+      .objectives-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .benefits-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .cta-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section h1 {
+        font-size: 1.9rem;
+      }
+      
+      .hero-section p {
+        font-size: 1rem;
+      }
+
+      .impact-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title h2 {
+        font-size: 1.8rem;
+      }
+
+      .cta-title {
+        font-size: 2rem;
+      }
+
+      .stat-hero .number {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1>أهداف جمعيتنا</h1>
+        <p>
+          نسعى لبناء مجتمع آمن ومتضامن من خلال إعداد متطوعين مؤهلين قادرين على المساهمة الفعالة 
+          في خدمة المجتمع ودعم جهود الحماية المدنية
+        </p>
+        
+        <!-- Impact Stats -->
+        <div class="impact-stats">
+          <div class="stat-hero">
+            <span class="number">6</span>
+            <span class="label">أهداف رئيسية</span>
+          </div>
+          <div class="stat-hero">
+            <span class="number">500+</span>
+            <span class="label">متطوع مدرب</span>
+          </div>
+          <div class="stat-hero">
+            <span class="number">1000+</span>
+            <span class="label">مهمة إنجاز</span>
+          </div>
+          <div class="stat-hero">
+            <span class="number">50+</span>
+            <span class="label">دورة تدريبية</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="vision-section">
+      <div class="vision-content fade-in">
+        <h2 class="vision-title">رؤيتنا ورسالتنا</h2>
+        <p class="vision-text">
+          تسعى جمعيتنا إلى أن تكون رائدة في مجال التطوع والعمل الإنساني، من خلال إعداد وتأهيل متطوعين 
+          قادرين على المساهمة الفعالة في خدمة المجتمع ودعم جهود الحماية المدنية. نحن نؤمن بقوة التطوع 
+          في صنع التغيير الإيجابي وبناء مستقبل أفضل للجميع.
+        </p>
+      </div>
+    </section>
+
+    <!-- Objectives Section -->
+    <section class="objectives-section">
+      <div class="section-title">
+        <h2>أهدافنا الاستراتيجية</h2>
+        <p>مجالات عملنا الأساسية لخدمة المجتمع وتحقيق رسالتنا</p>
+      </div>
+      
+      <div class="objectives-grid">
+        <div class="objective-card slide-left">
+          <div class="objective-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3>التدريب والتكوين</h3>
+          <p>
+            دعم تكوين المتطوعين في ميادين الإسعاف والإطفاء والإنقاذ من خلال برامج تدريبية متخصصة 
+            ومتطورة مع شهادات معتمدة ومدربين خبراء
+          </p>
+        </div>
+
+        <div class="objective-card slide-right">
+          <div class="objective-icon">
+            <i class="fas fa-hands-helping"></i>
+          </div>
+          <h3>الدعم والمساندة</h3>
+          <p>
+            معاضدة مجهود الحماية المدنية والتدخل السريع والناجع في حالات الطوارئ والكوارث 
+            لحماية الأرواح والممتلكات
+          </p>
+        </div>
+
+        <div class="objective-card slide-left">
+          <div class="objective-icon">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+          <h3>التوعية والإعلام</h3>
+          <p>
+            التعريف بأنشطة وبرامج الحماية المدنية ونشر الوعي حول أهمية الوقاية والسلامة 
+            من خلال حملات توعوية شاملة
+          </p>
+        </div>
+
+        <div class="objective-card slide-right">
+          <div class="objective-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>ثقافة التطوع</h3>
+          <p>
+            نشر ثقافة التطوع للعموم وبخاصة لدى الشباب والطلبة لتعزيز روح المواطنة والمسؤولية 
+            وبناء جيل واع ومتضامن
+          </p>
+        </div>
+
+        <div class="objective-card slide-left">
+          <div class="objective-icon">
+            <i class="fas fa-child"></i>
+          </div>
+          <h3>تنشئة الطفولة</h3>
+          <p>
+            تنشئة الطفولة وفق المبادئ الأساسية للصحة والسلامة والوقاية من خلال برامج 
+            تعليمية مبتكرة ومناسبة لكل الأعمار
+          </p>
+        </div>
+
+        <div class="objective-card slide-right">
+          <div class="objective-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>العمل الإنساني</h3>
+          <p>
+            المشاركة في الأعمال الإنسانية والخيرية وتقديم المساعدة للمحتاجين في المجتمع 
+            والمساهمة في التنمية المستدامة
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+      <div class="section-title">
+        <h2>ماذا ستكسب كمتطوع معنا؟</h2>
+        <p>الفوائد والمزايا التي ستحصل عليها عند انضمامك لعائلة المتطوعين</p>
+      </div>
+      
+      <div class="benefits-grid">
+        <div class="benefit-card fade-in">
+          <div class="benefit-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <h3>شهادات معتمدة</h3>
+          <p>احصل على شهادات مهنية معترف بها في مجال الحماية المدنية والإسعافات الأولية</p>
+        </div>
+        
+        <div class="benefit-card fade-in">
+          <div class="benefit-icon">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <h3>شبكة علاقات قوية</h3>
+          <p>كون صداقات جديدة وشبكة مهنية قوية مع متطوعين من خلفيات وتخصصات متنوعة</p>
+        </div>
+        
+        <div class="benefit-card fade-in">
+          <div class="benefit-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h3>خبرة عملية قيمة</h3>
+          <p>اكتسب مهارات حياتية ومهنية قيمة من خلال التدريب العملي والمشاركة الميدانية</p>
+        </div>
+        
+        <div class="benefit-card fade-in">
+          <div class="benefit-icon">
+            <i class="fas fa-smile"></i>
+          </div>
+          <h3>الرضا الشخصي</h3>
+          <p>استمتع بالشعور بالفخر والرضا من خدمة مجتمعك وإحداث تأثير إيجابي حقيقي</p>
+        </div>
+
+        <div class="benefit-card fade-in">
+          <div class="benefit-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3>تطوير المهارات</h3>
+          <p>طور مهاراتك في القيادة والعمل الجماعي وإدارة الأزمات والتواصل الفعال</p>
+        </div>
+
+        <div class="benefit-card fade-in">
+          <div class="benefit-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <h3>التقدير والتكريم</h3>
+          <p>نقدر جهود متطوعينا ونكرمهم في المناسبات الخاصة والاحتفالات السنوية</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2 class="cta-title">
+          <i class="fas fa-star me-3"></i>
+          ابدأ رحلتك التطوعية معنا اليوم
+        </h2>
+        <p class="cta-text">
+          لا تنتظر أكثر! انضم إلى عائلة المتطوعين واصنع الفرق في حياة الآخرين. 
+          كل يوم تؤجل فيه انضمامك هو يوم ضائع من صنع التأثير الإيجابي في مجتمعنا.
+        </p>
+        
+        <div class="cta-buttons">
+          <a href="https://forms.office.com/r/0c9EtvtE4r" target="_blank" class="cta-btn cta-btn-primary">
+            <i class="fas fa-user-plus"></i>
+            سجل كمتطوع الآن
+          </a>
+          <a href="contact.html" class="cta-btn cta-btn-secondary">
+            <i class="fas fa-phone"></i>
+            اتصل بنا للاستفسار
+          </a>
+        </div>
+        
+        <div class="cta-info">
+          <i class="fas fa-info-circle me-2"></i>
+          التسجيل مفتوح على مدار السنة • لا توجد رسوم • تدريب مجاني شامل
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Add animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all cards
+    document.querySelectorAll('.objective-card, .benefit-card, .vision-content').forEach(card => {
+      observer.observe(card);
+    });
+
+    // Counter animation
+    function animateCounter(element, start, end, duration) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = Math.floor(progress * (end - start) + start);
+        element.innerHTML = current + (end >= 50 ? '+' : '');
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+    </script>
+    <script src="../assets/js/components.js"></script>
+</body>
+</html>

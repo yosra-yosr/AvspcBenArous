@@ -1,284 +1,872 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head>
+<html lang="ar" dir="rtl">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>اتصل بنا - جمعية متطوعون في خدمة الحماية المدنية</title>
-    <link rel="icon" href="شعار.png" type="image/png" />
-  <!-- إضافة تحميل خط Cairo -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo&amp;display=swap" rel="stylesheet">
+  <link rel="icon" href="شعار.png" type="image/png" />
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
   <style>
-    /* تفعيل box-sizing للجميع */
-    *, *::before, *::after {
+    :root {
+      --primary-color: #1a202c;
+      --primary-dark: #0d1117;
+      --secondary-color: #ff6b35;
+      --accent-color: #ff8c42;
+      --success-color: #10b981;
+      --background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      --surface-color: #ffffff;
+      --text-primary: #1a202c;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+      --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --border-radius: 12px;
+      --transition: all 0.2s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #f7f9fb;
-      margin: 0;
-      padding: 70px 20px 20px; /* Padding top يعوض الشريط العلوي */
+      background: var(--background);
+      min-height: 100vh;
       direction: rtl;
-      color: #212532;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto; /* تم إزالة margin-top لأن padding-body يكفي */
-      background-color: #fff;
-      padding: 25px 30px;
-      border-radius: 8px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 25px;
-      font-weight: bold;
-      font-size: 28px;
-      color: #212532;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-      color: #333;
       font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
     }
 
-    input[type="email"],
-    input[type="tel"],
-    textarea {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 18px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-      resize: vertical;
-      transition: border-color 0.3s ease;
+    /* Main Content */
+    .main-content {
+      padding-top: 40px;
+      min-height: 100vh;
     }
 
-    input[type="email"]:focus,
-    input[type="tel"]:focus,
-    textarea:focus {
-      border-color: #ff9900;
-      outline: none;
-      box-shadow: 0 0 5px #ff9900aa;
-    }
-
-    textarea {
-      min-height: 120px;
-    }
-
-    button:hover {
-      background-color: #ff6600;
-    }
-
-    .contact-info {
-      margin-top: 30px;
-      font-size: 16px;
-      color: #212532;
+    /* Hero Section */
+    .hero-section {
+      background: 
+        linear-gradient(135deg, rgba(26, 32, 44, 0.2) 0%, rgba(13, 17, 23, 0.9) 100%),
+        url('../assets/images/avspc_team.jpg') center/cover no-repeat;
+      color: white;
+      padding: 120px 40px 80px;
       text-align: center;
-      line-height: 1.7;
-      user-select: text;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
 
-    .contact-info a {
-      color: #ff9900;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s ease;
-    }
-
-    .contact-info a:hover {
-      color: #cc7a00;
-      text-decoration: underline;
-    }
-
-    /* استجابة لأحجام الشاشات الصغيرة */
-    @media (max-width: 480px) {
-      body {
-        padding: 90px 15px 20px;
-      }
-      .container {
-        padding: 20px 15px;
-      }    }
-
-    /* الشريط العلوي ثابت */
-    .top-bar {
-      position: fixed;
+    .hero-section::before {
+      content: '';
+      position: absolute;
       top: 0;
-      right: 0;
       left: 0;
-      z-index: 1100;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 32, 44, 0.4);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-section h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero-section p {
+      font-size: 1.4rem;
+      opacity: 0.95;
+      margin-bottom: 40px;
+      line-height: 1.8;
+      animation: fadeInUp 1s ease-out 0.2s both;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Contact Methods Grid */
+    .contact-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    .contact-method {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--border-radius);
+      padding: 25px 20px;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .contact-method:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .contact-method .icon {
+      font-size: 2.5rem;
+      color: var(--accent-color);
+      margin-bottom: 15px;
+    }
+
+    .contact-method h3 {
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .contact-method p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .contact-method a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .contact-method a:hover {
+      color: var(--accent-color);
+    }
+
+    /* Contact Form Section */
+    .contact-form-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-form-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .section-title p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Form Styles */
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+
+    .form-group label .required {
+      color: var(--secondary-color);
+      margin-left: 4px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      font-family: 'Cairo', sans-serif;
+      background: var(--surface-color);
+      color: var(--text-primary);
+      transition: var(--transition);
+      resize: vertical;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    textarea.form-control {
+      min-height: 120px;
+      max-height: 300px;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 18px 30px;
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Cairo', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       gap: 10px;
-      padding: 8px 12px;
-      background-color: #212532;
-      color: white;
-      height: 50px;
-      box-sizing: border-box;
-      flex-wrap: wrap;
     }
 
-    /* زر القائمة */
-    .menu-toggle {
-      background-color: #ff9900;
-      color: white;
-      padding: 6px 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-      flex-shrink: 0;
-    }
-    .button-link {
-      display: inline-block;
-      background-color: #ff9900;
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px; /* تصغير الحشو */
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 14px; /* تصغير حجم الخط */
-      margin: 8px 5px 0 0; /* تقليل المسافات */
-      transition: 0.3s;
-    }
-    /* صور الشريط */
-    .top-bar img.small {
-      width: 35px;
-      height: 35px;
-      object-fit: contain;
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
     }
 
-    .top-bar img.large {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
+    .submit-btn:hover::before {
+      left: 100%;
     }
 
-    /* رابط الجمعية في الشريط */
-    .top-bar a {
-      color: #ffcc00;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      white-space: nowrap;
-      user-select: none;
-    }
-    .top-bar a:hover {
-      color: white;
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
     }
 
-    /* القائمة الجانبية */
-    .side-menu {
-      width: 180px;
-      background-color: #212532;
-      color: white;
-      padding: 8px 8px;
-      position: fixed;
-      right: -200px;
-      top: 50px;
-      bottom: 0;
-      overflow-y: auto;
-      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-      z-index: 1050;
-      transition: right 0.4s ease;
-      font-size: 14px;
+    .submit-btn:active {
+      transform: translateY(0);
     }
 
-    .side-menu.active {
-      right: 0;
+    /* Contact Info Section */
+    .contact-info-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
     }
 
-    .side-menu ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    .contact-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
     }
 
-    .side-menu li {
-      margin-bottom: 6px;
-    }
-
-    .side-menu a {
-      text-decoration: none;
-      color: white;
-      display: block;
-      padding: 6px 10px;
-      background-color: #007bff;
-      border-radius: 6px;
-      transition: background 0.3s ease;
-      font-size: 13px;
-    }
-
-    .side-menu a:hover {
-      background-color: #0056b3;
-    }
-
-    /* تحريك المحتوى عند فتح القائمة */
-    .main-content {
-      padding: 70px 15px 20px;
-      margin-right: 0;
-      transition: margin 0.4s ease;
-      font-size: 14px;
-    }
-
-    .side-menu.active ~ .main-content {
-      margin-right: 240px;
-    }
-    .footer {
-      color: #000;
+    .info-card {
       text-align: center;
-      padding: 8px 10px; /* تقليل الحشو */
-      font-weight: bold;
-      user-select: none;
-      font-size: 14px; /* تصغير حجم الخط */
+      padding: 30px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      background: var(--surface-color);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.05), transparent);
+      transition: left 0.5s;
+    }
+
+    .info-card:hover::before {
+      left: 100%;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-medium);
+      border-color: var(--secondary-color);
+    }
+
+    .info-card .icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 25px;
+      background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .info-card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .info-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .info-card a {
+      color: var(--secondary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid var(--secondary-color);
+      border-radius: 25px;
+      margin: 5px;
+    }
+
+    .info-card a:hover {
+      background: var(--secondary-color);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Map Section */
+    .map-section {
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-large);
+      margin: 40px 20px;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .map-placeholder {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border: 2px dashed var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 80px 20px;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-top: 30px;
+    }
+
+    .map-placeholder i {
+      font-size: 3rem;
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* Success/Error Messages */
+    .message {
+      padding: 15px 20px;
+      border-radius: var(--border-radius);
+      margin-bottom: 25px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .message.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .message.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .contact-form-section,
+      .contact-info-section,
+      .map-section {
+        padding: 50px 30px;
+        margin: 30px 15px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 80px 20px 60px;
+      }
+
+      .hero-section h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-section p {
+        font-size: 1.1rem;
+      }
+
+      .contact-methods {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .contact-form-section,
+      .contact-info-section,
+      .map-section {
+        margin: 20px 10px;
+        padding: 40px 20px;
+        border-radius: 8px;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+      }
+
+      .contact-info-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      .form-control {
+        padding: 12px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section h1 {
+        font-size: 2rem;
+      }
+
+      .hero-section p {
+        font-size: 1rem;
+      }
+
+      .section-title h2 {
+        font-size: 1.8rem;
+      }
+
+      .info-card {
+        padding: 25px 15px;
+      }
+
+      .contact-method {
+        padding: 20px 15px;
+      }
+    }
+
+    /* Loading State */
+    .loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .loading .submit-btn {
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 2px solid white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
+
 <body>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1>تواصل معنا</h1>
+        <p>
+          نحن هنا للإجابة على جميع استفساراتك ومساعدتك في الانضمام إلى عائلة المتطوعين. 
+          لا تتردد في التواصل معنا عبر أي من الوسائل المتاحة أدناه
+        </p>
+        
+        <!-- Quick Contact Methods -->
+        <div class="contact-methods">
+          <div class="contact-method" onclick="window.location.href='mailto:avspcbenarous2023@gmail.com'">
+            <div class="icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h3>البريد الإلكتروني</h3>
+            <p>avspcbenarous2023@gmail.com</p>
+          </div>
+          
+          <div class="contact-method" onclick="window.location.href='tel:+21656202702'">
+            <div class="icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            <h3>اتصال مباشر</h3>
+            <p style="direction: ltr;" >(+216) 56 20 27 02 </p>
+            <p style="direction: ltr;" >(+216) 90 76 93 62 </p>
 
-  <div class="container">
-    <h1>اتصل بنا</h1>
+          </div>
+          
+          <div class="contact-method" onclick="window.open('https://www.facebook.com/AVSPCBNAROUS', '_blank')">
+            <div class="icon">
+              <i class="fab fa-facebook"></i>
+            </div>
+            <h3>فيسبوك</h3>
+            <p>AVSPCBNAROUS</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="contact-info">
-      <p>📧 البريد الإلكتروني: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=avspcbenarous2023@gmail.com" target="_blank" rel="noopener noreferrer">avspcbenarous2023@gmail.com</a></p>
-      <p>📞 رقم الهاتف: 
-      <a href="tel:+21656202702">21656202702+</a> - 
-      <a href="tel:+21690769362">21690769362+</a>
-      </p>      
-      <p>🌐 صفحة فيسبوك: <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer">AVSPCBNAROUS</a></p>
-    </div>
+    <!-- Contact Form Section -->
+    <section class="contact-form-section">
+      <div class="section-title">
+        <h2>أرسل رسالة</h2>
+        <p>املأ النموذج أدناه وسنتواصل معك في أقرب وقت ممكن</p>
+      </div>
+      
+      <form class="contact-form" id="contactForm" onsubmit="return handleFormSubmit(event)">
+        <div id="messageContainer"></div>
+        
+        <div class="form-group">
+          <label for="name">
+            الاسم الكامل
+            <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            class="form-control" 
+            placeholder="أدخل اسمك الكامل"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="email">
+            البريد الإلكتروني
+            <span class="required">*</span>
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            class="form-control" 
+            placeholder="example@email.com"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="phone">
+            رقم الهاتف
+            <span class="required">*</span>
+          </label>
+          <input 
+            type="tel" 
+            id="phone" 
+            name="phone" 
+            class="form-control" 
+            placeholder="12345678"
+            pattern="[0-9]{8,15}"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="subject">موضوع الرسالة</label>
+          <select id="subject" name="subject" class="form-control">
+            <option value="">اختر موضوع الرسالة</option>
+            <option value="volunteer">الرغبة في التطوع</option>
+            <option value="training">الاستفسار عن التدريبات</option>
+            <option value="partnership">شراكة أو تعاون</option>
+            <option value="complaint">شكوى أو اقتراح</option>
+            <option value="other">أخرى</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="message">
+            الرسالة
+            <span class="required">*</span>
+          </label>
+          <textarea 
+            id="message" 
+            name="message" 
+            class="form-control" 
+            placeholder="اكتب رسالتك هنا..."
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-paper-plane"></i>
+          إرسال الرسالة
+        </button>
+      </form>
+    </section>
+
+    <!-- Contact Information Section -->
+    <section class="contact-info-section">
+      <div class="section-title">
+        <h2>معلومات الاتصال</h2>
+        <p>جميع الطرق المتاحة للتواصل مع جمعيتنا</p>
+      </div>
+      
+      <div class="contact-info-grid">
+        <div class="info-card fade-in">
+          <div class="icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h3>البريد الإلكتروني</h3>
+          <p>للاستفسارات العامة والتواصل الرسمي</p>
+          <a href="mailto:avspcbenarous2023@gmail.com" target="_blank">
+            avspcbenarous2023@gmail.com
+          </a>
+        </div>
+        
+        <div class="info-card fade-in">
+          <div class="icon">
+            <i class="fas fa-phone-alt"></i>
+          </div>
+          <h3>أرقام الهاتف</h3>
+          <p>متاحة على مدار الساعة للطوارئ</p>
+          <a style="direction: ltr;" href="tel:+21656202702">(+216) 56 20 27 02 </a>
+          <a style="direction: ltr;" href="tel:+21690769362">(+216) 90 76 93 62 </a>
+        </div>
+        
+        <div class="info-card fade-in">
+          <div class="icon">
+            <i class="fab fa-facebook-f"></i>
+          </div>
+          <h3>وسائل التواصل الاجتماعي</h3>
+          <p>تابعنا للحصول على آخر الأخبار والفعاليات</p>
+          <a href="https://www.facebook.com/AVSPCBNAROUS" target="_blank">
+            صفحة الفيسبوك
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <!-- <section class="map-section">
+      <div class="section-title">
+        <h2>موقعنا الجغرافي</h2>
+        <p>جمعية متطوعون في خدمة الحماية المدنية - بن عروس</p>
+      </div>
+      
+      <div class="map-placeholder">
+        <i class="fas fa-map-marker-alt"></i>
+        <p>خريطة الموقع ستظهر هنا</p>
+        <small>بن عروس، تونس</small>
+      </div>
+    </section> -->
   </div>
 
   <script>
-    function toggleMenu() {
-      const menu = document.getElementById("sideMenu");
-      menu.classList.toggle("active");
-    }
-
-    function validateForm() {
-      const form = document.getElementById('contactForm');
-      const phone = form.phone.value.trim();
+    // Form submission handler
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const form = event.target;
+      const formData = new FormData(form);
+      const messageContainer = document.getElementById('messageContainer');
+      
+      // Validate phone number
+      const phone = formData.get('phone');
       const phonePattern = /^[0-9]{8,15}$/;
-
+      
       if (!phonePattern.test(phone)) {
-        alert('يرجى إدخال رقم هاتف صالح مكون من 8 إلى 15 رقم.');
-        form.phone.focus();
+        showMessage('يرجى إدخال رقم هاتف صالح مكون من 8 إلى 15 رقم.', 'error');
+        document.getElementById('phone').focus();
         return false;
       }
-
-      alert('شكراً لتواصلك معنا! سيتم الرد عليك قريباً.');
-      return true;
+      
+      // Show loading state
+      const submitBtn = form.querySelector('.submit-btn');
+      const originalContent = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<div class="spinner"></div> جارٍ الإرسال...';
+      submitBtn.disabled = true;
+      form.classList.add('loading');
+      
+      // Simulate form submission (replace with actual submission logic)
+      setTimeout(() => {
+        showMessage('تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.', 'success');
+        form.reset();
+        
+        // Reset button
+        submitBtn.innerHTML = originalContent;
+        submitBtn.disabled = false;
+        form.classList.remove('loading');
+      }, 2000);
+      
+      return false;
     }
+    
+    // Show message function
+    function showMessage(text, type) {
+      const messageContainer = document.getElementById('messageContainer');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      messageDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${text}`;
+      
+      messageContainer.innerHTML = '';
+      messageContainer.appendChild(messageDiv);
+      
+      // Scroll to message
+      messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      // Auto-hide success messages
+      if (type === 'success') {
+        setTimeout(() => {
+          messageDiv.style.opacity = '0';
+          setTimeout(() => {
+            if (messageDiv.parentNode) {
+              messageDiv.parentNode.removeChild(messageDiv);
+            }
+          }, 300);
+        }, 5000);
+      }
+    }
+    
+    // Add animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all cards
+    document.querySelectorAll('.info-card').forEach(card => {
+      observer.observe(card);
+    });
+    
+    // Add click handlers for contact methods
+    document.querySelectorAll('.contact-method').forEach(method => {
+      method.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-8px) scale(1.02)';
+      });
+      
+      method.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(-5px) scale(1)';
+      });
+    });
+    
+    // Form validation enhancements
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+      input.addEventListener('blur', function() {
+        if (this.validity.valid && this.value) {
+          this.style.borderColor = 'var(--success-color)';
+        } else if (!this.validity.valid) {
+          this.style.borderColor = '#ef4444';
+        } else {
+          this.style.borderColor = 'var(--border-color)';
+        }
+      });
+      
+      input.addEventListener('focus', function() {
+        this.style.borderColor = 'var(--secondary-color)';
+      });
+    });
   </script>
-<script src="../assets/js/components.js"></script>
-
-
+  <script src="../assets/js/components.js"></script>
 </body>
 </html>

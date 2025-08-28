@@ -1,425 +1,1324 @@
 <!DOCTYPE html>
-<html lang="ar">
-  <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AVSPCBNAROUS</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f7f9fb;
-      margin: 0;
-      padding: 0;
-      font-size: 18px;
-      line-height: 1.6;
-      direction: rtl;
-    }
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل في تطوع - جمعية متطوعون في خدمة الحماية المدنية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a202c;
+            --secondary-color: #ff6b35;
+            --accent-color: #ff8c42;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            --surface-color: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --border-focus: #ff6b35;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
 
-    h1 {
-      text-align: center;
-      color: #333;
-      font-size: 24px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .form-container {
-      max-width: 1200px;
-      margin: 50px auto;
-      padding: 30px;
-      background-color: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-    }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            direction: rtl;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            padding: 20px;
+        }
 
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-    .form-group {
-      flex: 1 1 22%;
-      min-width: 200px;
-    }
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--surface-color);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
 
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
+        .form-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
 
-    .form-group1 {
-      flex: 1 1 30%;
-      min-width: 200px;
-    }
+        .form-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
 
-    .form-group1 label {
-      display: flex;  
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+        /* Step Progress Indicator */
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--surface-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+        }
 
-    .form-group1 input,
-    .form-group1 select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
 
-    button {
-      padding: 12px 20px;
-      background-color: #0891b2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin: 20px 0 0;
-    }
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 3px;
+            background: var(--border-color);
+            z-index: 1;
+        }
 
-    button:hover {
-      background-color: #2980b9;
-    }
+        .step.completed:not(:last-child)::after {
+            background: var(--success-color);
+        }
 
-    .print-button {
-      background-color: #f39c12;
-    }
+        .step.active:not(:last-child)::after {
+            background: linear-gradient(90deg, var(--success-color) 50%, var(--border-color) 50%);
+        }
 
-    .print-button:hover {
-      background-color: #e67e22;
-    }
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+            transition: var(--transition);
+        }
 
-    .footer {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      padding: 10px 10px;
-      font-weight: bold;
-      align-items: center;
-      justify-content: flex-start;
-      margin-top: 15px;
-    }
+        .step.completed .step-circle {
+            background: var(--success-color);
+            color: white;
+        }
 
-    .footer p {
-      font-size: 14px;
-      margin: 0;
-    }
+        .step.active .step-circle {
+            background: var(--secondary-color);
+            color: white;
+            transform: scale(1.1);
+        }
 
-    header {
-      color: white;
-      padding: 9px 0;
-      margin: 0;
-      text-align: right;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      position: absolute;
-      top: 0;
-      right: 5px;
-      width: 99%;
-    }
+        .step-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-align: center;
+        }
 
-    header h1 {
-      margin-bottom: 10px;
-    }
+        .step.active .step-label {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
 
-    header p {
-      font-size: 1.1em;
-    }
+        .step.completed .step-label {
+            color: var(--success-color);
+        }
 
-    .home-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 12px;
-      background-color: #007bff;
-      color: white;
-      border-radius: 4px;
-      font-size: 14px;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-    }
+        /* Form Container */
+        .form-container {
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+        }
 
-    .home-button:hover {
-      background-color: #0056b3;
-    }
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
 
-    .menu {
-  margin-right: auto; /* تدفع القائمة إلى أقصى اليمين */
-  display: flex;
-  gap: 12px;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-weight: bold;
-  justify-content: flex-end;
-  direction: rtl;
-}
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
 
-.menu a {
-  color: white;
-  text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-}
+        .form-step.active {
+            display: block;
+        }
 
-.menu a:hover {
-  background-color: #ff9900;
-}
-.footer1 {
-      background-color: #333;
-      color: white;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 10px 20px;
-      text-align: right;
-      font-weight: bold;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
 
-    .footer1 img {
-      object-fit: contain;
-      margin: 0 ;
-    }
+        .step-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
 
-    .footer1 img:first-child {
-      margin-right: 30px;
-    }
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
 
-    .footer1 .image.small {
-      width: 35px;
-      height: 25px;
-    }
+        .step-title h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
-    .footer1 .image.large {
-      width: 35px;
-      height: 35px;
-    }
-    
-    a.fw-semibold {
-    font-weight: 600;
-    color: #ff9900;
-    text-decoration: none;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
 
-a.fw-semibold:hover {
-    color: #ffffff;
-    transform: scale(1.05);
-}
+        .form-group {
+            position: relative;
+        }
 
-/* دعم الهواتف المحمولة */
-@media (max-width: 768px) {
-  .form-group,
-  .form-group1 {
-    flex: 1 1 100%;
-  }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
 
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+        .form-group label.required::after {
+            content: ' *';
+            color: var(--error-color);
+        }
 
-  .menu {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-  }
-}
+        .input-wrapper {
+            position: relative;
+        }
 
-  </style>
-<link rel="icon" href="شعار.png" type="image/png"></head>
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            background: var(--surface-color);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-group input.valid {
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .form-group input.invalid {
+            border-color: var(--error-color);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .validation-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .validation-icon.valid {
+            color: var(--success-color);
+            opacity: 1;
+        }
+
+        .validation-icon.invalid {
+            color: var(--error-color);
+            opacity: 1;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
+
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Navigation Buttons */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .nav-button:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-button.prev {
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+        }
+
+        .nav-button.prev:hover {
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: var(--transition);
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success-color);
+        }
+
+        .notification.error {
+            background: var(--error-color);
+        }
+
+        .notification.warning {
+            background: var(--warning-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .form-header,
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .step-indicator {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .step {
+                min-width: 80px;
+            }
+
+            .step-label {
+                font-size: 0.8rem;
+            }
+
+            .form-navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+                transform: translateY(-100px);
+            }
+
+            .notification.show {
+                transform: translateY(0);
+            }
+
+            .step-circle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
 
 <body>
-
-  <!-- <div class="footer1">
-    <img src="../assets/images/images (1).png" alt="صورة 2" class="image small">
-    <img src="../assets/images/شعار.png" alt="صورة 1" class="image large">
-    <a class="fw-semibold" href="https://www.facebook.com/AVSPCBNAROUS" target="_blank" rel="noopener noreferrer" aria-label="زيارة صفحة الفيسبوك على موقع خارجي">
-   جمعية متطوعون في خدمة الحماية المدنية بن عروس
-</a>
-
-    <div class="menu" id="menu">
-      <a href="index.html">الرئيسية</a>
-      <a href="index1.html">تعريف</a>
-      <a href="index2.html">تسجيل في تطوع</a>
-      <a href="results.html">الإطلاع على النتائج</a> 
-
-  </div>
-    </div> -->
-  
-  <div class="form-container">
-    <h1>تسجيل في تطوع</h1>
-    <form action="register.php" method="POST">
-            <div class="form-row">
-        <div class="form-group1">
-          <label for="idNumber">رقم بطاقة التعريف:</label>
-          <input type="text" id="idNumber" name="idNumber" required="" pattern="\d{8}">
-        </div>
-        <div class="form-group1">
-          <label for="idIssueDate">تاريخ الإصدار:</label>
-          <input type="date" id="idIssueDate" name="idIssueDate" required=""><br>        
-        </div>
-      <div class="form-group1">
-        <label for="phone">رقم الهاتف الشخصي:</label>
-        <input type="text" id="phone" name="phone" required="" pattern="^\d{8}$">
-      </div>
-        <div class="form-group">
-          <label for="firstName">الاسم:</label>
-          <input type="text" id="firstName" name="firstName" required="">
-          </div>
-        <div class="form-group">
-        <label for="lastName">اللقب:</label>
-        <input type="text" id="lastName" name="lastName" required="">
-      </div>
-      <div class="form-group">
-        <label for="fatherName">اسم الأب:</label>
-        <input type="text" id="fatherName" name="fatherName" required="">
-      </div>      
-      <div class="form-group">
-        <label for="grandFatherName">اسم الجد:</label>
-        <input type="text" id="grandFatherName" name="grandFatherName" required="">
-      </div>
-      <div class="form-group">
-        <label for="motherFirstName">اسم الأم:</label>
-        <input type="text" id="motherFirstName" name="motherFirstName" required="">
-      </div>
-      <div class="form-group">
-        <label for="motherLastName">لقب الأم:</label>
-        <input type="text" id="motherLastName" name="motherLastName" required="">
-      </div>
-
-      <div class="form-group">
-        <label for="birthDate">تاريخ الولادة:</label>
-        <input type="date" id="birthDate" name="birthDate" required="">
-      </div>
-        <div class="form-group">
-          <label for="gender">الجنس:</label>
-          <select id="gender" name="gender" required="">
-            <option value="">اختر</option>
-            <option value="male">ذكر</option>
-            <option value="female">أنثى</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="maritalstatus">الحالة العائلية:</label>
-          <select id="maritalstatus" name="maritalstatus" required="">
-            <option value="">اختر</option>
-            <option value="single">أعزب</option>
-            <option value="married">متزوج</option>
-            <option value="divorced">مطلق</option>
-            <option value="widowed">أرمل</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="children">عدد الأبناء:</label>
-          <input type="number" id="children" name="children" min="0" max="5" required="">
-        </div>
-        <div class="form-group">
-          <label for="profession">المهنة:</label>
-          <input type="text" id="profession" name="profession" required="">
-        </div>
-        <div class="form-group">
-          <label for="fatherphone">رقم هاتف الأب:</label>
-          <input type="text" id="fatherphone" name="fatherphone" pattern="^\d{8}$">
-        </div>
-      </div>
-
-      <div class="form-row">
-
-        <div class="form-group">
-          <label for="region">المنطقة</label>
-          <select id="region" name="region">
-            <option value="">اختر المنطقة</option>
-            <option value="بومهل">بومهل</option>
-            <option value="الزهراء">الزهراء</option>
-            <option value="حمام الأنف">حمام الأنف</option>
-            <option value="حمام الشط">حمام الشط</option>
-            <option value="رادس">رادس</option>
-            <option value="المروج">المروج</option>
-            <option value="فوشانة">فوشانة</option>
-            <option value="مرناق">مرناق</option>
-            <option value="المحمدية">المحمدية</option>
-            <option value="بن عروس">بن عروس</option>
-            <option value="نعسان">نعسان</option>
-            <option value="شبدة">شبدة</option>
-            <option value="مقرين">مقرين</option>
-            <option value="المدينة الجديدة">المدينة الجديدة</option>
-            <option value="الياسمينات">الياسمينات</option>
-            <option value="برج السدرية">برج السدرية</option>
-            <option value="الخليدية">الخليدية</option>
-          </select>
+    <div class="container">
+        <div class="form-header">
+            <h1>تسجيل في تطوع</h1>
+            <p>انضم إلى جمعية متطوعون في خدمة الحماية المدنية بن عروس وكن جزءاً من فريق يخدم المجتمع</p>
         </div>
 
-        <div class="form-group">
-          <label for="address">العنوان الشخصي:</label>
-          <input type="text" id="address" name="address" required="">
+        <!-- Step Progress Indicator -->
+        <div class="step-indicator">
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">معلومات الهوية</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">البيانات الشخصية</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">المعلومات العائلية</div>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-circle">4</div>
+                <div class="step-label">العنوان والموقع</div>
+            </div>
+            <div class="step" data-step="5">
+                <div class="step-circle">5</div>
+                <div class="step-label">التعليم والشهائد</div>
+            </div>
         </div>
 
-        <div class="form-group">
-          <label for="educationlevel">المستوى التعليمي:</label>
-          <select id="educationlevel" name="educationlevel" required="">
-            <option value=""></option>
-            <option value="primary">ابتدائي</option>
-            <option value="secondary">إعدادي</option>
-            <option value="highschool">ثانوي</option>
-            <option value="bachelor">بكالوريا</option>
-            <option value="university">جامعي</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="supportingdocument">شهائد الإثبات:</label>
-          <select id="supportingdocument" name="supportingdocument" required="">
-            <option value="">اختر</option>
-            <option value="attendance-grades">شهادة حضور و بطاقة الأعداد الأخيرة للسنة المنقضية</option>
-            <option value="baccalaureate">شهادة البكالوريا</option>
-            <option value="university">شهادة تعليم جامعي</option>
-            <option value="other">شهادة أخرى</option>
-          </select>
-        </div>
-      </div>
-      <button type="submit">تسجيل</button>
-    </form>
-  </div>
+        <div class="form-container">
+            <form id="registrationForm" action="register.php" method="POST">
+                
+                <!-- Step 1: Identity Information -->
+                <div class="form-step active" id="step1">
+                    <div class="step-title">
+                        <div class="step-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h3>معلومات الهوية الشخصية</h3>
+                    </div>
 
-  <div class="footer">
-    <p>حقوق الطبع والنشر © 2025 جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
-  </div>
-  <script>
-      function toggleMenu() {
-        const menu = document.getElementById('menu');
-        if (menu.style.display === 'block') {
-          menu.style.display = 'none';
-        } else {
-          menu.style.display = 'block';
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="idNumber" class="required">رقم بطاقة التعريف</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="idNumber" name="idNumber" pattern="\d{8}" maxlength="8" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يجب أن يحتوي رقم بطاقة التعريف على 8 أرقام فقط</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="idIssueDate" class="required">تاريخ الإصدار</label>
+                            <div class="input-wrapper">
+                                <input type="date" id="idIssueDate" name="idIssueDate" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال تاريخ صحيح</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="required">رقم الهاتف الشخصي</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="phone" name="phone" pattern="^\d{8}$" maxlength="8" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يجب أن يحتوي رقم الهاتف على 8 أرقام فقط</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Personal Information -->
+                <div class="form-step" id="step2">
+                    <div class="step-title">
+                        <div class="step-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>البيانات الشخصية</h3>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="required">الاسم</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="firstName" name="firstName" pattern="[أ-يa-zA-Z\s]+" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال اسم صحيح</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName" class="required">اللقب</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="lastName" name="lastName" pattern="[أ-يa-zA-Z\s]+" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال لقب صحيح</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="birthDate" class="required">تاريخ الولادة</label>
+                            <div class="input-wrapper">
+                                <input type="date" id="birthDate" name="birthDate" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال تاريخ ولادة صحيح</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender" class="required">الجنس</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">اختر الجنس</option>
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                            <div class="error-message">يرجى اختيار الجنس</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Family Information -->
+                <div class="form-step" id="step3">
+                    <div class="step-title">
+                        <div class="step-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>المعلومات العائلية</h3>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fatherName" class="required">اسم الأب</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="fatherName" name="fatherName" pattern="[أ-يa-zA-Z\s]+" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال اسم الأب</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="grandFatherName" class="required">اسم الجد</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="grandFatherName" name="grandFatherName" pattern="[أ-يa-zA-Z\s]+" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال اسم الجد</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motherFirstName" class="required">اسم الأم</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="motherFirstName" name="motherFirstName" pattern="[أ-يa-zA-Z\s]+" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال اسم الأم</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motherLastName" class="required">لقب الأم</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="motherLastName" name="motherLastName" pattern="[أ-يa-zA-Z\s]+" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال لقب الأم</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maritalstatus" class="required">الحالة العائلية</label>
+                            <select id="maritalstatus" name="maritalstatus" required>
+                                <option value="">اختر الحالة العائلية</option>
+                                <option value="single">أعزب</option>
+                                <option value="married">متزوج</option>
+                                <option value="divorced">مطلق</option>
+                                <option value="widowed">أرمل</option>
+                            </select>
+                            <div class="error-message">يرجى اختيار الحالة العائلية</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="children" class="required">عدد الأبناء</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="children" name="children" min="0" max="20" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال عدد صحيح</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profession" class="required">المهنة</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="profession" name="profession" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال المهنة</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fatherphone">رقم هاتف الأب</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="fatherphone" name="fatherphone" pattern="^\d{8}$" maxlength="8">
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يجب أن يحتوي على 8 أرقام فقط</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Address Information -->
+                <div class="form-step" id="step4">
+                    <div class="step-title">
+                        <div class="step-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>العنوان والموقع الجغرافي</h3>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="governorate" class="required">الولاية</label>
+                            <select id="governorate" name="governorate" required>
+                                <option value="">اختر الولاية</option>
+                                <option value="ariana">أريانة</option>
+                                <option value="beja">باجة</option>
+                                <option value="ben_arous">بن عروس</option>
+                                <option value="bizerte">بنزرت</option>
+                                <option value="gabes">قابس</option>
+                                <option value="gafsa">قفصة</option>
+                                <option value="jendouba">جندوبة</option>
+                                <option value="kairouan">القيروان</option>
+                                <option value="kasserine">القصرين</option>
+                                <option value="kebili">قبلي</option>
+                                <option value="kef">الكاف</option>
+                                <option value="mahdia">المهدية</option>
+                                <option value="manouba">منوبة</option>
+                                <option value="medenine">مدنين</option>
+                                <option value="monastir">المنستير</option>
+                                <option value="nabeul">نابل</option>
+                                <option value="sfax">صفاقس</option>
+                                <option value="sidi_bouzid">سيدي بوزيد</option>
+                                <option value="siliana">سليانة</option>
+                                <option value="sousse">سوسة</option>
+                                <option value="tataouine">تطاوين</option>
+                                <option value="tozeur">توزر</option>
+                                <option value="tunis">تونس</option>
+                                <option value="zaghouan">زغوان</option>
+                            </select>
+                            <div class="error-message">يرجى اختيار الولاية</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="region" class="required">المنطقة</label>
+                            <select id="region" name="region" required disabled>
+                                <option value="">اختر الولاية أولاً</option>
+                            </select>
+                            <div class="error-message">يرجى اختيار المنطقة</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address" class="required">العنوان الشخصي</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="address" name="address" required>
+                                <div class="validation-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="error-message">يرجى إدخال العنوان</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Education Information -->
+                <div class="form-step" id="step5">
+                    <div class="step-title">
+                        <div class="step-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>المستوى التعليمي والشهائد</h3>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="educationlevel" class="required">المستوى التعليمي</label>
+                            <select id="educationlevel" name="educationlevel" required>
+                                <option value="">اختر المستوى التعليمي</option>
+                                <option value="primary">ابتدائي</option>
+                                <option value="secondary">إعدادي</option>
+                                <option value="highschool">ثانوي</option>
+                                <option value="bachelor">بكالوريا</option>
+                                <option value="university">جامعي</option>
+                            </select>
+                            <div class="error-message">يرجى اختيار المستوى التعليمي</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="supportingdocument" class="required">شهائد الإثبات</label>
+                            <select id="supportingdocument" name="supportingdocument" required>
+                                <option value="">اختر نوع الشهادة</option>
+                                <option value="attendance-grades">شهادة حضور وبطاقة الأعداد الأخيرة للسنة المنقضية</option>
+                                <option value="baccalaureate">شهادة البكالوريا</option>
+                                <option value="university">شهادة تعليم جامعي</option>
+                                <option value="other">شهادة أخرى</option>
+                            </select>
+                            <div class="error-message">يرجى اختيار نوع الشهادة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="nav-button prev" id="prevBtn" style="display: none;">
+                        <i class="fas fa-arrow-right"></i>
+                        السابق
+                    </button>
+                    
+                    <div style="flex-grow: 1;"></div>
+                    
+                    <button type="button" class="nav-button next" id="nextBtn">
+                        التالي
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    
+                    <button type="submit" class="submit-button" id="submitButton" style="display: none;">
+                        <i class="fas fa-paper-plane"></i>
+                        تسجيل
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // بيانات المناطق حسب الولايات
+        const regionsData = {
+            ben_arous: [
+                'بومهل',
+                'الزهراء', 
+                'حمام الأنف',
+                'حمام الشط',
+                'رادس',
+                'المروج',
+                'فوشانة',
+                'مرناق',
+                'المحمدية',
+                'بن عروس',
+                'نعسان',
+                'شبدة',
+                'مقرين',
+                'المدينة الجديدة',
+                'الياسمينات',
+                'برج السدرية',
+                'الخليدية'
+            ]
+        };
+
+        // متغيرات النظام
+        let currentStep = 1;
+        const totalSteps = 5;
+        let validFields = new Set();
+        let stepValidation = {
+            1: new Set(),
+            2: new Set(),
+            3: new Set(),
+            4: new Set(),
+            5: new Set()
+        };
+
+        // عناصر النموذج
+        const form = document.getElementById('registrationForm');
+        const governorateSelect = document.getElementById('governorate');
+        const regionSelect = document.getElementById('region');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const submitButton = document.getElementById('submitButton');
+
+        // تعريف الحقول لكل خطوة
+        const stepFields = {
+            1: ['idNumber', 'idIssueDate', 'phone'],
+            2: ['firstName', 'lastName', 'birthDate', 'gender'],
+            3: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession'],
+            4: ['governorate', 'region', 'address'],
+            5: ['educationlevel', 'supportingdocument']
+        };
+
+        // إظهار الإشعارات
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle';
+            notification.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
-      }
-      window.onafterprint = function () {
-  window.location.href = "confirmation.php";
-};
 
+        // التحقق من صحة الحقل
+        function validateField(field) {
+            const value = field.value.trim();
+            const fieldName = field.name;
+            let isValid = false;
+            let errorMessage = '';
 
-</script>
-<script src="../assets/js/components.js"></script>
+            if (field.hasAttribute('required') && !value) {
+                errorMessage = 'هذا الحقل مطلوب';
+            } else if (value) {
+                switch (fieldName) {
+                    case 'idNumber':
+                        if (!/^\d{8}$/.test(value)) {
+                            errorMessage = 'يجب أن يحتوي رقم بطاقة التعريف على 8 أرقام فقط';
+                        } else {
+                            isValid = true;
+                        }
+                        break;
+                    
+                    case 'phone':
+                    case 'fatherphone':
+                        if (value && !/^\d{8}$/.test(value)) {
+                            errorMessage = 'يجب أن يحتوي رقم الهاتف على 8 أرقام فقط';
+                        } else {
+                            isValid = true;
+                        }
+                        break;
+                    
+                    case 'firstName':
+                    case 'lastName':
+                    case 'fatherName':
+                    case 'grandFatherName':
+                    case 'motherFirstName':
+                    case 'motherLastName':
+                        if (!/^[أ-يa-zA-Z\s]+$/.test(value)) {
+                            errorMessage = 'يجب أن يحتوي على أحرف فقط';
+                        } else if (value.length < 2) {
+                            errorMessage = 'يجب أن يحتوي على حرفين على الأقل';
+                        } else {
+                            isValid = true;
+                        }
+                        break;
+                    
+                    case 'birthDate':
+                        const birthDate = new Date(value);
+                        const today = new Date();
+                        const age = today.getFullYear() - birthDate.getFullYear();
+                        if (age < 16 || age > 70) {
+                            errorMessage = 'يجب أن يكون العمر بين 16 و 70 سنة';
+                        } else {
+                            isValid = true;
+                        }
+                        break;
+                    
+                    case 'idIssueDate':
+                        const issueDate = new Date(value);
+                        const currentDate = new Date();
+                        if (issueDate > currentDate) {
+                            errorMessage = 'تاريخ الإصدار لا يمكن أن يكون في المستقبل';
+                        } else {
+                            isValid = true;
+                        }
+                        break;
+                    
+                    case 'children':
+                        const childrenCount = parseInt(value);
+                        if (isNaN(childrenCount) || childrenCount < 0 || childrenCount > 20) {
+                            errorMessage = 'يجب أن يكون عدد الأبناء بين 0 و 20';
+                        } else {
+                            isValid = true;
+                        }
+                        break;
+                    
+                    default:
+                        if (field.type === 'select-one' && value !== '') {
+                            isValid = true;
+                        } else if (field.type !== 'select-one' && value.length > 0) {
+                            isValid = true;
+                        }
+                        break;
+                }
+            } else if (!field.hasAttribute('required') && value) {
+                // للحقول غير المطلوبة، نتحقق فقط إذا تم ملؤها
+                if (fieldName === 'fatherphone' && !/^\d{8}$/.test(value)) {
+                    errorMessage = 'يجب أن يحتوي على 8 أرقام فقط';
+                } else {
+                    isValid = true;
+                }
+            } else if (!field.hasAttribute('required')) {
+                isValid = true; // الحقول غير المطلوبة صحيحة افتراضياً
+            }
+
+            // تحديث واجهة المستخدم
+            const wrapper = field.closest('.form-group');
+            const errorElement = wrapper.querySelector('.error-message');
+            const validationIcon = wrapper.querySelector('.validation-icon');
+
+            if (isValid) {
+                field.classList.remove('invalid');
+                field.classList.add('valid');
+                errorElement.classList.remove('show');
+                if (validationIcon) {
+                    validationIcon.classList.remove('invalid');
+                    validationIcon.classList.add('valid');
+                    validationIcon.innerHTML = '<i class="fas fa-check"></i>';
+                }
+                validFields.add(fieldName);
+            } else {
+                field.classList.remove('valid');
+                field.classList.add('invalid');
+                errorElement.textContent = errorMessage;
+                errorElement.classList.add('show');
+                if (validationIcon) {
+                    validationIcon.classList.remove('valid');
+                    validationIcon.classList.add('invalid');
+                    validationIcon.innerHTML = '<i class="fas fa-times"></i>';
+                }
+                validFields.delete(fieldName);
+            }
+
+            updateStepValidation();
+            return isValid;
+        }
+
+        // تحديث حالة التحقق لكل خطوة
+        function updateStepValidation() {
+            for (let step = 1; step <= totalSteps; step++) {
+                stepValidation[step].clear();
+                stepFields[step].forEach(fieldName => {
+                    const field = document.getElementById(fieldName);
+                    if (field && validateFieldSilently(field)) {
+                        stepValidation[step].add(fieldName);
+                    }
+                });
+            }
+            updateStepIndicator();
+            updateNavigationButtons();
+        }
+
+        // التحقق الصامت (بدون واجهة مستخدم)
+        function validateFieldSilently(field) {
+            const value = field.value.trim();
+            const fieldName = field.name;
+
+            if (field.hasAttribute('required') && !value) {
+                return false;
+            }
+
+            if (!value && !field.hasAttribute('required')) {
+                return true;
+            }
+
+            switch (fieldName) {
+                case 'idNumber':
+                    return /^\d{8}$/.test(value);
+                case 'phone':
+                case 'fatherphone':
+                    return !value || /^\d{8}$/.test(value);
+                case 'firstName':
+                case 'lastName':
+                case 'fatherName':
+                case 'grandFatherName':
+                case 'motherFirstName':
+                case 'motherLastName':
+                    return /^[أ-يa-zA-Z\s]+$/.test(value) && value.length >= 2;
+                case 'birthDate':
+                    const birthDate = new Date(value);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    return age >= 16 && age <= 70;
+                case 'idIssueDate':
+                    const issueDate = new Date(value);
+                    return issueDate <= new Date();
+                case 'children':
+                    const count = parseInt(value);
+                    return !isNaN(count) && count >= 0 && count <= 20;
+                default:
+                    return field.type === 'select-one' ? value !== '' : value.length > 0;
+            }
+        }
+
+        // تحديث مؤشر الخطوات
+        function updateStepIndicator() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNumber = index + 1;
+                const stepElement = step.querySelector('.step-circle');
+                
+                step.classList.remove('active', 'completed');
+                
+                if (stepNumber < currentStep) {
+                    step.classList.add('completed');
+                    stepElement.innerHTML = '<i class="fas fa-check"></i>';
+                } else if (stepNumber === currentStep) {
+                    step.classList.add('active');
+                    stepElement.textContent = stepNumber;
+                } else {
+                    stepElement.textContent = stepNumber;
+                }
+            });
+        }
+
+        // تحديث أزرار التنقل
+        function updateNavigationButtons() {
+            // إظهار/إخفاء أزرار التنقل
+            prevBtn.style.display = currentStep > 1 ? 'flex' : 'none';
+            
+            if (currentStep === totalSteps) {
+                nextBtn.style.display = 'none';
+                submitButton.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitButton.style.display = 'none';
+            }
+
+            // تفعيل/تعطيل زر التالي
+            const currentStepFields = stepFields[currentStep];
+            const requiredFieldsValid = currentStepFields.every(fieldName => {
+                const field = document.getElementById(fieldName);
+                return !field.hasAttribute('required') || stepValidation[currentStep].has(fieldName);
+            });
+
+            nextBtn.disabled = !requiredFieldsValid;
+        }
+
+        // عرض الخطوة المحددة
+        function showStep(step) {
+            // إخفاء جميع الخطوات
+            document.querySelectorAll('.form-step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+            });
+
+            // إظهار الخطوة المطلوبة
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+            updateStepIndicator();
+            updateNavigationButtons();
+
+            // رسالة ترحيب لكل خطوة
+            const stepMessages = {
+                1: 'الخطوة الأولى: أدخل معلومات الهوية الشخصية',
+                2: 'الخطوة الثانية: أدخل البيانات الشخصية',
+                3: 'الخطوة الثالثة: أدخل المعلومات العائلية والمهنية',
+                4: 'الخطوة الرابعة: حدد العنوان والموقع الجغرافي',
+                5: 'الخطوة الأخيرة: حدد المستوى التعليمي والشهائد'
+            };
+
+            showNotification(stepMessages[step], 'success');
+        }
+
+        // الانتقال للخطوة التالية
+        nextBtn.addEventListener('click', function() {
+            if (currentStep < totalSteps) {
+                // التحقق من الحقول المطلوبة في الخطوة الحالية
+                const currentStepFields = stepFields[currentStep];
+                let allValid = true;
+
+                currentStepFields.forEach(fieldName => {
+                    const field = document.getElementById(fieldName);
+                    if (field.hasAttribute('required') && !validateField(field)) {
+                        allValid = false;
+                    }
+                });
+
+                if (allValid) {
+                    showStep(currentStep + 1);
+                } else {
+                    showNotification('يرجى ملء جميع الحقول المطلوبة في هذه الخطوة', 'error');
+                }
+            }
+        });
+
+        // الانتقال للخطوة السابقة
+        prevBtn.addEventListener('click', function() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        });
+
+        // التحكم في المناطق حسب الولاية
+        governorateSelect.addEventListener('change', function() {
+            const selectedGovernorate = this.value;
+            regionSelect.innerHTML = '<option value="">اختر المنطقة</option>';
+            
+            if (selectedGovernorate === 'ben_arous' && regionsData[selectedGovernorate]) {
+                regionSelect.disabled = false;
+                regionsData[selectedGovernorate].forEach(region => {
+                    const option = document.createElement('option');
+                    option.value = region;
+                    option.textContent = region;
+                    regionSelect.appendChild(option);
+                });
+                showNotification('تم تحديث قائمة المناطق لولاية بن عروس', 'success');
+            } else if (selectedGovernorate && selectedGovernorate !== 'ben_arous') {
+                regionSelect.disabled = true;
+                regionSelect.innerHTML = '<option value="">لا توجد مناطق متاحة لهذه الولاية</option>';
+                showNotification('عذراً، المناطق متاحة فقط لولاية بن عروس حالياً', 'warning');
+            } else {
+                regionSelect.disabled = true;
+                regionSelect.innerHTML = '<option value="">اختر الولاية أولاً</option>';
+            }
+            
+            regionSelect.value = '';
+            validFields.delete('region');
+            updateStepValidation();
+        });
+
+        // إضافة مستمعي الأحداث لجميع الحقول
+        function addEventListeners() {
+            const allFields = form.querySelectorAll('input, select');
+            
+            allFields.forEach(field => {
+                field.addEventListener('blur', () => validateField(field));
+                
+                if (field.type === 'text' || field.type === 'number') {
+                    field.addEventListener('input', () => {
+                        clearTimeout(field.validationTimeout);
+                        field.validationTimeout = setTimeout(() => validateField(field), 500);
+                    });
+                }
+                
+                if (field.tagName === 'SELECT') {
+                    field.addEventListener('change', () => validateField(field));
+                }
+            });
+        }
+
+        // التحقق من النموذج عند الإرسال
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let allValid = true;
+            const allRequiredFields = form.querySelectorAll('[required]');
+            
+            allRequiredFields.forEach(field => {
+                if (!validateField(field)) {
+                    allValid = false;
+                }
+            });
+            
+            if (allValid) {
+                showNotification('تم إرسال النموذج بنجاح!', 'success');
+                // هنا يمكنك إرسال النموذج فعلياً
+                // form.submit();
+                
+                // محاكاة إرسال النموذج
+                setTimeout(() => {
+                    showNotification('تم استلام طلبك بنجاح! سيتم التواصل معك قريباً', 'success');
+                }, 1000);
+            } else {
+                showNotification('يرجى التأكد من صحة جميع البيانات المدخلة', 'error');
+            }
+        });
+
+        // التحقق من العمر عند تغيير تاريخ الولادة
+        document.getElementById('birthDate').addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            if (age < 16) {
+                showNotification('يجب أن يكون عمرك 20 سنة على الأقل للتسجيل', 'warning');
+            } else if (age > 70) {
+                showNotification('عذراً، الحد الأقصى للعمر هو 70 سنة', 'warning');
+            }
+        });
+
+        // تهيئة النموذج
+        function initializeForm() {
+            addEventListeners();
+            showStep(1);
+            updateStepValidation();
+            
+            // رسالة ترحيب
+            setTimeout(() => {
+                showNotification('مرحباً بك في نموذج التسجيل! سنقوم بتوجيهك خلال 5 خطوات بسيطة', 'success');
+            }, 1000);
+        }
+
+        // التنقل باستخدام لوحة المفاتيح
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                if (currentStep < totalSteps && !nextBtn.disabled) {
+                    nextBtn.click();
+                } else if (currentStep === totalSteps) {
+                    submitButton.click();
+                }
+            }
+        });
+
+        // تشغيل النموذج عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    </script>
+      <script src="../assets/js/components.js"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@ class WebComponents {
       'gallery.html': 'gallery',
       'index4.html': 'contact',
       'contact.html': 'contact',
+      'localMap.html': 'localMap',
       'results.html': 'results',
       'résultats.html': 'results'
     };
@@ -487,7 +488,7 @@ class WebComponents {
       },
        {
         id: 'LocalMap',
-        href: 'https://maps.app.goo.gl/PqiA7zasEwRNsPk87',
+        href: 'pages/localMap.html',
         icon: 'fas fa-map-marker-alt',
         text: 'خريطة الموقع'
       },

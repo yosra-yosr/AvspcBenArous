@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section Carte - جمعية متطوعون في خدمة الحماية المدنية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a202c;
+            --primary-dark: #0d1117;
+            --secondary-color: #ff6b35;
+            --accent-color: #ff8c42;
+            --success-color: #10b981;
+            --background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            --surface-color: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            direction: rtl;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            padding: 20px;
+        }
+
+        /* Section principale avec la même structure */
+        .map-section {
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-large);
+            margin: 40px 20px;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .map-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
+
+        /* Titre de section identique */
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Container de la carte */
+        .map-container {
+            position: relative;
+            height: 500px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 40px;
+        }
+
+        .map-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: var(--border-radius);
+        }
+
+        /* Overlay d'informations sur la carte */
+        .map-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow-medium);
+            z-index: 10;
+            transition: var(--transition);
+        }
+
+        .map-overlay:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Icône de localisation avec le même style que les objective-cards */
+        .location-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            flex-shrink: 0;
+        }
+
+        .location-details h3 {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .location-details p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Section des actions avec le même style que benefits */
+        .map-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .map-action-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .map-action-card:hover::before {
+            left: 100%;
+        }
+
+        .map-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--secondary-color);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .map-action-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .map-action-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Informations supplémentaires */
+        .map-info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .info-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .info-card:hover::before {
+            left: 100%;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--secondary-color);
+        }
+
+        .info-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .info-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .info-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        /* Animations identiques */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Responsive Design identique */
+        @media (max-width: 768px) {
+            .map-section {
+                margin: 20px 10px;
+                padding: 40px 20px;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .map-container {
+                height: 400px;
+            }
+
+            .map-overlay {
+                position: static;
+                margin: 20px 0 0 0;
+            }
+
+            .location-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .map-actions {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .map-info-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .map-container {
+                height: 350px;
+            }
+
+            .location-details h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="map-section fade-in">
+        <div class="section-title">
+            <h2>موقعنا الجغرافي</h2>
+            <p>جمعية متطوعون في خدمة الحماية المدنية - بن عروس</p>
+        </div>
+        
+        <div class="map-container">
+            <!-- Carte Google Maps intégrée -->
+            <iframe 
+                class="map-iframe"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3194.8234567890123!2d10.194444!3d36.744444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzYuNzQ0NDQ0LCAxMC4xOTQ0NDQ!5e0!3m2!1sfr!2stn!4v1234567890123!5m2!1sfr!2stn"
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            
+            <!-- Overlay avec informations -->
+            <div class="map-overlay">
+                <div class="location-info">
+                    <div class="location-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="location-details">
+                        <h3>جمعية متطوعون في خدمة الحماية المدنية</h3>
+                        <p>بن عروس، تونس - نحن متواجدون في قلب المدينة لخدمتكم على أفضل وجه</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions de la carte avec le style des benefit-cards -->
+        <div class="map-actions">
+            <a href="https://maps.app.goo.gl/PqiA7zasEwRNsPk87" target="_blank" class="map-action-card">
+                <div class="action-icon">
+                    <i class="fas fa-external-link-alt"></i>
+                </div>
+                <h3>فتح في خرائط جوجل</h3>
+                <p>اضغط هنا لفتح الموقع في تطبيق خرائط جوجل للحصول على تفاصيل أكثر دقة</p>
+            </a>
+            
+            <a href="https://www.google.com/maps/dir//36.744444,10.194444" target="_blank" class="map-action-card">
+                <div class="action-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h3>الحصول على الاتجاهات</h3>
+                <p>احصل على أفضل مسار للوصول إلى موقعنا من مكانك الحالي</p>
+            </a>
+        </div>
+
+        <!-- Informations supplémentaires avec le style des objective-cards -->
+        <div class="map-info-section">
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>أوقات العمل</h3>
+                <p>مفتوح يومياً من الساعة 8:00 صباحاً حتى 6:00 مساءً، ومتاحون للطوارئ على مدار الساعة</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h3>للاتصال بنا</h3>
+                <p>هاتف: 71 123 456 | فاكس: 71 123 457 | البريد الإلكتروني: info@avspc-benarrous.tn</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <h3>وسائل المواصلات</h3>
+                <p>يمكن الوصول إلينا بسهولة عبر الحافلات العمومية والمترو، وتتوفر مواقف سيارات مجانية</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Animation on scroll - identique à objectives.html
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observer tous les éléments
+        document.querySelectorAll('.map-section, .info-card, .map-action-card').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+    <script src="../assets/js/components.js"></script>
+</body>
+</html>

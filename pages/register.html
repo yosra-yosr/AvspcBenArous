@@ -80,7 +80,6 @@
             font-size: 1.1rem;
             color: var(--text-secondary);
         }
-        
 
         /* Step Progress Indicator */
         .step-indicator {
@@ -494,15 +493,6 @@
         <div class="form-header">
             <h1>تسجيل في تطوع</h1>
             <p>انضم إلى جمعية متطوعون في خدمة الحماية المدنية بن عروس وكن جزءاً من فريق يخدم المجتمع</p>
-        </div>
-        <div class="warning-banner">
-    <div class="warning-icon">
-        <i class="fas fa-exclamation-triangle"></i>
-    </div>
-    <div class="warning-content">
-        <h3>تنبيه هام</h3>
-        <p>يرجى التحقق من صحة المعلومات المدخلة لأن أي خطأ في البيانات سيؤدي إلى رفض الملف تلقائياً.</p>
-    </div>
         </div>
 
         <!-- Step Progress Indicator -->
@@ -964,7 +954,7 @@
                     case 'grandFatherName':
                     case 'motherFirstName':
                     case 'motherLastName':
-                         if (!/^[أ-يa-zA-Z\s]+$/.test(value)) {
+                        if (!/^[أ-يa-zA-Z\s]+$/.test(value)) {
                             errorMessage = 'يجب أن يحتوي على أحرف فقط';
                         } else if (value.length < 2) {
                             errorMessage = 'يجب أن يحتوي على حرفين على الأقل';
@@ -1094,14 +1084,7 @@
                 case 'grandFatherName':
                 case 'motherFirstName':
                 case 'motherLastName':
-                    if (!/^[أ-يa-zA-Z\s]+$/.test(value)) {
-                         errorMessage = 'يجب أن يحتوي على أحرف فقط';
-                    } else if (value.length < 2) {
-                        errorMessage = 'يجب أن يحتوي على حرفين على الأقل';
-                    } else {
-                        isValid = true;
-                    }
-                    break;
+                    return /^[أ-يa-zA-Z\s]+$/.test(value) && value.length >= 2;
                 case 'birthDate':
                     const birthDate = new Date(value);
                     const today = new Date();
@@ -1262,30 +1245,6 @@
                     field.addEventListener('change', () => validateField(field));
                 }
             });
-            const arabicFields = ['firstName', 'lastName', 'fatherName', 'grandFatherName', 
-                     'motherFirstName', 'motherLastName', 'profession'];
-    
-        arabicFields.forEach(fieldName => {
-            const field = document.getElementById(fieldName);
-                if (field) {
-            field.addEventListener('input', function(e) {
-            // Remplacer les caractères non-arabes par une chaîne vide
-            this.value = this.value.replace(/[^\u0600-\u06FF\s]/g, '');
-        });
-        
-        field.addEventListener('keypress', function(e) {
-            // Empêcher la saisie de caractères non-arabes
-            const char = String.fromCharCode(e.keyCode || e.which);
-            if (!/[\u0600-\u06FF\s]/.test(char) && e.keyCode !== 8 && e.keyCode !== 32) {
-                e.preventDefault();
-                showNotification('يسمح فقط بالأحرف العربية', 'error');
-            }
-        });
-    }
-        
-});
-            
-    
         }
 
         // التحقق من النموذج عند الإرسال
@@ -1327,7 +1286,7 @@
             }
             
             if (age < 16) {
-                showNotification('يجب أن يكون عمرك 18 سنة على الأقل للتسجيل', 'warning');
+                showNotification('يجب أن يكون عمرك 20 سنة على الأقل للتسجيل', 'warning');
             } else if (age > 70) {
                 showNotification('عذراً، الحد الأقصى للعمر هو 70 سنة', 'warning');
             }

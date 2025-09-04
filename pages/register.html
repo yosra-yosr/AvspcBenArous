@@ -763,11 +763,14 @@
                                 <option value="zaghouan">زغوان</option>
                             </select>
                             <div class="error-message">يرجى اختيار الولاية</div>
+                            <div id="governorate-error" class="error-message" style="display:none; color:red; font-weight:bold;">
+                التسجيل مسموح فقط لمتساكني ولاية بن عروس
+            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="region" class="required">المنطقة</label>
-                            <select id="region" name="region" required disabled>
+                            <select id="region" name="region" disabled>
                                 <option value="">اختر الولاية أولاً</option>
                             </select>
                             <div class="error-message">يرجى اختيار المنطقة</div>
@@ -1199,33 +1202,40 @@
             }
         });
 
-        // التحكم في المناطق حسب الولاية
-        governorateSelect.addEventListener('change', function() {
-            const selectedGovernorate = this.value;
-            regionSelect.innerHTML = '<option value="">اختر المنطقة</option>';
-            
-            if (selectedGovernorate === 'ben_arous' && regionsData[selectedGovernorate]) {
-                regionSelect.disabled = false;
-                regionsData[selectedGovernorate].forEach(region => {
-                    const option = document.createElement('option');
-                    option.value = region;
-                    option.textContent = region;
-                    regionSelect.appendChild(option);
-                });
-                showNotification('تم تحديث قائمة المناطق لولاية بن عروس', 'success');
-            } else if (selectedGovernorate && selectedGovernorate !== 'ben_arous') {
-                regionSelect.disabled = true;
-                regionSelect.innerHTML = '<option value="">لا توجد مناطق متاحة لهذه الولاية</option>';
-                showNotification('عذراً، المناطق متاحة فقط لولاية بن عروس حالياً', 'warning');
-            } else {
-                regionSelect.disabled = true;
-                regionSelect.innerHTML = '<option value="">اختر الولاية أولاً</option>';
-            }
-            
-            regionSelect.value = '';
-            validFields.delete('region');
-            updateStepValidation();
+      governorateSelect.addEventListener('change', function() {
+    const selectedGovernorate = this.value;
+    regionSelect.innerHTML = '<option value="">اختر المنطقة (اختياري)</option>';
+
+    if (selectedGovernorate === '') {
+        // ما اختارش أي ولاية
+        regionSelect.disabled = true;
+        showNotification('يرجى اختيار الولاية أولاً', 'error');
+        validFields.delete('governorate');
+    } 
+    else if (selectedGovernorate === 'ben_arous') {
+        // إذا كانت بن عروس → نظهر المناطق (اختياري)
+        regionSelect.disabled = false;
+        regionsData[selectedGovernorate].forEach(region => {
+            const option = document.createElement('option');
+            option.value = region;
+            option.textContent = region;
+            regionSelect.appendChild(option);
         });
+
+        showNotification('تم فتح قائمة المناطق لولاية بن عروس (اختياري)', 'success');
+        validFields.add('governorate');
+    } 
+    else {
+        // أي ولاية أخرى → ينجم يمر عادي لكن بدون مناطق
+        regionSelect.disabled = true;
+        regionSelect.innerHTML = '<option value="">لا توجد مناطق لهذه الولاية</option>';
+        showNotification('يمكنك المرور للخطوة الموالية', 'success');
+        validFields.add('governorate');
+    }
+
+    updateStepValidation();
+});
+
 
         // إضافة مستمعي الأحداث لجميع الحقول
         function addEventListeners() {
@@ -1285,7 +1295,7 @@
                 age--;
             }
             
-            if (age < 16) {
+            if (age < 20) {
                 showNotification('يجب أن يكون عمرك 20 سنة على الأقل للتسجيل', 'warning');
             } else if (age > 70) {
                 showNotification('عذراً، الحد الأقصى للعمر هو 70 سنة', 'warning');

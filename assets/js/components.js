@@ -378,7 +378,7 @@ class WebComponents {
       <!-- Modern Navbar -->
       <nav class="modern-navbar" id="navbar">
         <!-- Brand -->
-        <a class="navbar-brand" href="${this.basePath}index.html">
+        <a class="navbar-brand" href="index.html">
           <img src="${this.basePath}assets/images/tunisiaFlag.png" alt="Tunisia Flag" />
           <img src="${this.basePath}assets/images/شعار.png" alt="شعار الجمعية" class="logo-main"/>
           <span class="navbar-brand-text">جمعية متطوعون في خدمة الحماية المدنية بن عروس</span>
@@ -395,7 +395,7 @@ class WebComponents {
             <i class="fas fa-sign-in-alt"></i>
             <span>تسجيل الدخول</span>
           </a>
-          <a href="https://forms.office.com/r/0c9EtvtE4r" target="_blank" class="btn-primary-custom">
+          <a href="${this.basePath}pages/register.html" class="btn-primary-custom">
             <i class="fas fa-user-plus"></i>
             <span>التسجيل في تطوع</span>
           </a>
@@ -423,7 +423,7 @@ class WebComponents {
             <i class="fas fa-sign-in-alt"></i>
             <span>تسجيل الدخول</span>
           </a>
-          <a href="https://forms.office.com/r/0c9EtvtE4r" target="_blank" class="btn-primary-custom">
+          <a href="${this.basePath}pages/register.html">
             <i class="fas fa-user-plus"></i>
             <span>التسجيل في تطوع</span>
           </a>
@@ -470,7 +470,7 @@ class WebComponents {
     return [
       {
         id: 'home',
-        href: 'pages/index.html',
+        href: 'index.html',
         icon: 'fas fa-home',
         text: 'الرئيسية'
       },

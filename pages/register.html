@@ -970,8 +970,8 @@
                         const birthDate = new Date(value);
                         const today = new Date();
                         const age = today.getFullYear() - birthDate.getFullYear();
-                        if (age < 16 || age > 70) {
-                            errorMessage = 'يجب أن يكون العمر بين 16 و 70 سنة';
+                        if (age < 18 || age > 50) {
+                            errorMessage = 'يجب أن يكون العمر بين 18 و 50 سنة';
                         } else {
                             isValid = true;
                         }
@@ -990,7 +990,7 @@
                     case 'children':
                         const childrenCount = parseInt(value);
                         if (isNaN(childrenCount) || childrenCount < 0 || childrenCount > 20) {
-                            errorMessage = 'يجب أن يكون عدد الأبناء بين 0 و 20';
+                            errorMessage = 'يجب أن يكون عدد الأبناء بين 0 و 6';
                         } else {
                             isValid = true;
                         }
@@ -1092,13 +1092,13 @@
                     const birthDate = new Date(value);
                     const today = new Date();
                     const age = today.getFullYear() - birthDate.getFullYear();
-                    return age >= 16 && age <= 70;
+                    return age >= 18 && age <= 50;
                 case 'idIssueDate':
                     const issueDate = new Date(value);
                     return issueDate <= new Date();
                 case 'children':
                     const count = parseInt(value);
-                    return !isNaN(count) && count >= 0 && count <= 20;
+                    return !isNaN(count) && count >= 0 && count <= 6;
                 default:
                     return field.type === 'select-one' ? value !== '' : value.length > 0;
             }
@@ -1295,10 +1295,10 @@
                 age--;
             }
             
-            if (age < 20) {
-                showNotification('يجب أن يكون عمرك 20 سنة على الأقل للتسجيل', 'warning');
-            } else if (age > 70) {
-                showNotification('عذراً، الحد الأقصى للعمر هو 70 سنة', 'warning');
+            if (age < 18) {
+                showNotification('يجب أن يكون عمرك 18 سنة على الأقل للتسجيل', 'warning');
+            } else if (age > 50) {
+                showNotification('عذراً، الحد الأقصى للعمر هو 50 سنة', 'warning');
             }
         });
 

@@ -393,7 +393,7 @@ class WebComponents {
         <div class="navbar-actions">
           <a href="${this.basePath}pages/results.html" class="btn-secondary-custom">
             <i class="fas fa-sign-in-alt"></i>
-            <span>تسجيل الدخول</span>
+          <span>الإطلاع على النتائج</span>
           </a>
           <a href="${this.basePath}pages/register.html" class="btn-primary-custom">
             <i class="fas fa-user-plus"></i>
@@ -421,7 +421,7 @@ class WebComponents {
         <div class="mobile-actions">
           <a href="${this.basePath}pages/results.html" class="btn-secondary-custom">
             <i class="fas fa-sign-in-alt"></i>
-            <span>تسجيل الدخول</span>
+          <span>الإطلاع على النتائج</span>
           </a>
           <a href="${this.basePath}pages/register.html">
             <i class="fas fa-user-plus"></i>

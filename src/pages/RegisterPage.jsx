@@ -75,29 +75,24 @@ const RegisterPage = () => {
   // خطوات النموذج
   const steps = [
     {
-      title: 'معلومات الهوية',
+      title: 'الهوية',
       icon: <IdcardOutlined />,
-      description: 'رقم بطاقة التعريف'
     },
     {
-      title: 'البيانات الشخصية',
+      title: 'البيانات',
       icon: <UserOutlined />,
-      description: 'الاسم والتاريخ'
     },
     {
-      title: 'المعلومات العائلية',
+      title: 'العائلة',
       icon: <TeamOutlined />,
-      description: 'العائلة والمهنة'
     },
     {
-      title: 'العنوان والموقع',
+      title: 'الموقع',
       icon: <EnvironmentOutlined />,
-      description: 'الولاية والمنطقة'
     },
     {
-      title: 'التعليم والشهائد',
+      title: 'التعليم',
       icon: <SafetyCertificateOutlined />,
-      description: 'المستوى التعليمي'
     }
   ];
 
@@ -184,6 +179,8 @@ const RegisterPage = () => {
 
   // محتوى كل خطوة
   const renderStepContent = () => {
+    const formItemStyle = { marginBottom: 16 };
+    
     switch (currentStep) {
       case 0:
         return (
@@ -195,8 +192,9 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 { pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="12345678" maxLength={8} />
+              <Input placeholder="12345678" maxLength={8} size="large" />
             </Form.Item>
 
             <Form.Item
@@ -206,8 +204,9 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 { validator: validateIssueDate }
               ]}
+              style={formItemStyle}
             >
-              <DatePicker style={{ width: '100%' }} placeholder="اختر التاريخ" />
+              <DatePicker style={{ width: '100%' }} placeholder="اختر التاريخ" size="large" />
             </Form.Item>
 
             <Form.Item
@@ -217,8 +216,9 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 { pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="12345678" maxLength={8} />
+              <Input placeholder="12345678" maxLength={8} size="large" />
             </Form.Item>
           </>
         );
@@ -234,8 +234,9 @@ const RegisterPage = () => {
                 arabicOnlyRule,
                 { min: 2, message: 'يجب أن يحتوي على حرفين على الأقل' }
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="محمد" />
+              <Input placeholder="محمد" size="large" />
             </Form.Item>
 
             <Form.Item
@@ -246,8 +247,9 @@ const RegisterPage = () => {
                 arabicOnlyRule,
                 { min: 2, message: 'يجب أن يحتوي على حرفين على الأقل' }
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="بن علي" />
+              <Input placeholder="بن علي" size="large" />
             </Form.Item>
 
             <Form.Item
@@ -257,16 +259,18 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 { validator: validateAge }
               ]}
+              style={formItemStyle}
             >
-              <DatePicker style={{ width: '100%' }} placeholder="اختر التاريخ" />
+              <DatePicker style={{ width: '100%' }} placeholder="اختر التاريخ" size="large" />
             </Form.Item>
 
             <Form.Item
               name="gender"
               label="الجنس"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
-              <Select placeholder="اختر الجنس">
+              <Select placeholder="اختر الجنس" size="large">
                 <Option value="male">ذكر</Option>
                 <Option value="female">أنثى</Option>
               </Select>
@@ -284,8 +288,9 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 arabicOnlyRule
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="علي" />
+              <Input placeholder="علي" size="large" />
             </Form.Item>
 
             <Form.Item
@@ -295,8 +300,9 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 arabicOnlyRule
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="أحمد" />
+              <Input placeholder="أحمد" size="large" />
             </Form.Item>
 
             <Form.Item
@@ -306,8 +312,9 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 arabicOnlyRule
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="فاطمة" />
+              <Input placeholder="فاطمة" size="large" />
             </Form.Item>
 
             <Form.Item
@@ -317,16 +324,18 @@ const RegisterPage = () => {
                 { required: true, message: 'هذا الحقل مطلوب' },
                 arabicOnlyRule
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="السالمي" />
+              <Input placeholder="السالمي" size="large" />
             </Form.Item>
 
             <Form.Item
               name="maritalstatus"
               label="الحالة العائلية"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
-              <Select placeholder="اختر الحالة العائلية">
+              <Select placeholder="اختر الحالة العائلية" size="large">
                 <Option value="single">أعزب</Option>
                 <Option value="married">متزوج</Option>
                 <Option value="divorced">مطلق</Option>
@@ -338,26 +347,29 @@ const RegisterPage = () => {
               name="children"
               label="عدد الأبناء"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
-              <InputNumber min={0} max={20} style={{ width: '100%' }} />
+              <InputNumber min={0} max={20} style={{ width: '100%' }} size="large" />
             </Form.Item>
 
             <Form.Item
               name="profession"
               label="المهنة"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
-              <Input placeholder="مهندس" />
+              <Input placeholder="مهندس" size="large" />
             </Form.Item>
 
             <Form.Item
               name="fatherphone"
               label="رقم هاتف الأب"
               rules={[
-                { pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
+                {required:true, pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
               ]}
+              style={formItemStyle}
             >
-              <Input placeholder="12345678" maxLength={8} />
+              <Input placeholder="12345678" maxLength={8} size="large" />
             </Form.Item>
           </>
         );
@@ -369,12 +381,14 @@ const RegisterPage = () => {
               name="governorate"
               label="الولاية"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
               <Select
                 placeholder="اختر الولاية"
                 onChange={handleGovernorateChange}
                 showSearch
                 optionFilterProp="children"
+                size="large"
               >
                 {governorates.map(gov => (
                   <Option key={gov.value} value={gov.value}>{gov.label}</Option>
@@ -385,10 +399,12 @@ const RegisterPage = () => {
             <Form.Item
               name="region"
               label="المنطقة"
+              style={formItemStyle}
             >
               <Select
                 placeholder={selectedGovernorate === 'ben_arous' ? 'اختر المنطقة (اختياري)' : 'لا توجد مناطق لهذه الولاية'}
                 disabled={selectedGovernorate !== 'ben_arous'}
+                size="large"
               >
                 {availableRegions.map(region => (
                   <Option key={region} value={region}>{region}</Option>
@@ -400,8 +416,9 @@ const RegisterPage = () => {
               name="address"
               label="العنوان الشخصي"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
-              <Input.TextArea rows={3} placeholder="أدخل العنوان الكامل" />
+              <Input.TextArea rows={3} placeholder="أدخل العنوان الكامل" size="large" />
             </Form.Item>
           </>
         );
@@ -413,8 +430,9 @@ const RegisterPage = () => {
               name="educationlevel"
               label="المستوى التعليمي"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
-              <Select placeholder="اختر المستوى التعليمي">
+              <Select placeholder="اختر المستوى التعليمي" size="large">
                 <Option value="primary">ابتدائي</Option>
                 <Option value="secondary">إعدادي</Option>
                 <Option value="highschool">ثانوي</Option>
@@ -427,8 +445,9 @@ const RegisterPage = () => {
               name="supportingdocument"
               label="شهائد الإثبات"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              style={formItemStyle}
             >
-              <Select placeholder="اختر نوع الشهادة">
+              <Select placeholder="اختر نوع الشهادة" size="large">
                 <Option value="attendance-grades">شهادة حضور وبطاقة الأعداد الأخيرة للسنة المنقضية</Option>
                 <Option value="baccalaureate">شهادة البكالوريا</Option>
                 <Option value="university">شهادة تعليم جامعي</Option>
@@ -444,11 +463,27 @@ const RegisterPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: 900, margin: '40px auto', padding: '0 20px', direction: 'rtl' }}>
+    <div style={{ 
+      maxWidth: 900, 
+      margin: '0 auto', 
+      padding: '16px', 
+      direction: 'rtl',
+      minHeight: '100vh'
+    }}>
       {/* العنوان */}
-      <Card style={{ marginBottom: 30, textAlign: 'center' }}>
-        <Title level={2}>تسجيل في تطوع</Title>
-        <Text type="secondary">
+      <Card 
+        style={{ 
+          marginBottom: 16, 
+          textAlign: 'center',
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+        }}
+        bodyStyle={{ padding: '20px 16px' }}
+      >
+        <Title level={2} style={{ marginBottom: 8, fontSize: 'clamp(20px, 5vw, 28px)' }}>
+          تسجيل في تطوع
+        </Title>
+        <Text type="secondary" style={{ fontSize: 'clamp(12px, 3.5vw, 14px)', display: 'block', lineHeight: 1.6 }}>
           انضم إلى جمعية متطوعون في خدمة الحماية المدنية بن عروس وكن جزءاً من فريق يخدم المجتمع
         </Text>
       </Card>
@@ -460,16 +495,40 @@ const RegisterPage = () => {
         type="warning"
         icon={<ExclamationCircleOutlined />}
         showIcon
-        style={{ marginBottom: 30 }}
+        style={{ 
+          marginBottom: 16,
+          borderRadius: '8px',
+          fontSize: 'clamp(12px, 3.5vw, 14px)'
+        }}
       />
 
       {/* مؤشر الخطوات */}
-      <Card style={{ marginBottom: 30 }}>
-        <Steps current={currentStep} items={steps} />
+      <Card 
+        style={{ 
+          marginBottom: 16,
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+        }}
+        bodyStyle={{ padding: '20px 12px' }}
+      >
+        <Steps 
+          current={currentStep} 
+          items={steps}
+          responsive={false}
+          size="small"
+          labelPlacement="vertical"
+        />
       </Card>
 
       {/* النموذج */}
-      <Card>
+      <Card
+        style={{
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          marginBottom: 16
+        }}
+        bodyStyle={{ padding: '20px 16px' }}
+      >
         <Form
           form={form}
           layout="vertical"
@@ -479,26 +538,47 @@ const RegisterPage = () => {
           {renderStepContent()}
 
           {/* أزرار التنقل */}
-          <div style={{ marginTop: 40, display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #f0f0f0', paddingTop: 20 }}>
+          <div style={{ 
+            marginTop: 24, 
+            display: 'flex', 
+            gap: '12px',
+            justifyContent: 'space-between',
+            borderTop: '1px solid #f0f0f0', 
+            paddingTop: 20,
+            flexWrap: 'wrap'
+          }}>
             {currentStep > 0 && (
-              <Button onClick={prev} icon={<ArrowRightOutlined />}>
+              <Button 
+                onClick={prev} 
+                icon={<ArrowRightOutlined />}
+                size="large"
+                style={{ flex: '1 1 auto', minWidth: '120px' }}
+              >
                 السابق
               </Button>
             )}
             
-            <div style={{ marginRight: 'auto' }}>
-              {currentStep < steps.length - 1 && (
-                <Button type="primary" onClick={next} icon={<ArrowLeftOutlined />}>
-                  التالي
-                </Button>
-              )}
-              
-              {currentStep === steps.length - 1 && (
-                <Button type="primary" htmlType="submit" icon={<SendOutlined />}>
-                  تسجيل
-                </Button>
-              )}
-            </div>
+            {currentStep < steps.length - 1 ? (
+              <Button 
+                type="primary" 
+                onClick={next} 
+                icon={<ArrowLeftOutlined />}
+                size="large"
+                style={{ flex: '1 1 auto', minWidth: '120px', marginRight: currentStep === 0 ? 'auto' : 0 }}
+              >
+                التالي
+              </Button>
+            ) : (
+              <Button 
+                type="primary" 
+                htmlType="submit" 
+                icon={<SendOutlined />}
+                size="large"
+                style={{ flex: '1 1 auto', minWidth: '120px' }}
+              >
+                تسجيل
+              </Button>
+            )}
           </div>
         </Form>
       </Card>

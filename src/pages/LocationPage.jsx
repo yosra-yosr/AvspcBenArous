@@ -34,11 +34,11 @@ const LocationPage = () => {
       title: 'للاتصال بنا',
       description: (
         <div style={{ lineHeight: '2' }}>
-          <div style={{ marginBottom: '8px' }} >
-            <strong>هاتف:</strong><a href="tel:+21671456123" dir="ltr" class="phone-number">+216 71 456 123</a> 
+          <div style={{ marginBottom: '8px' }}>
+            <strong>هاتف:</strong> <a href="tel:+21671456123" dir="ltr" className="phone-number">+216 71 456 123</a>
           </div>
-          <div>
-<strong>الفاكس:</strong> <a href="tel:+21624372697" dir="ltr" class="phone-number">+216 71 457 123</a>
+          <div style={{ marginBottom: '8px' }}>
+            <strong>الفاكس:</strong> <a href="tel:+21624372697" dir="ltr" className="phone-number">+216 71 457 123</a>
           </div>
           <div>
             <strong>البريد الإلكتروني:</strong> info@avspc-benarrous.tn
@@ -104,7 +104,7 @@ const LocationPage = () => {
             margin: '0 auto',
             lineHeight: '1.7'
           }}>
-         نحن متواجدون في قلب المدينة لخدمتكم على أفضل وجه
+            نحن متواجدون في قلب المدينة لخدمتكم على أفضل وجه
           </p>
         </div>
 
@@ -251,15 +251,14 @@ const LocationPage = () => {
               }}>
                 {card.title}
               </h3>
-              <p style={{
+              <div style={{
                 color: '#4a5568',
                 lineHeight: '1.7',
                 fontSize: '1rem',
-                textAlign: 'center',
-                margin: 0
+                textAlign: 'center'
               }}>
                 {card.description}
-              </p>
+              </div>
             </div>
           ))}
         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Menu, Button, Drawer } from 'antd';
+import { Menu, Button, Drawer, Typography } from 'antd';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   HomeOutlined,
   InfoCircleOutlined,
@@ -11,13 +12,21 @@ import {
   MenuOutlined,
   EnvironmentOutlined,
 } from '@ant-design/icons';
-import { Typography } from 'antd';
 
 const { Text } = Typography;
 
-const Header = ({ current, onNavigate, isMobile }) => {
+const Header = ({ isMobile }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Détermine la page actuelle basée sur l'URL
+  const getCurrentKey = () => {
+    const path = location.pathname;
+    if (path === '/') return 'home';
+    return path.substring(1); // Enlève le "/" au début
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,14 +42,13 @@ const Header = ({ current, onNavigate, isMobile }) => {
     { key: 'gallery', icon: <PictureOutlined />, label: 'معرض الصور' },
     { key: 'results', icon: <EyeOutlined />, label: 'النتائج' },
     { key: 'location', icon: <EnvironmentOutlined />, label: 'الموقع' },
-    { key: 'contact', icon: <PhoneOutlined />, label: 'اتصل بنا' }
+    { key: 'contact', icon: <PhoneOutlined />, label: 'اتصل بنا' },
   ];
 
   const handleMenuClick = (e) => {
- 
-      onNavigate(e.key);
-
-    // setDrawerVisible(false);
+    const path = e.key === 'home' ? '/' : `/${e.key}`;
+    navigate(path);
+    setDrawerVisible(false);
   };
 
   return (
@@ -72,12 +80,12 @@ const Header = ({ current, onNavigate, isMobile }) => {
         justifyContent: isMobile ? 'center' : 'flex-start'
       }}>
         <img 
-          src="assets/images/شعار.png" 
+          src="/assets/images/شعار.png" 
           alt="شعار" 
           style={{ height: isMobile ? '40px' : '60px', borderRadius: '20%' }}
         />
         <img 
-          src="assets/images/images (1).png" 
+          src="/assets/images/images (1).png" 
           alt="علم" 
           style={{ height: isMobile ? '25px' : '30px', borderRadius: '20%' }}
         />
@@ -98,7 +106,7 @@ const Header = ({ current, onNavigate, isMobile }) => {
       {!isMobile && (
         <Menu
           mode="horizontal"
-          selectedKeys={[current]}
+          selectedKeys={[getCurrentKey()]}
           onClick={handleMenuClick}
           style={{
             flex: 1,
@@ -116,28 +124,25 @@ const Header = ({ current, onNavigate, isMobile }) => {
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         {!isMobile ? (
           <>
-            <Button
-              type="default"
-              icon={<UserOutlined />}
-              href="https://forms.office.com/r/0c9EtvtE4r"
-              target="_blank"
-            >
-              تسجيل الدخول
-            </Button>
-            <Button
-              type="primary"
-              icon={<UserAddOutlined />}
-              href="https://forms.office.com/r/0c9EtvtE4r"
-              target="_blank"
-              style={{
-                background: 'linear-gradient(135deg, #ff6b35, #ff8c42)',
-                border: 'none',
-                fontWeight: 600,
-                boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)'
-              }}
-            >
-              انضم كمتطوع
-            </Button>
+            <Link to="/login">
+              <Button type="default" icon={<UserOutlined />}>
+                تسجيل الدخول
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button
+                type="primary"
+                icon={<UserAddOutlined />}
+                style={{
+                  background: 'linear-gradient(135deg, #ff6b35, #ff8c42)',
+                  border: 'none',
+                  fontWeight: 600,
+                  boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)'
+                }}
+              >
+                انضم كمتطوع
+              </Button>
+            </Link>
           </>
         ) : (
           <Button
@@ -158,7 +163,7 @@ const Header = ({ current, onNavigate, isMobile }) => {
       >
         <Menu
           mode="vertical"
-          selectedKeys={[current]}
+          selectedKeys={[getCurrentKey()]}
           onClick={handleMenuClick}
           style={{ border: 'none' }}
           items={menuItems}
@@ -170,24 +175,16 @@ const Header = ({ current, onNavigate, isMobile }) => {
           flexDirection: 'column', 
           gap: '12px' 
         }}>
-          <Button
-            block
-            type="default"
-            icon={<UserOutlined />}
-            href="https://forms.office.com/r/0c9EtvtE4r"
-            target="_blank"
-          >
-            تسجيل الدخول
-          </Button>
-          <Button
-            block
-            type="primary"
-            icon={<UserAddOutlined />}
-            href="https://forms.office.com/r/0c9EtvtE4r"
-            target="_blank"
-          >
-            انضم كمتطوع
-          </Button>
+          <Link to="/login"  onClick={handleMenuClick}>
+            <Button block type="default" icon={<UserOutlined />}>
+              تسجيل الدخول
+            </Button>
+          </Link>
+          <Link to="/register"  onClick={handleMenuClick}>
+            <Button block type="primary" icon={<UserAddOutlined />}>
+              انضم كمتطوع
+            </Button>
+          </Link>
         </div>
       </Drawer>
     </header>

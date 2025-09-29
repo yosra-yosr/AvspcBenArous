@@ -494,7 +494,14 @@
             <h1>تسجيل في تطوع</h1>
             <p>انضم إلى جمعية متطوعون في خدمة الحماية المدنية بن عروس وكن جزءاً من فريق يخدم المجتمع</p>
         </div>
-
+<div class="warning-banner">
+    <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <div class="warning-content">
+        <h3>تنبيه هام</h3>
+        <p>يرجى التحقق من صحة المعلومات المدخلة لأن أي خطأ في البيانات سيؤدي إلى رفض الملف تلقائياً.</p>
+    </div>
         <!-- Step Progress Indicator -->
         <div class="step-indicator">
             <div class="step active" data-step="1">
@@ -1255,6 +1262,28 @@
                     field.addEventListener('change', () => validateField(field));
                 }
             });
+             const arabicFields = ['firstName', 'lastName', 'fatherName', 'grandFatherName', 
+                     'motherFirstName', 'motherLastName', 'profession'];
+    
+        arabicFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+                if (field) {
+            field.addEventListener('input', function(e) {
+            // Remplacer les caractères non-arabes par une chaîne vide
+            this.value = this.value.replace(/[^\u0600-\u06FF\s]/g, '');
+        });
+        
+        field.addEventListener('keypress', function(e) {
+            // Empêcher la saisie de caractères non-arabes
+            const char = String.fromCharCode(e.keyCode || e.which);
+            if (!/[\u0600-\u06FF\s]/.test(char) && e.keyCode !== 8 && e.keyCode !== 32) {
+                e.preventDefault();
+                showNotification('يسمح فقط بالأحرف العربية', 'error');
+            }
+        });
+    }
+        
+});
         }
 
         // التحقق من النموذج عند الإرسال

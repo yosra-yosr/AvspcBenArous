@@ -4,7 +4,7 @@ import { ConfigProvider } from 'antd';
 import arEG from 'antd/locale/ar_EG';
 import App from './App';
 import './styles/global.css';
-
+import 'antd/dist/reset.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

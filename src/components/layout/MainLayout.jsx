@@ -1,26 +1,27 @@
-import { Layout } from 'antd';
+import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 
-const { Content } = Layout;
-
-const MainLayout = ({ children, currentPage, onNavigate, isMobile }) => {
+const MainLayout = ({ children, isMobile }) => {
   return (
-    <Layout style={{ minHeight: '100vh', direction: 'rtl' }}>
-      <Header 
-        current={currentPage} 
-        onNavigate={onNavigate} 
-        isMobile={isMobile} 
-      />
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column',
+      background: '#f5f7fa',
+      direction:'rtl',
+    }}>
+      <Header isMobile={isMobile} />
       
-      <Content style={{ 
-        background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)' 
+      <main style={{ 
+        flex: 1,
+        paddingTop: isMobile ? '60px' : '70px'
       }}>
         {children}
-      </Content>
-
+      </main>
+      
       <Footer />
-    </Layout>
+    </div>
   );
 };
 

@@ -37,12 +37,10 @@ const Header = ({ current, onNavigate, isMobile }) => {
   ];
 
   const handleMenuClick = (e) => {
-    if (e.key === 'location') {
-      window.open('https://maps.app.goo.gl/PqiA7zasEwRNsPk87', '_blank');
-    } else {
+ 
       onNavigate(e.key);
-    }
-    setDrawerVisible(false);
+
+    // setDrawerVisible(false);
   };
 
   return (

@@ -8,7 +8,6 @@ import ResultsPage from './pages/ResultsPage';
 import ContactPage from './pages/ContactPage';
 import LocationPage from './pages/LocationPage';
 import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
 
 const App = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -30,7 +29,6 @@ const App = () => {
           <Route path="/location" element={<LocationPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </MainLayout>
     </Router>

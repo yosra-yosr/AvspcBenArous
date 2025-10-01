@@ -40,7 +40,6 @@ const Header = ({ isMobile }) => {
     { key: 'home', icon: <HomeOutlined />, label: 'الرئيسية' },
     { key: 'goals', icon: <InfoCircleOutlined />, label: 'أهداف الجمعية' },
     { key: 'gallery', icon: <PictureOutlined />, label: 'معرض الصور' },
-    { key: 'results', icon: <EyeOutlined />, label: 'النتائج' },
     { key: 'location', icon: <EnvironmentOutlined />, label: 'الموقع' },
     { key: 'contact', icon: <PhoneOutlined />, label: 'اتصل بنا' },
   ];
@@ -124,9 +123,9 @@ const Header = ({ isMobile }) => {
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         {!isMobile ? (
           <>
-            <Link to="/login">
-              <Button type="default" icon={<UserOutlined />}>
-                تسجيل الدخول
+            <Link to="/results">
+              <Button type="default" icon={<EyeOutlined />}>
+               الإطلاع على النتائج
               </Button>
             </Link>
             <Link to="/register">
@@ -175,9 +174,9 @@ const Header = ({ isMobile }) => {
           flexDirection: 'column', 
           gap: '12px' 
         }}>
-          <Link to="/login"  onClick={handleMenuClick}>
-            <Button block type="default" icon={<UserOutlined />}>
-              تسجيل الدخول
+          <Link to="/results"  onClick={handleMenuClick}>
+            <Button block type="default" icon={<EyeOutlined />}>
+              الإطلاع على النتائج
             </Button>
           </Link>
           <Link to="/register"  onClick={handleMenuClick}>

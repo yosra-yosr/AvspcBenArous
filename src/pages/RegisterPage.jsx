@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/RegisterPage.jsx
+import React, { useState } from 'react';
 import {
   Form,
   Input,
@@ -10,8 +11,8 @@ import {
   Card,
   Typography,
   message,
-  Space,
-  Alert
+  Alert,
+  Spin
 } from 'antd';
 import {
   IdcardOutlined,
@@ -22,10 +23,12 @@ import {
   ArrowRightOutlined,
   ArrowLeftOutlined,
   SendOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
+  CheckCircleOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ar';
+import volunteerApi from '../services/volunteerApi';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -71,29 +74,17 @@ const RegisterPage = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [availableRegions, setAvailableRegions] = useState([]);
   const [selectedGovernorate, setSelectedGovernorate] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [formData, setFormData] = useState({}); // ⭐ Nouveau: stockage des données
 
   // خطوات النموذج
   const steps = [
-    {
-      title: 'الهوية',
-      icon: <IdcardOutlined />,
-    },
-    {
-      title: 'البيانات',
-      icon: <UserOutlined />,
-    },
-    {
-      title: 'العائلة',
-      icon: <TeamOutlined />,
-    },
-    {
-      title: 'الموقع',
-      icon: <EnvironmentOutlined />,
-    },
-    {
-      title: 'التعليم',
-      icon: <SafetyCertificateOutlined />,
-    }
+    { title: 'الهوية', icon: <IdcardOutlined /> },
+    { title: 'البيانات', icon: <UserOutlined /> },
+    { title: 'العائلة', icon: <TeamOutlined /> },
+    { title: 'الموقع', icon: <EnvironmentOutlined /> },
+    { title: 'التعليم', icon: <SafetyCertificateOutlined /> }
   ];
 
   // التحقق من الأحرف العربية فقط
@@ -104,27 +95,17 @@ const RegisterPage = () => {
 
   // التحقق من العمر
   const validateAge = (_, value) => {
-    if (!value) {
-      return Promise.reject('يرجى إدخال تاريخ الولادة');
-    }
+    if (!value) return Promise.reject('يرجى إدخال تاريخ الولادة');
     const age = dayjs().diff(value, 'year');
-    if (age < 18) {
-      return Promise.reject('يجب أن يكون العمر 18 سنة على الأقل');
-    }
-    if (age > 50) {
-      return Promise.reject('الحد الأقصى للعمر هو 50 سنة');
-    }
+    if (age < 18) return Promise.reject('يجب أن يكون العمر 18 سنة على الأقل');
+    if (age > 50) return Promise.reject('الحد الأقصى للعمر هو 50 سنة');
     return Promise.resolve();
   };
 
   // التحقق من تاريخ الإصدار
   const validateIssueDate = (_, value) => {
-    if (!value) {
-      return Promise.reject('يرجى إدخال تاريخ الإصدار');
-    }
-    if (value.isAfter(dayjs())) {
-      return Promise.reject('تاريخ الإصدار لا يمكن أن يكون في المستقبل');
-    }
+    if (!value) return Promise.reject('يرجى إدخال تاريخ الإصدار');
+    if (value.isAfter(dayjs())) return Promise.reject('تاريخ الإصدار لا يمكن أن يكون في المستقبل');
     return Promise.resolve();
   };
 
@@ -146,6 +127,11 @@ const RegisterPage = () => {
     try {
       const fieldsToValidate = getFieldsForStep(currentStep);
       await form.validateFields(fieldsToValidate);
+      
+      // ⭐ Sauvegarder les valeurs de l'étape actuelle
+      const currentValues = form.getFieldsValue(fieldsToValidate);
+      setFormData(prev => ({ ...prev, ...currentValues }));
+      
       setCurrentStep(currentStep + 1);
       message.success(`تم الانتقال إلى الخطوة ${currentStep + 2}`);
     } catch (error) {
@@ -163,18 +149,126 @@ const RegisterPage = () => {
     const fieldsMap = {
       0: ['idNumber', 'idIssueDate', 'phone'],
       1: ['firstName', 'lastName', 'birthDate', 'gender'],
-      2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession'],
+      2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession', 'fatherphone'],
       3: ['governorate', 'address'],
       4: ['educationlevel', 'supportingdocument']
     };
     return fieldsMap[step] || [];
   };
 
+  // تنسيق البيانات قبل الإرسال
+  const formatDataForAPI = (values) => {
+    // Trouver le label en arabe pour le governorate
+    const governorateLabel = governorates.find(g => g.value === values.governorate)?.label || values.governorate;
+    
+    return {
+      idNumber: values.idNumber,
+      idIssueDate: values.idIssueDate ? values.idIssueDate.format('YYYY-MM-DD') : null,
+      phone: values.phone,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      birthDate: values.birthDate ? values.birthDate.format('YYYY-MM-DD') : null,
+      gender: values.gender,
+      fatherName: values.fatherName,
+      grandFatherName: values.grandFatherName,
+      motherFirstName: values.motherFirstName,
+      motherLastName: values.motherLastName,
+      maritalstatus: values.maritalstatus,
+      children: Number(values.children) || 0,
+      profession: values.profession,
+      fatherphone: values.fatherphone,
+      governorate: governorateLabel,
+      region: values.region || null,
+      address: values.address,
+      educationlevel: values.educationlevel,
+      supportingdocument: values.supportingdocument
+    };
+  };
+
   // إرسال النموذج
-  const onFinish = (values) => {
-    console.log('Form values:', values);
-    message.success('تم إرسال النموذج بنجاح! سيتم التواصل معك قريباً');
-    // هنا يمكنك إرسال البيانات إلى الخادم
+  const onFinish = async (values) => {
+    setLoading(true);
+    
+    try {
+      // ⭐ Fusionner toutes les données des étapes précédentes avec l'étape finale
+      const allValues = { ...formData, ...values };
+      
+      // Log des valeurs complètes du formulaire
+      console.log('Valeurs complètes du formulaire:', allValues);
+      
+      const formattedData = formatDataForAPI(allValues);
+      
+      // Log des données formatées
+      console.log('Données formatées pour envoi:', formattedData);
+      
+      const response = await volunteerApi.create(formattedData);
+
+      if (response.success) {
+        setSubmitSuccess(true);
+        message.success({
+          content: response.message || 'تم تسجيل المتطوع بنجاح',
+          duration: 5,
+          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
+        });
+        
+        // إعادة تعيين النموذج بعد 3 ثواني
+        setTimeout(() => {
+          form.resetFields();
+          setCurrentStep(0);
+          setSubmitSuccess(false);
+          setSelectedGovernorate('');
+          setAvailableRegions([]);
+          setFormData({}); // ⭐ Réinitialiser les données stockées
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      console.error('Error response:', error.response?.data);
+      
+      if (error.response) {
+        const errorData = error.response.data;
+        const errorMessage = errorData.message;
+        
+        // Afficher les erreurs de validation détaillées
+        if (errorData.errors && Array.isArray(errorData.errors)) {
+          console.error('Erreurs de validation:', errorData.errors);
+          
+          // Afficher les 3 premières erreurs
+          const errorMessages = errorData.errors.slice(0, 3).map(err => err.msg || err.message).join('\n');
+          message.error({
+            content: `خطأ في التحقق:\n${errorMessages}`,
+            duration: 7
+          });
+        } else if (error.response.status === 409) {
+          message.error({
+            content: errorMessage || 'البيانات مسجلة مسبقاً',
+            duration: 5
+          });
+        } else if (error.response.status === 400) {
+          message.error({
+            content: errorMessage || 'بيانات غير صالحة، يرجى التحقق من المعلومات',
+            duration: 5
+          });
+        } else {
+          message.error({
+            content: 'حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى',
+            duration: 5
+          });
+        }
+      } else if (error.request) {
+        message.error({
+          content: 'لا يمكن الاتصال بالخادم، يرجى التحقق من الاتصال بالإنترنت',
+          duration: 5
+        });
+      } else {
+        message.error({
+          content: 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى',
+          duration: 5
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   // محتوى كل خطوة
@@ -284,10 +378,7 @@ const RegisterPage = () => {
             <Form.Item
               name="fatherName"
               label="اسم الأب"
-              rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                arabicOnlyRule
-              ]}
+              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
               style={formItemStyle}
             >
               <Input placeholder="علي" size="large" />
@@ -296,10 +387,7 @@ const RegisterPage = () => {
             <Form.Item
               name="grandFatherName"
               label="اسم الجد"
-              rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                arabicOnlyRule
-              ]}
+              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
               style={formItemStyle}
             >
               <Input placeholder="أحمد" size="large" />
@@ -308,10 +396,7 @@ const RegisterPage = () => {
             <Form.Item
               name="motherFirstName"
               label="اسم الأم"
-              rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                arabicOnlyRule
-              ]}
+              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
               style={formItemStyle}
             >
               <Input placeholder="فاطمة" size="large" />
@@ -320,10 +405,7 @@ const RegisterPage = () => {
             <Form.Item
               name="motherLastName"
               label="لقب الأم"
-              rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                arabicOnlyRule
-              ]}
+              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
               style={formItemStyle}
             >
               <Input placeholder="السالمي" size="large" />
@@ -365,7 +447,8 @@ const RegisterPage = () => {
               name="fatherphone"
               label="رقم هاتف الأب"
               rules={[
-                {required:true, pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
+                { required: true, message: 'هذا الحقل مطلوب' },
+                { pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
               ]}
               style={formItemStyle}
             >
@@ -396,11 +479,7 @@ const RegisterPage = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item
-              name="region"
-              label="المنطقة"
-              style={formItemStyle}
-            >
+            <Form.Item name="region" label="المنطقة" style={formItemStyle}>
               <Select
                 placeholder={selectedGovernorate === 'ben_arous' ? 'اختر المنطقة (اختياري)' : 'لا توجد مناطق لهذه الولاية'}
                 disabled={selectedGovernorate !== 'ben_arous'}
@@ -462,6 +541,37 @@ const RegisterPage = () => {
     }
   };
 
+  // Affichage de succès
+  if (submitSuccess) {
+    return (
+      <div style={{ 
+        maxWidth: 900, 
+        margin: '0 auto', 
+        padding: '16px', 
+        direction: 'rtl',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <Card
+          style={{
+            textAlign: 'center',
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          }}
+          bodyStyle={{ padding: '40px' }}
+        >
+          <CheckCircleOutlined style={{ fontSize: 64, color: '#52c41a', marginBottom: 24 }} />
+          <Title level={2}>تم التسجيل بنجاح!</Title>
+          <Text type="secondary" style={{ fontSize: 16, display: 'block', marginTop: 16 }}>
+            شكراً لتسجيلك. سيتم مراجعة طلبك والتواصل معك قريباً.
+          </Text>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div style={{ 
       maxWidth: 900, 
@@ -470,7 +580,6 @@ const RegisterPage = () => {
       direction: 'rtl',
       minHeight: '100vh'
     }}>
-      {/* العنوان */}
       <Card 
         style={{ 
           marginBottom: 16, 
@@ -488,7 +597,6 @@ const RegisterPage = () => {
         </Text>
       </Card>
 
-      {/* تنبيه هام */}
       <Alert
         message="تنبيه هام"
         description="يرجى التحقق من صحة المعلومات المدخلة لأن أي خطأ في البيانات سيؤدي إلى رفض الملف تلقائياً."
@@ -502,7 +610,6 @@ const RegisterPage = () => {
         }}
       />
 
-      {/* مؤشر الخطوات */}
       <Card 
         style={{ 
           marginBottom: 16,
@@ -520,7 +627,6 @@ const RegisterPage = () => {
         />
       </Card>
 
-      {/* النموذج */}
       <Card
         style={{
           borderRadius: '12px',
@@ -529,58 +635,62 @@ const RegisterPage = () => {
         }}
         bodyStyle={{ padding: '20px 16px' }}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          scrollToFirstError
-        >
-          {renderStepContent()}
+        <Spin spinning={loading} tip="جاري التسجيل...">
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            scrollToFirstError
+          >
+            {renderStepContent()}
 
-          {/* أزرار التنقل */}
-          <div style={{ 
-            marginTop: 24, 
-            display: 'flex', 
-            gap: '12px',
-            justifyContent: 'space-between',
-            borderTop: '1px solid #f0f0f0', 
-            paddingTop: 20,
-            flexWrap: 'wrap'
-          }}>
-            {currentStep > 0 && (
-              <Button 
-                onClick={prev} 
-                icon={<ArrowRightOutlined />}
-                size="large"
-                style={{ flex: '1 1 auto', minWidth: '120px' }}
-              >
-                السابق
-              </Button>
-            )}
-            
-            {currentStep < steps.length - 1 ? (
-              <Button 
-                type="primary" 
-                onClick={next} 
-                icon={<ArrowLeftOutlined />}
-                size="large"
-                style={{ flex: '1 1 auto', minWidth: '120px', marginRight: currentStep === 0 ? 'auto' : 0 }}
-              >
-                التالي
-              </Button>
-            ) : (
-              <Button 
-                type="primary" 
-                htmlType="submit" 
-                icon={<SendOutlined />}
-                size="large"
-                style={{ flex: '1 1 auto', minWidth: '120px' }}
-              >
-                تسجيل
-              </Button>
-            )}
-          </div>
-        </Form>
+            <div style={{ 
+              marginTop: 24, 
+              display: 'flex', 
+              gap: '12px',
+              justifyContent: 'space-between',
+              borderTop: '1px solid #f0f0f0', 
+              paddingTop: 20,
+              flexWrap: 'wrap'
+            }}>
+              {currentStep > 0 && (
+                <Button 
+                  onClick={prev} 
+                  icon={<ArrowRightOutlined />}
+                  size="large"
+                  disabled={loading}
+                  style={{ flex: '1 1 auto', minWidth: '120px' }}
+                >
+                  السابق
+                </Button>
+              )}
+              
+              {currentStep < steps.length - 1 ? (
+                <Button 
+                  type="primary" 
+                  onClick={next} 
+                  icon={<ArrowLeftOutlined />}
+                  size="large"
+                  disabled={loading}
+                  style={{ flex: '1 1 auto', minWidth: '120px', marginRight: currentStep === 0 ? 'auto' : 0 }}
+                >
+                  التالي
+                </Button>
+              ) : (
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  icon={<SendOutlined />}
+                  size="large"
+                  loading={loading}
+                  style={{ flex: '1 1 auto', minWidth: '120px' }}
+                >
+                  تسجيل
+                </Button>
+              )}
+            </div>
+          </Form>
+        </Spin>
       </Card>
     </div>
   );

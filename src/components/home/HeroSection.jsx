@@ -1,7 +1,6 @@
-import React from 'react';
 import { Button, Typography } from 'antd';
 import { UserAddOutlined, InfoCircleOutlined } from '@ant-design/icons';
-
+import {Link} from 'react-router-dom';
 const { Title, Paragraph } = Typography;
 
 const HeroSection = () => {
@@ -45,12 +44,11 @@ const HeroSection = () => {
         </Paragraph>
 
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link to="/register">
           <Button
             type="primary"
             size="large"
             icon={<UserAddOutlined />}
-            href="https://forms.office.com/r/0c9EtvtE4r"
-            target="_blank"
             style={{
               background: 'linear-gradient(135deg, #ff6b35, #ff8c42)',
               border: 'none',
@@ -63,6 +61,8 @@ const HeroSection = () => {
           >
             انضم كمتطوع
           </Button>
+          </Link>
+          <Link to="/goals">
           <Button
             size="large"
             icon={<InfoCircleOutlined />}
@@ -79,6 +79,7 @@ const HeroSection = () => {
           >
             تعرف على أهدافنا
           </Button>
+          </Link>
         </div>
       </div>
     </div>

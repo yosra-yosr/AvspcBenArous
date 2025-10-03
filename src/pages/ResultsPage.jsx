@@ -3,7 +3,6 @@ import { Input, DatePicker, Button, Card, Typography, Alert, Spin } from 'antd';
 import { IdcardOutlined, CalendarOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import SchemaOrg from '../components/common/SchemaOrg';
-import { getResultsPageSchema, getBreadcrumbSchema } from '../utils/schemas';
 const { Title, Paragraph } = Typography;
 
 const ResultsPage = () => {
@@ -214,7 +213,6 @@ const ResultsPage = () => {
 
   return (
     <div style={{ minHeight: '70vh', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-       <SchemaOrg schema={getResultsPageSchema()} id="results-schema" />
       <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="results-breadcrumb" />
       
       <Card style={{ maxWidth: '500px', width: '100%', borderRadius: '15px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>

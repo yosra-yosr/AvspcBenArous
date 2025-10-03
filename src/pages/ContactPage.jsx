@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import { Card, Typography, Input } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-
+import { Card, Typography} from 'antd';
+import SchemaOrg from '../components/common/SchemaOrg';
+import { getContactPageSchema } from '../utils/schemas';
 const { Title } = Typography;
 
 const ContactPage = () => {
-  const [name, setName] = useState('');
 
   
 
   return (
     <div style={{ padding: '100px 20px 80px', maxWidth: '700px', margin: '0 auto' }}>
+      <SchemaOrg schema={getContactPageSchema()} id="contact-schema" />
       <Card
         style={{
           borderRadius: '12px',

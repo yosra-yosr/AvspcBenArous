@@ -1,10 +1,17 @@
 import { Card, Typography } from 'antd';
-
+import SchemaOrg from '../components/common/SchemaOrg';
+import { getBreadcrumbSchema } from '../utils/schemas';
 const { Title, Paragraph } = Typography;
 
 const GalleryPage = () => {
+   const breadcrumbs = [
+    { name: "Accueil", url: "https://votresite.com" },
+    { name: "Galerie", url: "https://votresite.com/gallery" }
+  ];
   return (
     <div style={{ padding: '100px 20px 80px', maxWidth: '900px', margin: '0 auto' }}>
+      <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="gallery-breadcrumb" />
+      
       <Card
         style={{
           borderRadius: '12px',

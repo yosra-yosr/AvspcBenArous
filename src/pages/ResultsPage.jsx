@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Input, DatePicker, Button, Card, Typography, Alert, Spin } from 'antd';
 import { IdcardOutlined, CalendarOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-
+import SchemaOrg from '../components/common/SchemaOrg';
+import { getResultsPageSchema, getBreadcrumbSchema } from '../utils/schemas';
 const { Title, Paragraph } = Typography;
 
 const ResultsPage = () => {
@@ -18,6 +19,10 @@ const ResultsPage = () => {
   const MAX_ATTEMPTS = 3;
   const BLOCK_DURATION = 900; // 15 minutes en secondes
 
+   const breadcrumbs = [
+    { name: "Accueil", url: "https://votresite.com" },
+    { name: "Résultats", url: "https://votresite.com/results" }
+  ];
   // Vérifier le blocage au chargement
   useEffect(() => {
     // Vérifier le blocage permanent
@@ -209,6 +214,9 @@ const ResultsPage = () => {
 
   return (
     <div style={{ minHeight: '70vh', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+       <SchemaOrg schema={getResultsPageSchema()} id="results-schema" />
+      <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="results-breadcrumb" />
+      
       <Card style={{ maxWidth: '500px', width: '100%', borderRadius: '15px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <Title level={2} style={{ color: '#1a202c', marginBottom: '10px' }}>

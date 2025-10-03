@@ -1,5 +1,5 @@
 // src/pages/RegisterPage.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Form,
   Input,
@@ -29,6 +29,8 @@ import {
 import dayjs from 'dayjs';
 import 'dayjs/locale/ar';
 import volunteerApi from '../services/volunteerApi';
+import SchemaOrg from '../components/common/SchemaOrg';
+import { getRegisterActionSchema, getBreadcrumbSchema } from '../utils/schemas';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -68,6 +70,12 @@ const governorates = [
   { value: 'tunis', label: 'تونس' },
   { value: 'zaghouan', label: 'زغوان' }
 ];
+
+ const breadcrumbs = [
+    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app/" },
+    { name: "Inscription", url: "https://inscription-avspcbenarous.netlify.app/register" }
+  ];
+
 
 const RegisterPage = () => {
   const [form] = Form.useForm();
@@ -580,6 +588,8 @@ const RegisterPage = () => {
       direction: 'rtl',
       minHeight: '100vh'
     }}>
+      <SchemaOrg schema={getRegisterActionSchema()} id="register-schema" />
+      <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="breadcrumb-schema" />
       <Card 
         style={{ 
           marginBottom: 16, 

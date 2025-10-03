@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Typography } from 'antd';
-
+import SchemaOrg from '../components/common/SchemaOrg';
+import { getBreadcrumbSchema } from '../utils/schemas';
 const { Title, Text } = Typography;
 
 const GoalsPage = () => {
@@ -11,9 +12,13 @@ const GoalsPage = () => {
     'نشر ثقافة التطوع للعموم وبخاصة لدى الشباب والطلبة.',
     'تنشئة الطفولة وفق المبادئ الأساسية للصحة والسلامة والوقاية.'
   ];
-
+const breadcrumbs = [
+    { name: "Accueil", url: "https://votresite.com" },
+    { name: "Conditions d'inscription", url: "https://votresite.com/goals" }
+  ];
   return (
     <div style={{ padding: '100px 20px 80px', maxWidth: '900px', margin: '0 auto' }}>
+      <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="goals-breadcrumb" />
       <Card
         style={{
           borderRadius: '12px',

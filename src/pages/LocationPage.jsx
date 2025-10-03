@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { LinkOutlined, CompassOutlined, ClockCircleOutlined, PhoneOutlined, CarOutlined } from '@ant-design/icons';
-
+import SchemaOrg from '../components/common/SchemaOrg';
+import { getBreadcrumbSchema } from '../utils/schemas';
 const LocationPage = () => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -53,6 +54,27 @@ const LocationPage = () => {
     }
   ];
 
+   const breadcrumbs = [
+    { name: "Accueil", url: "https://votresite.com" },
+    { name: "Localisation", url: "https://votresite.com/location" }
+  ];
+
+  const locationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Place",
+    "name": "Centre AVSPC Bénarous",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Benarous",
+      "addressRegion": "Ben Arous",
+      "addressCountry": "TN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "36.7446",
+      "longitude": "10.2306"
+    }
+  };
   return (
     <div style={{
       fontFamily: 'Cairo, sans-serif',
@@ -61,6 +83,9 @@ const LocationPage = () => {
       direction: 'rtl',
       padding: '20px'
     }}>
+      <SchemaOrg schema={locationSchema} id="location-schema" />
+      <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="location-breadcrumb" />
+      
       <section style={{
         background: '#ffffff',
         borderRadius: '12px',

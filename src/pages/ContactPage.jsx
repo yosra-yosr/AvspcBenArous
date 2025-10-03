@@ -1,25 +1,13 @@
 import React, { useState } from 'react';
-import { Card, Typography, Input, Button, message } from 'antd';
-import { MailOutlined, UserOutlined, MessageOutlined } from '@ant-design/icons';
+import { Card, Typography, Input } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
-const { TextArea } = Input;
 
 const ContactPage = () => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [messageText, setMessageText] = useState('');
 
-  const handleSubmit = () => {
-    if (!name || !email || !messageText) {
-      message.warning('يرجى ملء جميع الحقول');
-      return;
-    }
-    message.success('تم إرسال الرسالة بنجاح!');
-    setName('');
-    setEmail('');
-    setMessageText('');
-  };
+  
 
   return (
     <div style={{ padding: '100px 20px 80px', maxWidth: '700px', margin: '0 auto' }}>

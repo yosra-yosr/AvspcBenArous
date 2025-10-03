@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { EnvironmentOutlined, LinkOutlined, CompassOutlined, ClockCircleOutlined, PhoneOutlined, CarOutlined } from '@ant-design/icons';
+import { LinkOutlined, CompassOutlined, ClockCircleOutlined, PhoneOutlined, CarOutlined } from '@ant-design/icons';
 
 const LocationPage = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -128,6 +128,7 @@ const LocationPage = () => {
             allowFullScreen=""
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
+            title="موقعنا الجغرافي"
           />
         </div>
 

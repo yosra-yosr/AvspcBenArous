@@ -8,7 +8,6 @@ import {
   EyeOutlined,
   PhoneOutlined,
   UserAddOutlined,
-  UserOutlined,
   MenuOutlined,
   EnvironmentOutlined,
 } from '@ant-design/icons';

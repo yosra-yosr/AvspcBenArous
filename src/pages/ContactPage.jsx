@@ -25,7 +25,7 @@ const ContactPage = () => {
         </Title>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
+          {/* <div>
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
               الاسم الكامل
             </label>
@@ -36,7 +36,7 @@ const ContactPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-          </div>
+          </div> */}
           </div>
           </Card></div>);}
           export default ContactPage;

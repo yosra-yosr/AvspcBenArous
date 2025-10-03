@@ -1,5 +1,5 @@
 // src/pages/RegisterPage.jsx
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -12,7 +12,9 @@ import {
   Typography,
   message,
   Alert,
-  Spin
+  Spin,
+  Modal,
+  Space,
 } from 'antd';
 import {
   IdcardOutlined,
@@ -24,7 +26,11 @@ import {
   ArrowLeftOutlined,
   SendOutlined,
   ExclamationCircleOutlined,
-  CheckCircleOutlined
+  CheckCircleOutlined,
+  EditOutlined,
+  SaveOutlined,
+  DownloadOutlined,
+  CheckOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ar';
@@ -71,11 +77,10 @@ const governorates = [
   { value: 'zaghouan', label: 'زغوان' }
 ];
 
- const breadcrumbs = [
-    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
-    { name: "Inscription", url: "https://inscription-avspcbenarous.netlify.app/register" }
-  ];
-
+const breadcrumbs = [
+  { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
+  { name: "Inscription", url: "https://inscription-avspcbenarous.netlify.app/register" }
+];
 
 const RegisterPage = () => {
   const [form] = Form.useForm();
@@ -84,14 +89,33 @@ const RegisterPage = () => {
   const [selectedGovernorate, setSelectedGovernorate] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [formData, setFormData] = useState({}); // ⭐ Nouveau: stockage des données
+  const [formData, setFormData] = useState({});
+  const [completedSteps, setCompletedSteps] = useState([]);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const stepsContainerRef = useRef(null);
+
+  // Auto-scroll pour centrer l'étape active
+  useEffect(() => {
+    if (stepsContainerRef.current) {
+      const container = stepsContainerRef.current;
+      const stepWidth = container.scrollWidth / steps.length;
+      const scrollPosition = stepWidth * currentStep - (container.clientWidth / 2) + (stepWidth / 2);
+      
+      container.scrollTo({
+        left: Math.max(0, scrollPosition),
+        behavior: 'smooth'
+      });
+    }
+  });
+  const [reviewData, setReviewData] = useState(null);
+  const printRef = useRef();
 
   // خطوات النموذج
   const steps = [
     { title: 'الهوية', icon: <IdcardOutlined /> },
     { title: 'البيانات', icon: <UserOutlined /> },
     { title: 'العائلة', icon: <TeamOutlined /> },
-    { title: 'الموقع', icon: <EnvironmentOutlined /> },
+    { title: 'الإقامة', icon: <EnvironmentOutlined /> },
     { title: 'التعليم', icon: <SafetyCertificateOutlined /> }
   ];
 
@@ -99,6 +123,17 @@ const RegisterPage = () => {
   const arabicOnlyRule = {
     pattern: /^[\u0600-\u06FF\s]+$/,
     message: 'يسمح فقط بالأحرف العربية'
+  };
+
+  // التحقق من رقم بطاقة التعريف
+  const validateIdNumber = (_, value) => {
+    if (!value) return Promise.reject('هذا الحقل مطلوب');
+    if (!/^\d{8}$/.test(value)) return Promise.reject('يجب أن يحتوي على 8 أرقام فقط');
+    const firstDigit = value.charAt(0);
+    if (firstDigit !== '0' && firstDigit !== '1') {
+      return Promise.reject('رقم بطاقة التعريف غير صالح. يجب أن يبدأ بـ 0 أو 1');
+    }
+    return Promise.resolve();
   };
 
   // التحقق من العمر
@@ -136,9 +171,12 @@ const RegisterPage = () => {
       const fieldsToValidate = getFieldsForStep(currentStep);
       await form.validateFields(fieldsToValidate);
       
-      // ⭐ Sauvegarder les valeurs de l'étape actuelle
       const currentValues = form.getFieldsValue(fieldsToValidate);
       setFormData(prev => ({ ...prev, ...currentValues }));
+      
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps([...completedSteps, currentStep]);
+      }
       
       setCurrentStep(currentStep + 1);
       message.success(`تم الانتقال إلى الخطوة ${currentStep + 2}`);
@@ -166,7 +204,6 @@ const RegisterPage = () => {
 
   // تنسيق البيانات قبل الإرسال
   const formatDataForAPI = (values) => {
-    // Trouver le label en arabe pour le governorate
     const governorateLabel = governorates.find(g => g.value === values.governorate)?.label || values.governorate;
     
     return {
@@ -193,55 +230,97 @@ const RegisterPage = () => {
     };
   };
 
+  // عرض البيانات للمراجعة
+  const handleReview = async () => {
+    try {
+      const fieldsToValidate = getFieldsForStep(currentStep);
+      await form.validateFields(fieldsToValidate);
+      
+      const currentValues = form.getFieldsValue(fieldsToValidate);
+      const allValues = { ...formData, ...currentValues };
+      
+      setReviewData(allValues);
+      setShowReviewModal(true);
+    } catch (error) {
+      message.error('يرجى ملء جميع الحقول المطلوبة بشكل صحيح');
+    }
+  };
+
+  // تنزيل PDF
+  const handleDownloadPDF = () => {
+    const printContent = printRef.current;
+    const WinPrint = window.open('', '', 'width=900,height=650');
+    
+    WinPrint.document.write(`
+      <html dir="rtl">
+        <head>
+          <title>فيشة التسجيل</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
+            h1 { text-align: center; color: #1890ff; margin-bottom: 30px; }
+            .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #1890ff; padding-bottom: 20px; }
+            .section { margin-bottom: 25px; page-break-inside: avoid; }
+            .section-title { background: #1890ff; color: white; padding: 10px; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+            .field { display: flex; margin-bottom: 12px; padding: 8px; background: #f5f5f5; }
+            .field-label { font-weight: bold; width: 200px; color: #333; }
+            .field-value { flex: 1; color: #666; }
+            @media print {
+              body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent.innerHTML}
+        </body>
+      </html>
+    `);
+    
+    WinPrint.document.close();
+    WinPrint.focus();
+    setTimeout(() => {
+      WinPrint.print();
+      WinPrint.close();
+    }, 250);
+  };
+
   // إرسال النموذج
   const onFinish = async (values) => {
     setLoading(true);
     
     try {
-      // ⭐ Fusionner toutes les données des étapes précédentes avec l'étape finale
-      const allValues = { ...formData, ...values };
-      
-      // Log des valeurs complètes du formulaire
-      console.log('Valeurs complètes du formulaire:', allValues);
-      
+      const allValues = reviewData || { ...formData, ...values };
       const formattedData = formatDataForAPI(allValues);
-      
-      // Log des données formatées
-      console.log('Données formatées pour envoi:', formattedData);
       
       const response = await volunteerApi.create(formattedData);
 
       if (response.success) {
         setSubmitSuccess(true);
+        setShowReviewModal(false);
         message.success({
           content: response.message || 'تم تسجيل المتطوع بنجاح',
           duration: 5,
           icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
         });
         
-        // إعادة تعيين النموذج بعد 3 ثواني
         setTimeout(() => {
           form.resetFields();
           setCurrentStep(0);
           setSubmitSuccess(false);
           setSelectedGovernorate('');
           setAvailableRegions([]);
-          setFormData({}); // ⭐ Réinitialiser les données stockées
+          setFormData({});
+          setCompletedSteps([]);
+          setReviewData(null);
         }, 3000);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      console.error('Error response:', error.response?.data);
       
       if (error.response) {
         const errorData = error.response.data;
         const errorMessage = errorData.message;
         
-        // Afficher les erreurs de validation détaillées
         if (errorData.errors && Array.isArray(errorData.errors)) {
-          console.error('Erreurs de validation:', errorData.errors);
-          
-          // Afficher les 3 premières erreurs
           const errorMessages = errorData.errors.slice(0, 3).map(err => err.msg || err.message).join('\n');
           message.error({
             content: `خطأ في التحقق:\n${errorMessages}`,
@@ -263,14 +342,9 @@ const RegisterPage = () => {
             duration: 5
           });
         }
-      } else if (error.request) {
-        message.error({
-          content: 'لا يمكن الاتصال بالخادم، يرجى التحقق من الاتصال بالإنترنت',
-          duration: 5
-        });
       } else {
         message.error({
-          content: 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى',
+          content: 'لا يمكن الاتصال بالخادم، يرجى التحقق من الاتصال بالإنترنت',
           duration: 5
         });
       }
@@ -292,11 +366,11 @@ const RegisterPage = () => {
               label="رقم بطاقة التعريف"
               rules={[
                 { required: true, message: 'هذا الحقل مطلوب' },
-                { pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
+                { validator: validateIdNumber }
               ]}
               style={formItemStyle}
             >
-              <Input placeholder="12345678" maxLength={8} size="large" />
+              <Input placeholder="01234567" maxLength={8} size="large" />
             </Form.Item>
 
             <Form.Item
@@ -501,7 +575,7 @@ const RegisterPage = () => {
 
             <Form.Item
               name="address"
-              label="العنوان الشخصي"
+              label="العنوان الشخصي الكامل"
               rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
               style={formItemStyle}
             >
@@ -549,6 +623,141 @@ const RegisterPage = () => {
     }
   };
 
+  // عرض البيانات في المودال
+  const renderReviewContent = () => {
+    if (!reviewData) return null;
+
+    const genderLabel = reviewData.gender === 'male' ? 'ذكر' : 'أنثى';
+    const maritalStatusLabels = {
+      single: 'أعزب',
+      married: 'متزوج',
+      divorced: 'مطلق',
+      widowed: 'أرمل'
+    };
+    const educationLabels = {
+      primary: 'ابتدائي',
+      secondary: 'إعدادي',
+      highschool: 'ثانوي',
+      bachelor: 'بكالوريا',
+      university: 'جامعي'
+    };
+    const supportingDocLabels = {
+      'attendance-grades': 'شهادة حضور وبطاقة الأعداد',
+      'baccalaureate': 'شهادة البكالوريا',
+      'university': 'شهادة تعليم جامعي',
+      'other': 'شهادة أخرى'
+    };
+
+    const governorateLabel = governorates.find(g => g.value === reviewData.governorate)?.label || reviewData.governorate;
+
+    return (
+      <div ref={printRef}>
+        <div className="header">
+          <h1> استمارة التسجيل في التطوع</h1>
+          <p style={{ color: '#666', fontSize: '14px' }}>جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
+        </div>
+
+        <div className="section">
+          <div className="section-title">معلومات الهوية</div>
+          <div className="field">
+            <span className="field-label">رقم بطاقة التعريف:</span>
+            <span className="field-value">{reviewData.idNumber}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">تاريخ الإصدار:</span>
+            <span className="field-value">{reviewData.idIssueDate?.format('DD/MM/YYYY')}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">رقم الهاتف الشخصي:</span>
+            <span className="field-value">{reviewData.phone}</span>
+          </div>
+        </div>
+
+        <div className="section">
+          <div className="section-title">البيانات الشخصية</div>
+          <div className="field">
+            <span className="field-label">الاسم الكامل:</span>
+            <span className="field-value">{reviewData.firstName} {reviewData.lastName}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">تاريخ الولادة:</span>
+            <span className="field-value">{reviewData.birthDate?.format('DD/MM/YYYY')}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">الجنس:</span>
+            <span className="field-value">{genderLabel}</span>
+          </div>
+        </div>
+
+        <div className="section">
+          <div className="section-title">معلومات العائلة</div>
+          <div className="field">
+            <span className="field-label">اسم الأب:</span>
+            <span className="field-value">{reviewData.fatherName}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">اسم الجد:</span>
+            <span className="field-value">{reviewData.grandFatherName}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">اسم الأم الكامل:</span>
+            <span className="field-value">{reviewData.motherFirstName} {reviewData.motherLastName}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">الحالة العائلية:</span>
+            <span className="field-value">{maritalStatusLabels[reviewData.maritalstatus]}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">عدد الأبناء:</span>
+            <span className="field-value">{reviewData.children}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">المهنة:</span>
+            <span className="field-value">{reviewData.profession}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">رقم هاتف الأب:</span>
+            <span className="field-value">{reviewData.fatherphone}</span>
+          </div>
+        </div>
+
+        <div className="section">
+          <div className="section-title">معلومات الإقامة</div>
+          <div className="field">
+            <span className="field-label">الولاية:</span>
+            <span className="field-value">{governorateLabel}</span>
+          </div>
+          {reviewData.region && (
+            <div className="field">
+              <span className="field-label">المنطقة:</span>
+              <span className="field-value">{reviewData.region}</span>
+            </div>
+          )}
+          <div className="field">
+            <span className="field-label">العنوان الكامل:</span>
+            <span className="field-value">{reviewData.address}</span>
+          </div>
+        </div>
+
+        <div className="section">
+          <div className="section-title">المستوى التعليمي</div>
+          <div className="field">
+            <span className="field-label">المستوى التعليمي:</span>
+            <span className="field-value">{educationLabels[reviewData.educationlevel]}</span>
+          </div>
+          <div className="field">
+            <span className="field-label">شهادة الإثبات:</span>
+            <span className="field-value">{supportingDocLabels[reviewData.supportingdocument]}</span>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '40px', textAlign: 'center', color: '#999', fontSize: '12px' }}>
+          <p>تاريخ التسجيل: {dayjs().format('DD/MM/YYYY HH:mm')}</p>
+        </div>
+      </div>
+    );
+  };
+
   // Affichage de succès
   if (submitSuccess) {
     return (
@@ -590,6 +799,7 @@ const RegisterPage = () => {
     }}>
       <SchemaOrg schema={getRegisterActionSchema()} id="register-schema" />
       <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="breadcrumb-schema" />
+      
       <Card 
         style={{ 
           marginBottom: 16, 
@@ -600,7 +810,7 @@ const RegisterPage = () => {
         bodyStyle={{ padding: '20px 16px' }}
       >
         <Title level={2} style={{ marginBottom: 8, fontSize: 'clamp(20px, 5vw, 28px)' }}>
-          تسجيل في تطوع
+        التسجيل في التطوع
         </Title>
         <Text type="secondary" style={{ fontSize: 'clamp(12px, 3.5vw, 14px)', display: 'block', lineHeight: 1.6 }}>
           انضم إلى جمعية متطوعون في خدمة الحماية المدنية بن عروس وكن جزءاً من فريق يخدم المجتمع
@@ -624,17 +834,38 @@ const RegisterPage = () => {
         style={{ 
           marginBottom: 16,
           borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          overflow: 'hidden'
         }}
-        bodyStyle={{ padding: '20px 12px' }}
+        bodyStyle={{ padding: '20px 8px' }}
       >
-        <Steps 
-          current={currentStep} 
-          items={steps}
-          responsive={false}
-          size="small"
-          labelPlacement="vertical"
-        />
+        <div 
+          ref={stepsContainerRef}
+          style={{ 
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            scrollBehavior: 'smooth',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#1890ff #f0f0f0'
+          }}
+        >
+          <Steps 
+            current={currentStep} 
+            items={steps.map((step, index) => ({
+              ...step,
+              status: completedSteps.includes(index) ? 'finish' : 
+                      index === currentStep ? 'process' : 'wait',
+              icon: completedSteps.includes(index) ? <CheckOutlined /> : step.icon
+            }))}
+            responsive={false}
+            size="small"
+            style={{
+              minWidth: '600px',
+              paddingBottom: '10px'
+            }}
+          />
+        </div>
       </Card>
 
       <Card
@@ -689,19 +920,141 @@ const RegisterPage = () => {
               ) : (
                 <Button 
                   type="primary" 
-                  htmlType="submit" 
+                  onClick={handleReview}
                   icon={<SendOutlined />}
                   size="large"
                   loading={loading}
                   style={{ flex: '1 1 auto', minWidth: '120px' }}
                 >
-                  تسجيل
+                  مراجعة وتسجيل
                 </Button>
               )}
             </div>
           </Form>
         </Spin>
       </Card>
+
+      {/* Modal de révision */}
+      <Modal
+        title={
+          <Space style={{ fontSize: '18px', fontWeight: 'bold' }}>
+            <ExclamationCircleOutlined style={{ color: '#faad14' }} />
+            <span>مراجعة البيانات قبل التسجيل</span>
+          </Space>
+        }
+        open={showReviewModal}
+        onCancel={() => setShowReviewModal(false)}
+        width={800}
+        style={{ direction: 'rtl' }}
+        footer={[
+          <Button 
+            key="edit" 
+            icon={<EditOutlined />}
+            onClick={() => setShowReviewModal(false)}
+            size="large"
+          >
+            تعديل البيانات
+          </Button>,
+          <Button 
+            key="download" 
+            icon={<DownloadOutlined />}
+            onClick={handleDownloadPDF}
+            size="large"
+          >
+            تحميل PDF
+          </Button>,
+          <Button 
+            key="submit" 
+            type="primary" 
+            icon={<SaveOutlined />}
+            loading={loading}
+            onClick={() => onFinish(reviewData)}
+            size="large"
+          >
+            حفظ وتسجيل
+          </Button>
+        ]}
+      >
+        <Alert
+          message="تنبيه مهم"
+          description="يرجى مراجعة جميع البيانات بعناية. بعد الضغط على 'حفظ وتسجيل' لن تتمكن من تعديلها."
+          type="warning"
+          showIcon
+          style={{ marginBottom: 20 }}
+        />
+        
+        <div style={{ maxHeight: '60vh', overflowY: 'auto', padding: '10px 0' }}>
+          {renderReviewContent()}
+        </div>
+      </Modal>
+
+      <style jsx>{`
+        /* Scrollbar personnalisée pour webkit */
+        div[style*="overflowX"]::-webkit-scrollbar {
+          height: 6px;
+        }
+        
+        div[style*="overflowX"]::-webkit-scrollbar-track {
+          background: #f0f0f0;
+          border-radius: 3px;
+        }
+        
+        div[style*="overflowX"]::-webkit-scrollbar-thumb {
+          background: #1890ff;
+          border-radius: 3px;
+        }
+        
+        div[style*="overflowX"]::-webkit-scrollbar-thumb:hover {
+          background: #096dd9;
+        }
+        
+        @media (max-width: 768px) {
+          .ant-steps-item-title {
+            font-size: 12px !important;
+          }
+          .ant-steps-item-icon {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 14px !important;
+          }
+        }
+        
+        @media print {
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #1890ff;
+            padding-bottom: 20px;
+          }
+          .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+          }
+          .section-title {
+            background: #1890ff;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+          }
+          .field {
+            display: flex;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #f5f5f5;
+          }
+          .field-label {
+            font-weight: bold;
+            width: 200px;
+            color: #333;
+          }
+          .field-value {
+            flex: 1;
+            color: #666;
+          }
+        }
+      `}</style>
     </div>
   );
 };

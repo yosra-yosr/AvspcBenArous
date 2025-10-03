@@ -3,6 +3,7 @@ import { Input, DatePicker, Button, Card, Typography, Alert, Spin } from 'antd';
 import { IdcardOutlined, CalendarOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import SchemaOrg from '../components/common/SchemaOrg';
+import {getBreadcrumbSchema } from '../utils/schemas';
 const { Title, Paragraph } = Typography;
 
 const ResultsPage = () => {

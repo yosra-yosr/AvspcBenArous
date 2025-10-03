@@ -5,8 +5,8 @@ const { Title, Paragraph } = Typography;
 
 const GalleryPage = () => {
    const breadcrumbs = [
-    { name: "Accueil", url: "https://votresite.com" },
-    { name: "Galerie", url: "https://votresite.com/gallery" }
+    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
+    { name: "Galerie", url: "https://inscription-avspcbenarous.netlify.app/gallery" }
   ];
   return (
     <div style={{ padding: '100px 20px 80px', maxWidth: '900px', margin: '0 auto' }}>

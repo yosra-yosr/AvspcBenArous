@@ -72,7 +72,7 @@ const governorates = [
 ];
 
  const breadcrumbs = [
-    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app/" },
+    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
     { name: "Inscription", url: "https://inscription-avspcbenarous.netlify.app/register" }
   ];
 

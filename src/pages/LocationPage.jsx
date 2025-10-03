@@ -55,8 +55,8 @@ const LocationPage = () => {
   ];
 
    const breadcrumbs = [
-    { name: "Accueil", url: "https://votresite.com" },
-    { name: "Localisation", url: "https://votresite.com/location" }
+    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
+    { name: "Localisation", url: "https://inscription-avspcbenarous.netlify.app/location" }
   ];
 
   const locationSchema = {

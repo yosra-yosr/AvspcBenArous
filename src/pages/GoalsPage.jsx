@@ -13,8 +13,8 @@ const GoalsPage = () => {
     'تنشئة الطفولة وفق المبادئ الأساسية للصحة والسلامة والوقاية.'
   ];
 const breadcrumbs = [
-    { name: "Accueil", url: "https://votresite.com" },
-    { name: "Conditions d'inscription", url: "https://votresite.com/goals" }
+    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
+    { name: "Conditions d'inscription", url: "https://inscription-avspcbenarous.netlify.app/goals" }
   ];
   return (
     <div style={{ padding: '100px 20px 80px', maxWidth: '900px', margin: '0 auto' }}>

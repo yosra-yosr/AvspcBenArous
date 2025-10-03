@@ -20,8 +20,8 @@ const ResultsPage = () => {
   const BLOCK_DURATION = 900; // 15 minutes en secondes
 
    const breadcrumbs = [
-    { name: "Accueil", url: "https://votresite.com" },
-    { name: "Résultats", url: "https://votresite.com/results" }
+    { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
+    { name: "Résultats", url: "https://inscription-avspcbenarous.netlify.app/results" }
   ];
   // Vérifier le blocage au chargement
   useEffect(() => {
@@ -173,7 +173,7 @@ const ResultsPage = () => {
       // Simuler un délai (throttling côté client)
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // TODO: Remplacer par votre appel API réel
+      // TODO: Remplacer par  appel API réel
       const response = await fetch('/api/check-results', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

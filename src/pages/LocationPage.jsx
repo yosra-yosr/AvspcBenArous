@@ -35,10 +35,10 @@ const LocationPage = () => {
       description: (
         <div style={{ lineHeight: '2' }}>
           <div style={{ marginBottom: '8px' }}>
-            <strong>هاتف:</strong> <a href="tel:+21671456123" dir="ltr" className="phone-number">+216 71 456 123</a>
+            <strong>هاتف:</strong> <a href="tel:+21671456123" dir="ltr" className="phone-number">+216 56 202 702</a>
           </div>
           <div style={{ marginBottom: '8px' }}>
-            <strong>الفاكس:</strong> <a href="tel:+21624372697" dir="ltr" className="phone-number">+216 71 457 123</a>
+            <strong>الفاكس:</strong> <a href="tel:+21690769362" dir="ltr" className="phone-number">+216 90 769 362</a>
           </div>
           <div>
             <strong>البريد الإلكتروني:</strong> info@avspc-benarrous.tn

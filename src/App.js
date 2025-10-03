@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import{ useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
 import MainLayout from './components/layout/MainLayout';
 import HomePage from './pages/HomePage';
 import GoalsPage from './pages/GoalsPage';
@@ -20,7 +19,6 @@ const App = () => {
   }, []);
 
   return (
-    <HelmetProvider>
       <Router>
         <MainLayout isMobile={isMobile}>
           <Routes>
@@ -34,7 +32,6 @@ const App = () => {
           </Routes>
         </MainLayout>
       </Router>
-    </HelmetProvider>
   );
 };
 

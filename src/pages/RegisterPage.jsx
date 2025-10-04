@@ -241,6 +241,8 @@ class PDFService {
             body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
             h1 { text-align: center; color: black; margin-bottom: 30px; }
             .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid gray; padding-bottom: 20px; }
+            .logo-container { text-align: center; margin-bottom: 20px; }
+.logo { max-width: 120px; height: auto; }
             .section { margin-bottom: 25px; page-break-inside: avoid; }
             .section-title { background: gray; color: white; padding: 10px; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
             .field { display: flex; margin-bottom: 12px; padding: 8px; background: #f5f5f5; }
@@ -763,6 +765,13 @@ const RegisterPage = () => {
 
     return (
       <div ref={printRef}>
+        <div className="logo-container">
+    <img 
+      src="/assets/images/شعار.png" 
+      alt="شعار" 
+      className="logo"
+    />
+  </div>
         <div className="header">
           <h1>استمارة التسجيل في التطوع</h1>
           <p style={{ color: '#666', fontSize: '14px' }}>جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>

@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Input, DatePicker, Button, Card, Typography, Alert, Spin } from 'antd';
 import { IdcardOutlined, CalendarOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import SchemaOrg from '../components/common/SchemaOrg';
-import {getBreadcrumbSchema } from '../utils/schemas';
+import { getBreadcrumbSchema } from '../utils/schemas';
+import volunteerApi from '../services/volunteerApi';
+
 const { Title, Paragraph } = Typography;
 
 const ResultsPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ idNumber: '', dob: null });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,13 +23,13 @@ const ResultsPage = () => {
   const MAX_ATTEMPTS = 3;
   const BLOCK_DURATION = 900; // 15 minutes en secondes
 
-   const breadcrumbs = [
+  const breadcrumbs = [
     { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
     { name: "Résultats", url: "https://inscription-avspcbenarous.netlify.app/results" }
   ];
+
   // Vérifier le blocage au chargement
   useEffect(() => {
-    // Vérifier le blocage permanent
     const permBlock = localStorage.getItem('permanentBlock');
     if (permBlock === 'true') {
       setPermanentBlock(true);
@@ -45,12 +49,10 @@ const ResultsPage = () => {
         setIsBlocked(true);
         setBlockTime(BLOCK_DURATION - timeElapsed);
       } else {
-        // Débloquer après 15 minutes
         localStorage.removeItem('resultsBlocked');
         localStorage.removeItem('blockTimestamp');
         localStorage.removeItem('attemptCount');
         
-        // Marquer qu'il a déjà été bloqué une fois
         if (!hasBeenBlocked) {
           localStorage.setItem('hasBeenBlocked', 'true');
         }
@@ -93,7 +95,7 @@ const ResultsPage = () => {
     setFormData({ ...formData, idNumber: value });
     
     if (value && value.length !== 8) {
-      setError('⚠️ رقم بطاقة التعريف يجب أن يكون 8 أرقام.');
+      setError('⚠ رقم بطاقة التعريف يجب أن يكون 8 أرقام.');
     } else {
       setError('');
     }
@@ -103,7 +105,7 @@ const ResultsPage = () => {
     setFormData({ ...formData, dob: date });
     
     if (date && dayjs(date).isAfter(dayjs())) {
-      setError('⚠️ تاريخ الولادة لا يمكن أن يكون في المستقبل.');
+      setError('⚠ تاريخ الولادة لا يمكن أن يكون في المستقبل.');
     } else {
       setError('');
     }
@@ -122,12 +124,10 @@ const ResultsPage = () => {
       const hasBeenBlocked = localStorage.getItem('hasBeenBlocked');
       
       if (hasBeenBlocked === 'true') {
-        // Si déjà bloqué une fois → blocage permanent
         setPermanentBlock(true);
         localStorage.setItem('permanentBlock', 'true');
         setError('🚫 تم تجاوز الحد المسموح من المحاولات. تم حظر الوصول نهائياً. الرجاء التواصل مع الإدارة عبر الهاتف أو البريد الإلكتروني للحصول على نتيجتك.');
       } else {
-        // Premier blocage → 15 minutes
         setIsBlocked(true);
         setBlockTime(BLOCK_DURATION);
         localStorage.setItem('resultsBlocked', 'true');
@@ -152,17 +152,17 @@ const ResultsPage = () => {
     const { idNumber, dob } = formData;
     
     if (!idNumber || !dob) {
-      setError('⚠️ الرجاء ملء جميع الحقول المطلوبة.');
+      setError('الرجاء ملء جميع الحقول المطلوبة.');
       return;
     }
 
     if (idNumber.length !== 8) {
-      setError('⚠️ رقم بطاقة التعريف يجب أن يكون 8 أرقام.');
+      setError('رقم بطاقة التعريف يجب أن يكون 8 أرقام.');
       return;
     }
 
     if (dayjs(dob).isAfter(dayjs())) {
-      setError('⚠️ تاريخ الولادة لا يمكن أن يكون في المستقبل.');
+      setError('تاريخ الولادة لا يمكن أن يكون في المستقبل.');
       return;
     }
 
@@ -170,37 +170,34 @@ const ResultsPage = () => {
     setError('');
 
     try {
-      // Simuler un délai (throttling côté client)
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Appel API réel
+      const response = await volunteerApi.checkResult(idNumber, dayjs(dob).format('YYYY-MM-DD'));
 
-      // TODO: Remplacer par  appel API réel
-      const response = await fetch('/api/check-results', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          idNumber,
-          dob: dayjs(dob).format('YYYY-MM-DD')
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.found) {
-          // Réinitialiser les tentatives en cas de succès
-          localStorage.removeItem('attemptCount');
-          setAttempts(0);
-          window.location.href = `/result?id=${idNumber}&dob=${dayjs(dob).format('YYYY-MM-DD')}`;
-        } else {
-          incrementAttempts();
-          setError(' لم يتم العثور على نتائج. الرجاء التحقق من البيانات المدخلة.');
-        }
+      if (response.success && response.found) {
+        // Réinitialiser les tentatives en cas de succès
+        localStorage.removeItem('attemptCount');
+        setAttempts(0);
+        
+        // Rediriger vers la page de détail avec les données
+        navigate('/result-details', { 
+          state: { 
+            volunteerData: response.data 
+          } 
+        });
       } else {
         incrementAttempts();
-        setError(' حدث خطأ. الرجاء المحاولة لاحقاً.');
+        setError('❌ لم يتم العثور على نتائج. الرجاء التحقق من البيانات المدخلة.');
       }
     } catch (err) {
       incrementAttempts();
-      setError(' حدث خطأ في الاتصال. الرجاء المحاولة لاحقاً.');
+      
+      if (err.response?.status === 404) {
+        setError('❌ لم يتم العثور على نتائج. الرجاء التحقق من البيانات المدخلة.');
+      } else if (err.response?.status === 429) {
+        setError('⚠️ عدد كبير جداً من المحاولات. الرجاء المحاولة لاحقاً.');
+      } else {
+        setError('❌ حدث خطأ في الاتصال. الرجاء المحاولة لاحقاً.');
+      }
     } finally {
       setLoading(false);
     }
@@ -246,7 +243,6 @@ const ResultsPage = () => {
           />
         )}
 
-        
         {isBlocked && !permanentBlock && (
           <Alert
             message="⏱️ تم حظر الوصول مؤقتاً"
@@ -263,7 +259,7 @@ const ResultsPage = () => {
             icon={<LockOutlined />}
             style={{ marginBottom: '20px', borderRadius: '8px' }}
           />
-        )},
+        )}
 
         {!isBlocked && !permanentBlock && attempts > 0 && (
           <Alert
@@ -311,7 +307,7 @@ const ResultsPage = () => {
 
         {showCaptcha && !isBlocked && (
           <Alert
-            message=" للحماية من الاستخدام الخاطئ"
+            message="🛡 للحماية من الاستخدام الخاطئ"
             description="سيتم طلب تأكيد إضافي في المحاولة القادمة للتأكد من أنك مستخدم حقيقي"
             type="info"
             showIcon

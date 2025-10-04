@@ -8,7 +8,7 @@ import ResultsPage from './pages/ResultsPage';
 import ContactPage from './pages/ContactPage';
 import LocationPage from './pages/LocationPage';
 import RegisterPage from './pages/RegisterPage';
-
+import ResultDetailsPage from './pages/ResultDetailsPage';
 const App = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -26,9 +26,11 @@ const App = () => {
             <Route path="/goals" element={<GoalsPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/results" element={<ResultsPage />} />
+            <Route path="/result-details" element={<ResultDetailsPage />} />
             <Route path="/location" element={<LocationPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/register" element={<RegisterPage />} />
+
           </Routes>
         </MainLayout>
       </Router>

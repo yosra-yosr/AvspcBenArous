@@ -121,6 +121,24 @@ const volunteerApi = {
     } catch (error) {
       throw error;
     }
+  },
+
+  /**
+   * Vérifier le résultat d'un volontaire
+   * @param {string} idNumber - Numéro de carte d'identité
+   * @param {string} dob - Date de naissance (format YYYY-MM-DD)
+   * @returns {Promise} Résultat de la vérification
+   */
+  checkResult: async (idNumber, dob) => {
+    try {
+      const response = await api.post('/volunteers/check-result', {
+        idNumber,
+        dob
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 };
 

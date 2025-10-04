@@ -41,7 +41,40 @@ import { getRegisterActionSchema, getBreadcrumbSchema } from '../utils/schemas';
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-// بيانات المناطق
+// ==================== CONSTANTS (Single Responsibility) ====================
+const VALIDATION_RULES = {
+  ID_NUMBER: {
+    LENGTH: 8,
+    PATTERN: /^\d{8}$/,
+    VALID_START_DIGITS: ['0', '1']
+  },
+  PHONE: {
+    LENGTH: 8,
+    PATTERN: /^\d{8}$/
+  },
+  AGE: {
+    MIN: 18,
+    MAX: 50
+  },
+  NAME: {
+    MIN_LENGTH: 2,
+    ARABIC_PATTERN: /^[\u0600-\u06FF\s]+$/
+  }
+};
+
+const ERROR_MESSAGES = {
+  REQUIRED: 'هذا الحقل مطلوب',
+  INVALID_ID: 'رقم بطاقة التعريف غير صحيح',
+  INVALID_PHONE: 'يجب أن يحتوي على 8 أرقام فقط',
+  INVALID_AGE_MIN: 'يجب أن يكون العمر 18 سنة على الأقل',
+  INVALID_AGE_MAX: 'الحد الأقصى للعمر هو 50 سنة',
+  ARABIC_ONLY: 'يسمح فقط بالأحرف العربية',
+  MIN_LENGTH: 'يجب أن يحتوي على حرفين على الأقل',
+  FUTURE_DATE: 'التاريخ لا يمكن أن يكون في المستقبل',
+  BIRTH_DATE_REQUIRED: 'يرجى إدخال تاريخ الولادة',
+  ISSUE_DATE_REQUIRED: 'يرجى إدخال تاريخ الإصدار'
+};
+
 const regionsData = {
   ben_arous: [
     'بومهل', 'الزهراء', 'حمام الأنف', 'حمام الشط', 'رادس', 'المروج',
@@ -82,128 +115,66 @@ const breadcrumbs = [
   { name: "Inscription", url: "https://inscription-avspcbenarous.netlify.app/register" }
 ];
 
-const RegisterPage = () => {
-  const [form] = Form.useForm();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [availableRegions, setAvailableRegions] = useState([]);
-  const [selectedGovernorate, setSelectedGovernorate] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [completedSteps, setCompletedSteps] = useState([]);
-  const [showReviewModal, setShowReviewModal] = useState(false);
-  const stepsContainerRef = useRef(null);
-
-  // Auto-scroll pour centrer l'étape active
-  useEffect(() => {
-    if (stepsContainerRef.current) {
-      const container = stepsContainerRef.current;
-      const stepWidth = container.scrollWidth / steps.length;
-      const scrollPosition = stepWidth * currentStep - (container.clientWidth / 2) + (stepWidth / 2);
-      
-      container.scrollTo({
-        left: Math.max(0, scrollPosition),
-        behavior: 'smooth'
-      });
+// ==================== VALIDATORS (Single Responsibility) ====================
+class ValidationService {
+  static validateIdNumber(value) {
+    if (!value) {
+      return Promise.reject(ERROR_MESSAGES.REQUIRED);
     }
-  });
-  const [reviewData, setReviewData] = useState(null);
-  const printRef = useRef();
-
-  // خطوات النموذج
-  const steps = [
-    { title: 'الهوية', icon: <IdcardOutlined /> },
-    { title: 'البيانات', icon: <UserOutlined /> },
-    { title: 'العائلة', icon: <TeamOutlined /> },
-    { title: 'الإقامة', icon: <EnvironmentOutlined /> },
-    { title: 'التعليم', icon: <SafetyCertificateOutlined /> }
-  ];
-
-  // التحقق من الأحرف العربية فقط
-  const arabicOnlyRule = {
-    pattern: /^[\u0600-\u06FF\s]+$/,
-    message: 'يسمح فقط بالأحرف العربية'
-  };
-
-  // التحقق من رقم بطاقة التعريف
-  const validateIdNumber = (_, value) => {
-    if (!value) return Promise.reject('هذا الحقل مطلوب');
-    if (!/^\d{8}$/.test(value)) return Promise.reject('يجب أن يحتوي على 8 أرقام فقط');
-    const firstDigit = value.charAt(0);
-    if (firstDigit !== '0' && firstDigit !== '1') {
-      return Promise.reject('رقم بطاقة التعريف غير صالح. يجب أن يبدأ بـ 0 أو 1');
-    }
-    return Promise.resolve();
-  };
-
-  // التحقق من العمر
-  const validateAge = (_, value) => {
-    if (!value) return Promise.reject('يرجى إدخال تاريخ الولادة');
-    const age = dayjs().diff(value, 'year');
-    if (age < 18) return Promise.reject('يجب أن يكون العمر 18 سنة على الأقل');
-    if (age > 50) return Promise.reject('الحد الأقصى للعمر هو 50 سنة');
-    return Promise.resolve();
-  };
-
-  // التحقق من تاريخ الإصدار
-  const validateIssueDate = (_, value) => {
-    if (!value) return Promise.reject('يرجى إدخال تاريخ الإصدار');
-    if (value.isAfter(dayjs())) return Promise.reject('تاريخ الإصدار لا يمكن أن يكون في المستقبل');
-    return Promise.resolve();
-  };
-
-  // التعامل مع تغيير الولاية
-  const handleGovernorateChange = (value) => {
-    setSelectedGovernorate(value);
-    form.setFieldValue('region', undefined);
     
-    if (value === 'ben_arous') {
-      setAvailableRegions(regionsData.ben_arous);
-      message.success('تم فتح قائمة المناطق لولاية بن عروس');
-    } else {
-      setAvailableRegions([]);
+    if (!VALIDATION_RULES.ID_NUMBER.PATTERN.test(value)) {
+      return Promise.reject(ERROR_MESSAGES.INVALID_ID);
     }
-  };
-
-  // الانتقال للخطوة التالية
-  const next = async () => {
-    try {
-      const fieldsToValidate = getFieldsForStep(currentStep);
-      await form.validateFields(fieldsToValidate);
-      
-      const currentValues = form.getFieldsValue(fieldsToValidate);
-      setFormData(prev => ({ ...prev, ...currentValues }));
-      
-      if (!completedSteps.includes(currentStep)) {
-        setCompletedSteps([...completedSteps, currentStep]);
-      }
-      
-      setCurrentStep(currentStep + 1);
-      message.success(`تم الانتقال إلى الخطوة ${currentStep + 2}`);
-    } catch (error) {
-      message.error('يرجى ملء جميع الحقول المطلوبة بشكل صحيح');
+    
+    const firstDigit = value.charAt(0);
+    if (!VALIDATION_RULES.ID_NUMBER.VALID_START_DIGITS.includes(firstDigit)) {
+      return Promise.reject(ERROR_MESSAGES.INVALID_ID);
     }
-  };
+    
+    return Promise.resolve();
+  }
 
-  // العودة للخطوة السابقة
-  const prev = () => {
-    setCurrentStep(currentStep - 1);
-  };
+  static validateAge(value) {
+    if (!value) {
+      return Promise.reject(ERROR_MESSAGES.BIRTH_DATE_REQUIRED);
+    }
+    
+    const age = dayjs().diff(value, 'year');
+    
+    if (age < VALIDATION_RULES.AGE.MIN) {
+      return Promise.reject(ERROR_MESSAGES.INVALID_AGE_MIN);
+    }
+    
+    if (age > VALIDATION_RULES.AGE.MAX) {
+      return Promise.reject(ERROR_MESSAGES.INVALID_AGE_MAX);
+    }
+    
+    return Promise.resolve();
+  }
 
-  // الحصول على الحقول لكل خطوة
-  const getFieldsForStep = (step) => {
-    const fieldsMap = {
-      0: ['idNumber', 'idIssueDate', 'phone'],
-      1: ['firstName', 'lastName', 'birthDate', 'gender'],
-      2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession', 'fatherphone'],
-      3: ['governorate', 'address'],
-      4: ['educationlevel', 'supportingdocument']
+  static validateIssueDate(value) {
+    if (!value) {
+      return Promise.reject(ERROR_MESSAGES.ISSUE_DATE_REQUIRED);
+    }
+    
+    if (value.isAfter(dayjs())) {
+      return Promise.reject(ERROR_MESSAGES.FUTURE_DATE);
+    }
+    
+    return Promise.resolve();
+  }
+
+  static getArabicOnlyRule() {
+    return {
+      pattern: VALIDATION_RULES.NAME.ARABIC_PATTERN,
+      message: ERROR_MESSAGES.ARABIC_ONLY
     };
-    return fieldsMap[step] || [];
-  };
+  }
+}
 
-  // تنسيق البيانات قبل الإرسال
-  const formatDataForAPI = (values) => {
+// ==================== DATA FORMATTER (Single Responsibility) ====================
+class DataFormatterService {
+  static formatForAPI(values, governorates) {
     const governorateLabel = governorates.find(g => g.value === values.governorate)?.label || values.governorate;
     
     return {
@@ -228,12 +199,220 @@ const RegisterPage = () => {
       educationlevel: values.educationlevel,
       supportingdocument: values.supportingdocument
     };
+  }
+
+  static getDisplayLabels() {
+    return {
+      gender: {
+        male: 'ذكر',
+        female: 'أنثى'
+      },
+      maritalStatus: {
+        single: 'أعزب',
+        married: 'متزوج',
+        divorced: 'مطلق',
+        widowed: 'أرمل'
+      },
+      education: {
+        primary: 'ابتدائي',
+        secondary: 'إعدادي',
+        highschool: 'ثانوي',
+        bachelor: 'بكالوريا',
+        university: 'جامعي'
+      },
+      supportingDoc: {
+        'attendance-grades': 'شهادة حضور وبطاقة الأعداد',
+        'baccalaureate': 'شهادة البكالوريا',
+        'university': 'شهادة تعليم جامعي',
+        'other': 'شهادة أخرى'
+      }
+    };
+  }
+}
+
+// ==================== PDF SERVICE (Single Responsibility) ====================
+class PDFService {
+  static generateHTML(content) {
+    return `
+      <html dir="rtl">
+        <head>
+          <title>استمارة التسجيل في التطوع</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
+            h1 { text-align: center; color: black; margin-bottom: 30px; }
+            .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid gray; padding-bottom: 20px; }
+            .section { margin-bottom: 25px; page-break-inside: avoid; }
+            .section-title { background: gray; color: white; padding: 10px; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+            .field { display: flex; margin-bottom: 12px; padding: 8px; background: #f5f5f5; }
+            .field-label { font-weight: bold; width: 200px; color: #333; }
+            .field-value { flex: 1; color: #666; }
+            @media print {
+              body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            }
+          </style>
+        </head>
+        <body>
+          ${content}
+        </body>
+      </html>
+    `;
+  }
+
+  static download(htmlContent) {
+    const WinPrint = window.open('', '', 'width=900,height=650');
+    WinPrint.document.write(htmlContent);
+    WinPrint.document.close();
+    WinPrint.focus();
+    
+    setTimeout(() => {
+      WinPrint.print();
+      WinPrint.close();
+    }, 250);
+  }
+}
+
+// ==================== ERROR HANDLER (Single Responsibility) ====================
+class ErrorHandlerService {
+  static handleSubmitError(error) {
+    console.error('Error submitting form:', error);
+    
+    if (!error.response) {
+      message.error({
+        content: 'لا يمكن الاتصال بالخادم، يرجى التحقق من الاتصال بالإنترنت',
+        duration: 5
+      });
+      return;
+    }
+
+    const errorData = error.response.data;
+    const errorMessage = errorData.message;
+    
+    if (errorData.errors && Array.isArray(errorData.errors)) {
+      const errorMessages = errorData.errors
+        .slice(0, 3)
+        .map(err => err.msg || err.message)
+        .join('\n');
+      
+      message.error({
+        content: `خطأ في التحقق:\n${errorMessages}`,
+        duration: 7
+      });
+    } else if (error.response.status === 409) {
+      message.error({
+        content: errorMessage || 'البيانات مسجلة مسبقاً',
+        duration: 5
+      });
+    } else if (error.response.status === 400) {
+      message.error({
+        content: errorMessage || 'بيانات غير صالحة، يرجى التحقق من المعلومات',
+        duration: 5
+      });
+    } else {
+      message.error({
+        content: 'حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى',
+        duration: 5
+      });
+    }
+  }
+}
+
+// ==================== FORM STEPS CONFIG (Open/Closed Principle) ====================
+class FormStepsConfig {
+  static getSteps() {
+    return [
+      { title: 'الهوية', icon: <IdcardOutlined /> },
+      { title: 'البيانات', icon: <UserOutlined /> },
+      { title: 'العائلة', icon: <TeamOutlined /> },
+      { title: 'الإقامة', icon: <EnvironmentOutlined /> },
+      { title: 'التعليم', icon: <SafetyCertificateOutlined /> }
+    ];
+  }
+
+  static getFieldsForStep(step) {
+    const fieldsMap = {
+      0: ['idNumber', 'idIssueDate', 'phone'],
+      1: ['firstName', 'lastName', 'birthDate', 'gender'],
+      2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession', 'fatherphone'],
+      3: ['governorate', 'address'],
+      4: ['educationlevel', 'supportingdocument']
+    };
+    return fieldsMap[step] || [];
+  }
+}
+
+// ==================== MAIN COMPONENT ====================
+const RegisterPage = () => {
+  const [form] = Form.useForm();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [availableRegions, setAvailableRegions] = useState([]);
+  const [selectedGovernorate, setSelectedGovernorate] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [completedSteps, setCompletedSteps] = useState([]);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewData, setReviewData] = useState(null);
+  const stepsContainerRef = useRef(null);
+  const printRef = useRef();
+
+  const steps = FormStepsConfig.getSteps();
+
+  // Auto-scroll pour centrer l'étape active
+  useEffect(() => {
+    if (stepsContainerRef.current) {
+      const container = stepsContainerRef.current;
+      const stepWidth = container.scrollWidth / steps.length;
+      const scrollPosition = stepWidth * currentStep - (container.clientWidth / 2) + (stepWidth / 2);
+      
+      container.scrollTo({
+        left: Math.max(0, scrollPosition),
+        behavior: 'smooth'
+      });
+    }
+  }, [currentStep, steps.length]);
+
+  // التعامل مع تغيير الولاية
+  const handleGovernorateChange = (value) => {
+    setSelectedGovernorate(value);
+    form.setFieldValue('region', undefined);
+    
+    if (value === 'ben_arous') {
+      setAvailableRegions(regionsData.ben_arous);
+      message.success('تم فتح قائمة المناطق لولاية بن عروس');
+    } else {
+      setAvailableRegions([]);
+    }
+  };
+
+  // الانتقال للخطوة التالية
+  const next = async () => {
+    try {
+      const fieldsToValidate = FormStepsConfig.getFieldsForStep(currentStep);
+      await form.validateFields(fieldsToValidate);
+      
+      const currentValues = form.getFieldsValue(fieldsToValidate);
+      setFormData(prev => ({ ...prev, ...currentValues }));
+      
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps([...completedSteps, currentStep]);
+      }
+      
+      setCurrentStep(currentStep + 1);
+      message.success(`تم الانتقال إلى الخطوة ${currentStep + 2}`);
+    } catch (error) {
+      message.error('يرجى ملء جميع الحقول المطلوبة بشكل صحيح');
+    }
+  };
+
+  // العودة للخطوة السابقة
+  const prev = () => {
+    setCurrentStep(currentStep - 1);
   };
 
   // عرض البيانات للمراجعة
   const handleReview = async () => {
     try {
-      const fieldsToValidate = getFieldsForStep(currentStep);
+      const fieldsToValidate = FormStepsConfig.getFieldsForStep(currentStep);
       await form.validateFields(fieldsToValidate);
       
       const currentValues = form.getFieldsValue(fieldsToValidate);
@@ -249,55 +428,28 @@ const RegisterPage = () => {
   // تنزيل PDF
   const handleDownloadPDF = () => {
     const printContent = printRef.current;
-    const WinPrint = window.open('', '', 'width=900,height=650');
-    
-    WinPrint.document.write(`
-      <html dir="rtl">
-        <head>
-          <title>فيشة التسجيل</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
-            h1 { text-align: center; color: #1890ff; margin-bottom: 30px; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #1890ff; padding-bottom: 20px; }
-            .section { margin-bottom: 25px; page-break-inside: avoid; }
-            .section-title { background: #1890ff; color: white; padding: 10px; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
-            .field { display: flex; margin-bottom: 12px; padding: 8px; background: #f5f5f5; }
-            .field-label { font-weight: bold; width: 200px; color: #333; }
-            .field-value { flex: 1; color: #666; }
-            @media print {
-              body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-            }
-          </style>
-        </head>
-        <body>
-          ${printContent.innerHTML}
-        </body>
-      </html>
-    `);
-    
-    WinPrint.document.close();
-    WinPrint.focus();
-    setTimeout(() => {
-      WinPrint.print();
-      WinPrint.close();
-    }, 250);
+    const htmlContent = PDFService.generateHTML(printContent.innerHTML);
+    PDFService.download(htmlContent);
   };
 
-  // إرسال النموذج
-  const onFinish = async (values) => {
+  // إرسال النموذج مع تنزيل PDF
+  const handleFinalSubmit = async () => {
     setLoading(true);
     
     try {
-      const allValues = reviewData || { ...formData, ...values };
-      const formattedData = formatDataForAPI(allValues);
-      
+      const formattedData = DataFormatterService.formatForAPI(reviewData, governorates);
       const response = await volunteerApi.create(formattedData);
 
       if (response.success) {
+        // تنزيل PDF أولاً
+        handleDownloadPDF();
+        
+        // ثم إظهار رسالة النجاح
         setSubmitSuccess(true);
         setShowReviewModal(false);
+        
         message.success({
-          content: response.message || 'تم تسجيل المتطوع بنجاح',
+          content: response.message || 'تم تسجيل المتطوع بنجاح وتنزيل الفيش',
           duration: 5,
           icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
         });
@@ -314,40 +466,7 @@ const RegisterPage = () => {
         }, 3000);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData.message;
-        
-        if (errorData.errors && Array.isArray(errorData.errors)) {
-          const errorMessages = errorData.errors.slice(0, 3).map(err => err.msg || err.message).join('\n');
-          message.error({
-            content: `خطأ في التحقق:\n${errorMessages}`,
-            duration: 7
-          });
-        } else if (error.response.status === 409) {
-          message.error({
-            content: errorMessage || 'البيانات مسجلة مسبقاً',
-            duration: 5
-          });
-        } else if (error.response.status === 400) {
-          message.error({
-            content: errorMessage || 'بيانات غير صالحة، يرجى التحقق من المعلومات',
-            duration: 5
-          });
-        } else {
-          message.error({
-            content: 'حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى',
-            duration: 5
-          });
-        }
-      } else {
-        message.error({
-          content: 'لا يمكن الاتصال بالخادم، يرجى التحقق من الاتصال بالإنترنت',
-          duration: 5
-        });
-      }
+      ErrorHandlerService.handleSubmitError(error);
     } finally {
       setLoading(false);
     }
@@ -365,8 +484,8 @@ const RegisterPage = () => {
               name="idNumber"
               label="رقم بطاقة التعريف"
               rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                { validator: validateIdNumber }
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                { validator: (_, value) => ValidationService.validateIdNumber(value) }
               ]}
               style={formItemStyle}
             >
@@ -377,8 +496,8 @@ const RegisterPage = () => {
               name="idIssueDate"
               label="تاريخ الإصدار"
               rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                { validator: validateIssueDate }
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                { validator: (_, value) => ValidationService.validateIssueDate(value) }
               ]}
               style={formItemStyle}
             >
@@ -389,8 +508,8 @@ const RegisterPage = () => {
               name="phone"
               label="رقم الهاتف الشخصي"
               rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                { pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                { pattern: VALIDATION_RULES.PHONE.PATTERN, message: ERROR_MESSAGES.INVALID_PHONE }
               ]}
               style={formItemStyle}
             >
@@ -406,9 +525,9 @@ const RegisterPage = () => {
               name="firstName"
               label="الاسم"
               rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                arabicOnlyRule,
-                { min: 2, message: 'يجب أن يحتوي على حرفين على الأقل' }
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                ValidationService.getArabicOnlyRule(),
+                { min: VALIDATION_RULES.NAME.MIN_LENGTH, message: ERROR_MESSAGES.MIN_LENGTH }
               ]}
               style={formItemStyle}
             >
@@ -419,9 +538,9 @@ const RegisterPage = () => {
               name="lastName"
               label="اللقب"
               rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                arabicOnlyRule,
-                { min: 2, message: 'يجب أن يحتوي على حرفين على الأقل' }
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                ValidationService.getArabicOnlyRule(),
+                { min: VALIDATION_RULES.NAME.MIN_LENGTH, message: ERROR_MESSAGES.MIN_LENGTH }
               ]}
               style={formItemStyle}
             >
@@ -432,8 +551,8 @@ const RegisterPage = () => {
               name="birthDate"
               label="تاريخ الولادة"
               rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                { validator: validateAge }
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                { validator: (_, value) => ValidationService.validateAge(value) }
               ]}
               style={formItemStyle}
             >
@@ -443,7 +562,7 @@ const RegisterPage = () => {
             <Form.Item
               name="gender"
               label="الجنس"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <Select placeholder="اختر الجنس" size="large">
@@ -460,7 +579,10 @@ const RegisterPage = () => {
             <Form.Item
               name="fatherName"
               label="اسم الأب"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
+              rules={[
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                ValidationService.getArabicOnlyRule()
+              ]}
               style={formItemStyle}
             >
               <Input placeholder="علي" size="large" />
@@ -469,7 +591,10 @@ const RegisterPage = () => {
             <Form.Item
               name="grandFatherName"
               label="اسم الجد"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
+              rules={[
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                ValidationService.getArabicOnlyRule()
+              ]}
               style={formItemStyle}
             >
               <Input placeholder="أحمد" size="large" />
@@ -478,7 +603,10 @@ const RegisterPage = () => {
             <Form.Item
               name="motherFirstName"
               label="اسم الأم"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
+              rules={[
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                ValidationService.getArabicOnlyRule()
+              ]}
               style={formItemStyle}
             >
               <Input placeholder="فاطمة" size="large" />
@@ -487,7 +615,10 @@ const RegisterPage = () => {
             <Form.Item
               name="motherLastName"
               label="لقب الأم"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }, arabicOnlyRule]}
+              rules={[
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                ValidationService.getArabicOnlyRule()
+              ]}
               style={formItemStyle}
             >
               <Input placeholder="السالمي" size="large" />
@@ -496,7 +627,7 @@ const RegisterPage = () => {
             <Form.Item
               name="maritalstatus"
               label="الحالة العائلية"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <Select placeholder="اختر الحالة العائلية" size="large">
@@ -510,7 +641,7 @@ const RegisterPage = () => {
             <Form.Item
               name="children"
               label="عدد الأبناء"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <InputNumber min={0} max={20} style={{ width: '100%' }} size="large" />
@@ -519,7 +650,7 @@ const RegisterPage = () => {
             <Form.Item
               name="profession"
               label="المهنة"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <Input placeholder="مهندس" size="large" />
@@ -529,8 +660,8 @@ const RegisterPage = () => {
               name="fatherphone"
               label="رقم هاتف الأب"
               rules={[
-                { required: true, message: 'هذا الحقل مطلوب' },
-                { pattern: /^\d{8}$/, message: 'يجب أن يحتوي على 8 أرقام فقط' }
+                { required: true, message: ERROR_MESSAGES.REQUIRED },
+                { pattern: VALIDATION_RULES.PHONE.PATTERN, message: ERROR_MESSAGES.INVALID_PHONE }
               ]}
               style={formItemStyle}
             >
@@ -545,7 +676,7 @@ const RegisterPage = () => {
             <Form.Item
               name="governorate"
               label="الولاية"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <Select
@@ -576,7 +707,7 @@ const RegisterPage = () => {
             <Form.Item
               name="address"
               label="العنوان الشخصي الكامل"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <Input.TextArea rows={3} placeholder="أدخل العنوان الكامل" size="large" />
@@ -590,7 +721,7 @@ const RegisterPage = () => {
             <Form.Item
               name="educationlevel"
               label="المستوى التعليمي"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <Select placeholder="اختر المستوى التعليمي" size="large">
@@ -605,7 +736,7 @@ const RegisterPage = () => {
             <Form.Item
               name="supportingdocument"
               label="شهائد الإثبات"
-              rules={[{ required: true, message: 'هذا الحقل مطلوب' }]}
+              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
               style={formItemStyle}
             >
               <Select placeholder="اختر نوع الشهادة" size="large">
@@ -627,33 +758,13 @@ const RegisterPage = () => {
   const renderReviewContent = () => {
     if (!reviewData) return null;
 
-    const genderLabel = reviewData.gender === 'male' ? 'ذكر' : 'أنثى';
-    const maritalStatusLabels = {
-      single: 'أعزب',
-      married: 'متزوج',
-      divorced: 'مطلق',
-      widowed: 'أرمل'
-    };
-    const educationLabels = {
-      primary: 'ابتدائي',
-      secondary: 'إعدادي',
-      highschool: 'ثانوي',
-      bachelor: 'بكالوريا',
-      university: 'جامعي'
-    };
-    const supportingDocLabels = {
-      'attendance-grades': 'شهادة حضور وبطاقة الأعداد',
-      'baccalaureate': 'شهادة البكالوريا',
-      'university': 'شهادة تعليم جامعي',
-      'other': 'شهادة أخرى'
-    };
-
+    const labels = DataFormatterService.getDisplayLabels();
     const governorateLabel = governorates.find(g => g.value === reviewData.governorate)?.label || reviewData.governorate;
 
     return (
       <div ref={printRef}>
         <div className="header">
-          <h1> استمارة التسجيل في التطوع</h1>
+          <h1>استمارة التسجيل في التطوع</h1>
           <p style={{ color: '#666', fontSize: '14px' }}>جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
         </div>
 
@@ -685,7 +796,7 @@ const RegisterPage = () => {
           </div>
           <div className="field">
             <span className="field-label">الجنس:</span>
-            <span className="field-value">{genderLabel}</span>
+            <span className="field-value">{labels.gender[reviewData.gender]}</span>
           </div>
         </div>
 
@@ -705,7 +816,7 @@ const RegisterPage = () => {
           </div>
           <div className="field">
             <span className="field-label">الحالة العائلية:</span>
-            <span className="field-value">{maritalStatusLabels[reviewData.maritalstatus]}</span>
+            <span className="field-value">{labels.maritalStatus[reviewData.maritalstatus]}</span>
           </div>
           <div className="field">
             <span className="field-label">عدد الأبناء:</span>
@@ -743,11 +854,11 @@ const RegisterPage = () => {
           <div className="section-title">المستوى التعليمي</div>
           <div className="field">
             <span className="field-label">المستوى التعليمي:</span>
-            <span className="field-value">{educationLabels[reviewData.educationlevel]}</span>
+            <span className="field-value">{labels.education[reviewData.educationlevel]}</span>
           </div>
           <div className="field">
             <span className="field-label">شهادة الإثبات:</span>
-            <span className="field-value">{supportingDocLabels[reviewData.supportingdocument]}</span>
+            <span className="field-value">{labels.supportingDoc[reviewData.supportingdocument]}</span>
           </div>
         </div>
 
@@ -782,7 +893,7 @@ const RegisterPage = () => {
           <CheckCircleOutlined style={{ fontSize: 64, color: '#52c41a', marginBottom: 24 }} />
           <Title level={2}>تم التسجيل بنجاح!</Title>
           <Text type="secondary" style={{ fontSize: 16, display: 'block', marginTop: 16 }}>
-            شكراً لتسجيلك. سيتم مراجعة طلبك والتواصل معك قريباً.
+            شكراً لتسجيلك. تم تنزيل الفيش بنجاح وسيتم مراجعة طلبك والتواصل معك قريباً.
           </Text>
         </Card>
       </div>
@@ -876,11 +987,10 @@ const RegisterPage = () => {
         }}
         bodyStyle={{ padding: '20px 16px' }}
       >
-        <Spin spinning={loading} tip="جاري التسجيل...">
+        <Spin spinning={loading} tip="جاري المعالجة...">
           <Form
             form={form}
             layout="vertical"
-            onFinish={onFinish}
             scrollToFirstError
           >
             {renderStepContent()}
@@ -961,14 +1071,14 @@ const RegisterPage = () => {
             onClick={handleDownloadPDF}
             size="large"
           >
-            تحميل PDF
+            معاينة PDF
           </Button>,
           <Button 
             key="submit" 
             type="primary" 
             icon={<SaveOutlined />}
             loading={loading}
-            onClick={() => onFinish(reviewData)}
+            onClick={handleFinalSubmit}
             size="large"
           >
             حفظ وتسجيل
@@ -977,7 +1087,7 @@ const RegisterPage = () => {
       >
         <Alert
           message="تنبيه مهم"
-          description="يرجى مراجعة جميع البيانات بعناية. بعد الضغط على 'حفظ وتسجيل' لن تتمكن من تعديلها."
+          description="يرجى مراجعة جميع البيانات بعناية. بعد الضغط على 'حفظ وتسجيل' سيتم إرسال طلبك وتنزيل الاستمارة تلقائياً."
           type="warning"
           showIcon
           style={{ marginBottom: 20 }}
@@ -1000,12 +1110,12 @@ const RegisterPage = () => {
         }
         
         div[style*="overflowX"]::-webkit-scrollbar-thumb {
-          background: #1890ff;
+          background: gray;
           border-radius: 3px;
         }
         
         div[style*="overflowX"]::-webkit-scrollbar-thumb:hover {
-          background: #096dd9;
+          background: gray;
         }
         
         @media (max-width: 768px) {
@@ -1031,7 +1141,7 @@ const RegisterPage = () => {
             page-break-inside: avoid;
           }
           .section-title {
-            background: #1890ff;
+            background: orange;
             color: white;
             padding: 10px;
             font-size: 16px;

@@ -9,7 +9,7 @@ import {
 import dayjs from 'dayjs';
 import volunteerApi from '../services/volunteerApi';
 import SchemaOrg from '../components/common/SchemaOrg';
-import { getRegisterActionSchema, getBreadcrumbSchema } from '../utils/schemas';
+import { getBreadcrumbSchema } from '../utils/schemas';
 import { DataValidationAlert, ReviewBeforeSubmitAlert } from '../components/common/AlertComponents';
 import SuccessScreen from '../components/registration/SuccessScreen';
 import {
@@ -313,7 +313,7 @@ const RegisterPage = () => {
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: '16px', direction: 'rtl', minHeight: '100vh' }}>
-      <SchemaOrg schema={getRegisterActionSchema()} id="register-schema" />
+      {/* <SchemaOrg schema={getRegisterActionSchema()} id="register-schema" /> */}
       <SchemaOrg schema={getBreadcrumbSchema(BREADCRUMBS)} id="breadcrumb-schema" />
       
       <Card style={{ marginBottom: 16, textAlign: 'center', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }} bodyStyle={{ padding: '20px 16px' }}>

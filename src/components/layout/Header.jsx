@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, Button, Drawer, Typography } from 'antd';
+import { Menu, Button, Drawer, Typography, Badge } from 'antd';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   HomeOutlined,
@@ -24,7 +24,7 @@ const Header = ({ isMobile }) => {
   const getCurrentKey = () => {
     const path = location.pathname;
     if (path === '/') return 'home';
-    return path.substring(1); // Enlève le "/" au début
+    return path.substring(1);
   };
 
   useEffect(() => {
@@ -49,6 +49,9 @@ const Header = ({ isMobile }) => {
     setDrawerVisible(false);
   };
 
+  // Vérifie si on est sur la page d'inscription
+  const isRegisterPage = location.pathname === '/register';
+ const isResultsPage = location.pathname === '/results';
   return (
     <header
       style={{
@@ -123,23 +126,40 @@ const Header = ({ isMobile }) => {
         {!isMobile ? (
           <>
             <Link to="/results">
-              <Button type="default" icon={<EyeOutlined />}>
-               الإطلاع على النتائج
+            <Badge dot={isResultsPage} color="#ff6b35">
+              <Button type="default" icon={<EyeOutlined />} 
+              style={{
+                border: isResultsPage 
+                  ? '2px solid #ff6b35' 
+                  : 'none', 
+                fontWeight: 600,
+                 transform: isRegisterPage ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'all 0.3s ease'}}>
+                الإطلاع على النتائج
               </Button>
+              </Badge>
             </Link>
             <Link to="/register">
-              <Button
-                type="primary"
-                icon={<UserAddOutlined />}
-                style={{
-                  background: 'linear-gradient(135deg, #ff6b35, #ff8c42)',
-                  border: 'none',
-                  fontWeight: 600,
-                  boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)'
-                }}
-              >
-                انضم كمتطوع
-              </Button>
+              <Badge dot={isRegisterPage} color="#ff6b35">
+                <Button
+                  type="primary"
+                  icon={<UserAddOutlined />}
+                  style={{
+                    background: isRegisterPage 
+                      ? 'linear-gradient(135deg, #ff8c42, #ffb366)' 
+                      : 'linear-gradient(135deg, #ff6b35, #ff8c42)',
+                    border: isRegisterPage ? '2px solid #ff6b35' : 'none',
+                    fontWeight: 600,
+                    boxShadow: isRegisterPage 
+                      ? '0 4px 12px rgba(255, 107, 53, 0.5)' 
+                      : '0 2px 8px rgba(255, 107, 53, 0.3)',
+                    transform: isRegisterPage ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  انضم كمتطوع
+                </Button>
+              </Badge>
             </Link>
           </>
         ) : (
@@ -160,30 +180,64 @@ const Header = ({ isMobile }) => {
         styles={{ body: { padding: 0 } }}
       >
         <Menu
-          mode="vertical"
-          selectedKeys={[getCurrentKey()]}
-          onClick={handleMenuClick}
-          style={{ border: 'none' }}
-          items={menuItems}
-        />
-        <div style={{ 
-          padding: '20px', 
-          borderTop: '1px solid #e2e8f0', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '12px' 
-        }}>
-          <Link to="/results"  onClick={handleMenuClick}>
-            <Button block type="default" icon={<EyeOutlined />}>
-              الإطلاع على النتائج
-            </Button>
-          </Link>
-          <Link to="/register"  onClick={handleMenuClick}>
-            <Button block type="primary" icon={<UserAddOutlined />}>
-              انضم كمتطوع
-            </Button>
-          </Link>
-        </div>
+  mode="vertical"
+  selectedKeys={[getCurrentKey()]}
+  onClick={handleMenuClick}
+  style={{
+    border: 'none',
+  }}
+  items={menuItems.map(item => ({
+    ...item,
+    style: item.key === getCurrentKey() ? {
+      color: '#ff6b35',
+      fontWeight: 600,
+      paddingLeft: '16px',
+      borderLeft: '4px solid #ff6b35',
+    } : {
+      padding: '12px 16px',
+    },
+  }))}
+/>
+<div style={{
+  padding: '20px',
+  borderTop: '1px solid #e2e8f0',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+}}>
+  <Link to="/results" onClick={handleMenuClick}>
+    <Button
+      block
+      type={isResultsPage ? 'primary' : 'default'}
+      icon={<EyeOutlined />}
+      style={{
+        background: isResultsPage
+          ? 'linear-gradient(135deg, #ff8c42, #ffb366)'
+          : 'none',
+        border: '3px solid #ff6b35',
+      }}
+    >
+      الإطلاع على النتائج
+    </Button>
+  </Link>
+  <Link to="/register" onClick={handleMenuClick}>
+    <Button
+      block
+      type={isRegisterPage ? 'primary' : 'default'}
+      icon={<UserAddOutlined />}
+      style={{
+        background: isRegisterPage
+          ? 'linear-gradient(135deg, #ff8c42, #ffb366)'
+          : 'none',
+        border: '3px solid #ff6b35',
+      }}
+    >
+      انضم كمتطوع
+    </Button>
+  </Link>
+</div>
+
+
       </Drawer>
     </header>
   );

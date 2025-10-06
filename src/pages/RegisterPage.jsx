@@ -1,348 +1,43 @@
 // src/pages/RegisterPage.jsx
 import { useState, useRef, useEffect } from 'react';
+import { Form, Button, Steps, Card, Typography, message, Spin, Modal, Space } from 'antd';
 import {
-  Form,
-  Input,
-  Button,
-  Steps,
-  Select,
-  DatePicker,
-  InputNumber,
-  Card,
-  Typography,
-  message,
-  Alert,
-  Spin,
-  Modal,
-  Space,
-} from 'antd';
-import {
-  IdcardOutlined,
-  UserOutlined,
-  TeamOutlined,
-  EnvironmentOutlined,
-  SafetyCertificateOutlined,
-  ArrowRightOutlined,
-  ArrowLeftOutlined,
-  SendOutlined,
-  ExclamationCircleOutlined,
-  CheckCircleOutlined,
-  EditOutlined,
-  SaveOutlined,
-  DownloadOutlined,
-  CheckOutlined
+  IdcardOutlined, UserOutlined, TeamOutlined, EnvironmentOutlined,
+  SafetyCertificateOutlined, ArrowRightOutlined, ArrowLeftOutlined,
+  SendOutlined, EditOutlined, SaveOutlined, DownloadOutlined, CheckOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import 'dayjs/locale/ar';
 import volunteerApi from '../services/volunteerApi';
 import SchemaOrg from '../components/common/SchemaOrg';
 import { getRegisterActionSchema, getBreadcrumbSchema } from '../utils/schemas';
+import { DataValidationAlert, ReviewBeforeSubmitAlert } from '../components/common/AlertComponents';
+import SuccessScreen from '../components/registration/SuccessScreen';
+import {
+  IdentityStep, PersonalDataStep, FamilyStep, ResidenceStep, EducationStep
+} from '../components/registration/FormSteps';
+import { GOVERNORATES, REGIONS_DATA, BREADCRUMBS } from '../utils/constants';
+import DataFormatterService from '../services/DataFormatterService';
+import ErrorHandlerService from '../services/ErrorHandlerService';
+import PDFService from '../services/PDFService';
 
 const { Title, Text } = Typography;
-const { Option } = Select;
 
-// ==================== CONSTANTS (Single Responsibility) ====================
-const VALIDATION_RULES = {
-  ID_NUMBER: {
-    LENGTH: 8,
-    PATTERN: /^\d{8}$/,
-    VALID_START_DIGITS: ['0', '1']
-  },
-  PHONE: {
-    LENGTH: 8,
-    PATTERN: /^\d{8}$/
-  },
-  AGE: {
-    MIN: 18,
-    MAX: 50
-  },
-  NAME: {
-    MIN_LENGTH: 2,
-    ARABIC_PATTERN: /^[\u0600-\u06FF\s]+$/
-  }
-};
-
-const ERROR_MESSAGES = {
-  REQUIRED: 'هذا الحقل مطلوب',
-  INVALID_ID: 'رقم بطاقة التعريف غير صحيح',
-  INVALID_PHONE: 'يجب أن يحتوي على 8 أرقام فقط',
-  INVALID_AGE_MIN: 'يجب أن يكون العمر 18 سنة على الأقل',
-  INVALID_AGE_MAX: 'الحد الأقصى للعمر هو 50 سنة',
-  ARABIC_ONLY: 'يسمح فقط بالأحرف العربية',
-  MIN_LENGTH: 'يجب أن يحتوي على حرفين على الأقل',
-  FUTURE_DATE: 'التاريخ لا يمكن أن يكون في المستقبل',
-  BIRTH_DATE_REQUIRED: 'يرجى إدخال تاريخ الولادة',
-  ISSUE_DATE_REQUIRED: 'يرجى إدخال تاريخ الإصدار'
-};
-
-const regionsData = {
-  ben_arous: [
-    'بومهل', 'الزهراء', 'حمام الأنف', 'حمام الشط', 'رادس', 'المروج',
-    'فوشانة', 'مرناق', 'المحمدية', 'بن عروس', 'نعسان', 'شبدة',
-    'مقرين', 'المدينة الجديدة', 'الياسمينات', 'برج السدرية', 'الخليدية'
-  ]
-};
-
-const governorates = [
-  { value: 'ariana', label: 'أريانة' },
-  { value: 'beja', label: 'باجة' },
-  { value: 'ben_arous', label: 'بن عروس' },
-  { value: 'bizerte', label: 'بنزرت' },
-  { value: 'gabes', label: 'قابس' },
-  { value: 'gafsa', label: 'قفصة' },
-  { value: 'jendouba', label: 'جندوبة' },
-  { value: 'kairouan', label: 'القيروان' },
-  { value: 'kasserine', label: 'القصرين' },
-  { value: 'kebili', label: 'قبلي' },
-  { value: 'kef', label: 'الكاف' },
-  { value: 'mahdia', label: 'المهدية' },
-  { value: 'manouba', label: 'منوبة' },
-  { value: 'medenine', label: 'مدنين' },
-  { value: 'monastir', label: 'المنستير' },
-  { value: 'nabeul', label: 'نابل' },
-  { value: 'sfax', label: 'صفاقس' },
-  { value: 'sidi_bouzid', label: 'سيدي بوزيد' },
-  { value: 'siliana', label: 'سليانة' },
-  { value: 'sousse', label: 'سوسة' },
-  { value: 'tataouine', label: 'تطاوين' },
-  { value: 'tozeur', label: 'توزر' },
-  { value: 'tunis', label: 'تونس' },
-  { value: 'zaghouan', label: 'زغوان' }
+const FORM_STEPS = [
+  { title: 'الهوية', icon: <IdcardOutlined /> },
+  { title: 'البيانات', icon: <UserOutlined /> },
+  { title: 'العائلة', icon: <TeamOutlined /> },
+  { title: 'الإقامة', icon: <EnvironmentOutlined /> },
+  { title: 'التعليم', icon: <SafetyCertificateOutlined /> }
 ];
 
-const breadcrumbs = [
-  { name: "Accueil", url: "https://inscription-avspcbenarous.netlify.app" },
-  { name: "Inscription", url: "https://inscription-avspcbenarous.netlify.app/register" }
-];
+const STEP_FIELDS = {
+  0: ['idNumber', 'idIssueDate', 'phone'],
+  1: ['firstName', 'lastName', 'birthDate', 'gender'],
+  2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession', 'fatherphone'],
+  3: ['governorate', 'address'],
+  4: ['educationlevel', 'supportingdocument']
+};
 
-// ==================== VALIDATORS (Single Responsibility) ====================
-class ValidationService {
-  static validateIdNumber(value) {
-    if (!value) {
-      return Promise.reject(ERROR_MESSAGES.REQUIRED);
-    }
-    
-    if (!VALIDATION_RULES.ID_NUMBER.PATTERN.test(value)) {
-      return Promise.reject(ERROR_MESSAGES.INVALID_ID);
-    }
-    
-    const firstDigit = value.charAt(0);
-    if (!VALIDATION_RULES.ID_NUMBER.VALID_START_DIGITS.includes(firstDigit)) {
-      return Promise.reject(ERROR_MESSAGES.INVALID_ID);
-    }
-    
-    return Promise.resolve();
-  }
-
-  static validateAge(value) {
-    if (!value) {
-      return Promise.reject(ERROR_MESSAGES.BIRTH_DATE_REQUIRED);
-    }
-    
-    const age = dayjs().diff(value, 'year');
-    
-    if (age < VALIDATION_RULES.AGE.MIN) {
-      return Promise.reject(ERROR_MESSAGES.INVALID_AGE_MIN);
-    }
-    
-    if (age > VALIDATION_RULES.AGE.MAX) {
-      return Promise.reject(ERROR_MESSAGES.INVALID_AGE_MAX);
-    }
-    
-    return Promise.resolve();
-  }
-
-  static validateIssueDate(value) {
-    if (!value) {
-      return Promise.reject(ERROR_MESSAGES.ISSUE_DATE_REQUIRED);
-    }
-    
-    if (value.isAfter(dayjs())) {
-      return Promise.reject(ERROR_MESSAGES.FUTURE_DATE);
-    }
-    
-    return Promise.resolve();
-  }
-
-  static getArabicOnlyRule() {
-    return {
-      pattern: VALIDATION_RULES.NAME.ARABIC_PATTERN,
-      message: ERROR_MESSAGES.ARABIC_ONLY
-    };
-  }
-}
-
-// ==================== DATA FORMATTER (Single Responsibility) ====================
-class DataFormatterService {
-  static formatForAPI(values, governorates) {
-    const governorateLabel = governorates.find(g => g.value === values.governorate)?.label || values.governorate;
-    
-    return {
-      idNumber: values.idNumber,
-      idIssueDate: values.idIssueDate ? values.idIssueDate.format('YYYY-MM-DD') : null,
-      phone: values.phone,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      birthDate: values.birthDate ? values.birthDate.format('YYYY-MM-DD') : null,
-      gender: values.gender,
-      fatherName: values.fatherName,
-      grandFatherName: values.grandFatherName,
-      motherFirstName: values.motherFirstName,
-      motherLastName: values.motherLastName,
-      maritalstatus: values.maritalstatus,
-      children: Number(values.children) || 0,
-      profession: values.profession,
-      fatherphone: values.fatherphone,
-      governorate: governorateLabel,
-      region: values.region || null,
-      address: values.address,
-      educationlevel: values.educationlevel,
-      supportingdocument: values.supportingdocument
-    };
-  }
-
-  static getDisplayLabels() {
-    return {
-      gender: {
-        male: 'ذكر',
-        female: 'أنثى'
-      },
-      maritalStatus: {
-        single: 'أعزب',
-        married: 'متزوج',
-        divorced: 'مطلق',
-        widowed: 'أرمل'
-      },
-      education: {
-        primary: 'ابتدائي',
-        secondary: 'إعدادي',
-        highschool: 'ثانوي',
-        bachelor: 'بكالوريا',
-        university: 'جامعي'
-      },
-      supportingDoc: {
-        'attendance-grades': 'شهادة حضور وبطاقة الأعداد',
-        'baccalaureate': 'شهادة البكالوريا',
-        'university': 'شهادة تعليم جامعي',
-        'other': 'شهادة أخرى'
-      }
-    };
-  }
-}
-
-// ==================== PDF SERVICE (Single Responsibility) ====================
-class PDFService {
-  static generateHTML(content) {
-    return `
-      <html dir="rtl">
-        <head>
-          <title>استمارة التسجيل في التطوع</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
-            h1 { text-align: center; color: black; margin-bottom: 30px; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid gray; padding-bottom: 20px; }
-            .logo-container { text-align: center; margin-bottom: 20px; }
-.logo { max-width: 120px; height: auto; }
-            .section { margin-bottom: 25px; page-break-inside: avoid; }
-            .section-title { background: gray; color: white; padding: 10px; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
-            .field { display: flex; margin-bottom: 12px; padding: 8px; background: #f5f5f5; }
-            .field-label { font-weight: bold; width: 200px; color: #333; }
-            .field-value { flex: 1; color: #666; }
-            @media print {
-              body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-            }
-          </style>
-        </head>
-        <body>
-          ${content}
-        </body>
-      </html>
-    `;
-  }
-
-  static download(htmlContent) {
-    const WinPrint = window.open('', '', 'width=900,height=650');
-    WinPrint.document.write(htmlContent);
-    WinPrint.document.close();
-    WinPrint.focus();
-    
-    setTimeout(() => {
-      WinPrint.print();
-      WinPrint.close();
-    }, 250);
-  }
-}
-
-// ==================== ERROR HANDLER (Single Responsibility) ====================
-class ErrorHandlerService {
-  static handleSubmitError(error) {
-    console.error('Error submitting form:', error);
-    
-    if (!error.response) {
-      message.error({
-        content: 'لا يمكن الاتصال بالخادم، يرجى التحقق من الاتصال بالإنترنت',
-        duration: 5
-      });
-      return;
-    }
-
-    const errorData = error.response.data;
-    const errorMessage = errorData.message;
-    
-    if (errorData.errors && Array.isArray(errorData.errors)) {
-      const errorMessages = errorData.errors
-        .slice(0, 3)
-        .map(err => err.msg || err.message)
-        .join('\n');
-      
-      message.error({
-        content: `خطأ في التحقق:\n${errorMessages}`,
-        duration: 7
-      });
-    } else if (error.response.status === 409) {
-      message.error({
-        content: errorMessage || 'البيانات مسجلة مسبقاً',
-        duration: 5
-      });
-    } else if (error.response.status === 400) {
-      message.error({
-        content: errorMessage || 'بيانات غير صالحة، يرجى التحقق من المعلومات',
-        duration: 5
-      });
-    } else {
-      message.error({
-        content: 'حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى',
-        duration: 5
-      });
-    }
-  }
-}
-
-// ==================== FORM STEPS CONFIG (Open/Closed Principle) ====================
-class FormStepsConfig {
-  static getSteps() {
-    return [
-      { title: 'الهوية', icon: <IdcardOutlined /> },
-      { title: 'البيانات', icon: <UserOutlined /> },
-      { title: 'العائلة', icon: <TeamOutlined /> },
-      { title: 'الإقامة', icon: <EnvironmentOutlined /> },
-      { title: 'التعليم', icon: <SafetyCertificateOutlined /> }
-    ];
-  }
-
-  static getFieldsForStep(step) {
-    const fieldsMap = {
-      0: ['idNumber', 'idIssueDate', 'phone'],
-      1: ['firstName', 'lastName', 'birthDate', 'gender'],
-      2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession', 'fatherphone'],
-      3: ['governorate', 'address'],
-      4: ['educationlevel', 'supportingdocument']
-    };
-    return fieldsMap[step] || [];
-  }
-}
-
-// ==================== MAIN COMPONENT ====================
 const RegisterPage = () => {
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
@@ -357,13 +52,10 @@ const RegisterPage = () => {
   const stepsContainerRef = useRef(null);
   const printRef = useRef();
 
-  const steps = FormStepsConfig.getSteps();
-
-  // Auto-scroll pour centrer l'étape active
   useEffect(() => {
     if (stepsContainerRef.current) {
       const container = stepsContainerRef.current;
-      const stepWidth = container.scrollWidth / steps.length;
+      const stepWidth = container.scrollWidth / FORM_STEPS.length;
       const scrollPosition = stepWidth * currentStep - (container.clientWidth / 2) + (stepWidth / 2);
       
       container.scrollTo({
@@ -371,25 +63,23 @@ const RegisterPage = () => {
         behavior: 'smooth'
       });
     }
-  }, [currentStep, steps.length]);
+  }, [currentStep]);
 
-  // التعامل مع تغيير الولاية
   const handleGovernorateChange = (value) => {
     setSelectedGovernorate(value);
     form.setFieldValue('region', undefined);
     
     if (value === 'ben_arous') {
-      setAvailableRegions(regionsData.ben_arous);
+      setAvailableRegions(REGIONS_DATA.ben_arous);
       message.success('تم فتح قائمة المناطق لولاية بن عروس');
     } else {
       setAvailableRegions([]);
     }
   };
 
-  // الانتقال للخطوة التالية
   const next = async () => {
     try {
-      const fieldsToValidate = FormStepsConfig.getFieldsForStep(currentStep);
+      const fieldsToValidate = STEP_FIELDS[currentStep];
       await form.validateFields(fieldsToValidate);
       
       const currentValues = form.getFieldsValue(fieldsToValidate);
@@ -406,15 +96,13 @@ const RegisterPage = () => {
     }
   };
 
-  // العودة للخطوة السابقة
   const prev = () => {
     setCurrentStep(currentStep - 1);
   };
 
-  // عرض البيانات للمراجعة
   const handleReview = async () => {
     try {
-      const fieldsToValidate = FormStepsConfig.getFieldsForStep(currentStep);
+      const fieldsToValidate = STEP_FIELDS[currentStep];
       await form.validateFields(fieldsToValidate);
       
       const currentValues = form.getFieldsValue(fieldsToValidate);
@@ -427,45 +115,29 @@ const RegisterPage = () => {
     }
   };
 
-  // تنزيل PDF
   const handleDownloadPDF = () => {
     const printContent = printRef.current;
     const htmlContent = PDFService.generateHTML(printContent.innerHTML);
     PDFService.download(htmlContent);
   };
 
-  // إرسال النموذج مع تنزيل PDF
   const handleFinalSubmit = async () => {
     setLoading(true);
     
     try {
-      const formattedData = DataFormatterService.formatForAPI(reviewData, governorates);
+      const formattedData = DataFormatterService.formatForAPI(reviewData, GOVERNORATES);
+      console.log('📤 Données envoyées à l\'API:', formattedData);
       const response = await volunteerApi.create(formattedData);
 
       if (response.success) {
-        // تنزيل PDF أولاً
         handleDownloadPDF();
-        
-        // ثم إظهار رسالة النجاح
         setSubmitSuccess(true);
         setShowReviewModal(false);
         
         message.success({
           content: response.message || 'تم تسجيل المتطوع بنجاح وتنزيل الفيش',
-          duration: 5,
-          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
+          duration: 5
         });
-        
-        setTimeout(() => {
-          form.resetFields();
-          setCurrentStep(0);
-          setSubmitSuccess(false);
-          setSelectedGovernorate('');
-          setAvailableRegions([]);
-          setFormData({});
-          setCompletedSteps([]);
-          setReviewData(null);
-        }, 3000);
       }
     } catch (error) {
       ErrorHandlerService.handleSubmitError(error);
@@ -474,304 +146,55 @@ const RegisterPage = () => {
     }
   };
 
-  // محتوى كل خطوة
+  const handleReturnHome = () => {
+    form.resetFields();
+    setCurrentStep(0);
+    setSubmitSuccess(false);
+    setSelectedGovernorate('');
+    setAvailableRegions([]);
+    setFormData({});
+    setCompletedSteps([]);
+    setReviewData(null);
+  };
+
   const renderStepContent = () => {
     const formItemStyle = { marginBottom: 16 };
     
     switch (currentStep) {
       case 0:
-        return (
-          <>
-            <Form.Item
-              name="idNumber"
-              label="رقم بطاقة التعريف"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                { validator: (_, value) => ValidationService.validateIdNumber(value) }
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="01234567" maxLength={8} size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="idIssueDate"
-              label="تاريخ الإصدار"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                { validator: (_, value) => ValidationService.validateIssueDate(value) }
-              ]}
-              style={formItemStyle}
-            >
-              <DatePicker style={{ width: '100%' }} placeholder="اختر التاريخ" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="phone"
-              label="رقم الهاتف الشخصي"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                { pattern: VALIDATION_RULES.PHONE.PATTERN, message: ERROR_MESSAGES.INVALID_PHONE }
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="12345678" maxLength={8} size="large" />
-            </Form.Item>
-          </>
-        );
-
+        return <IdentityStep formItemStyle={formItemStyle} />;
       case 1:
-        return (
-          <>
-            <Form.Item
-              name="firstName"
-              label="الاسم"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                ValidationService.getArabicOnlyRule(),
-                { min: VALIDATION_RULES.NAME.MIN_LENGTH, message: ERROR_MESSAGES.MIN_LENGTH }
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="محمد" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="lastName"
-              label="اللقب"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                ValidationService.getArabicOnlyRule(),
-                { min: VALIDATION_RULES.NAME.MIN_LENGTH, message: ERROR_MESSAGES.MIN_LENGTH }
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="بن علي" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="birthDate"
-              label="تاريخ الولادة"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                { validator: (_, value) => ValidationService.validateAge(value) }
-              ]}
-              style={formItemStyle}
-            >
-              <DatePicker style={{ width: '100%' }} placeholder="اختر التاريخ" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="gender"
-              label="الجنس"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <Select placeholder="اختر الجنس" size="large">
-                <Option value="male">ذكر</Option>
-                <Option value="female">أنثى</Option>
-              </Select>
-            </Form.Item>
-          </>
-        );
-
+        return <PersonalDataStep formItemStyle={formItemStyle} />;
       case 2:
-        return (
-          <>
-            <Form.Item
-              name="fatherName"
-              label="اسم الأب"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                ValidationService.getArabicOnlyRule()
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="علي" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="grandFatherName"
-              label="اسم الجد"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                ValidationService.getArabicOnlyRule()
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="أحمد" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="motherFirstName"
-              label="اسم الأم"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                ValidationService.getArabicOnlyRule()
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="فاطمة" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="motherLastName"
-              label="لقب الأم"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                ValidationService.getArabicOnlyRule()
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="السالمي" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="maritalstatus"
-              label="الحالة العائلية"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <Select placeholder="اختر الحالة العائلية" size="large">
-                <Option value="single">أعزب</Option>
-                <Option value="married">متزوج</Option>
-                <Option value="divorced">مطلق</Option>
-                <Option value="widowed">أرمل</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="children"
-              label="عدد الأبناء"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <InputNumber min={0} max={20} style={{ width: '100%' }} size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="profession"
-              label="المهنة"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <Input placeholder="مهندس" size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="fatherphone"
-              label="رقم هاتف الأب"
-              rules={[
-                { required: true, message: ERROR_MESSAGES.REQUIRED },
-                { pattern: VALIDATION_RULES.PHONE.PATTERN, message: ERROR_MESSAGES.INVALID_PHONE }
-              ]}
-              style={formItemStyle}
-            >
-              <Input placeholder="12345678" maxLength={8} size="large" />
-            </Form.Item>
-          </>
-        );
-
+        return <FamilyStep formItemStyle={formItemStyle} />;
       case 3:
         return (
-          <>
-            <Form.Item
-              name="governorate"
-              label="الولاية"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <Select
-                placeholder="اختر الولاية"
-                onChange={handleGovernorateChange}
-                showSearch
-                optionFilterProp="children"
-                size="large"
-              >
-                {governorates.map(gov => (
-                  <Option key={gov.value} value={gov.value}>{gov.label}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item name="region" label="المنطقة" style={formItemStyle}>
-              <Select
-                placeholder={selectedGovernorate === 'ben_arous' ? 'اختر المنطقة (اختياري)' : 'لا توجد مناطق لهذه الولاية'}
-                disabled={selectedGovernorate !== 'ben_arous'}
-                size="large"
-              >
-                {availableRegions.map(region => (
-                  <Option key={region} value={region}>{region}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="address"
-              label="العنوان الشخصي الكامل"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <Input.TextArea rows={3} placeholder="أدخل العنوان الكامل" size="large" />
-            </Form.Item>
-          </>
+          <ResidenceStep
+            formItemStyle={formItemStyle}
+            governorates={GOVERNORATES}
+            selectedGovernorate={selectedGovernorate}
+            availableRegions={availableRegions}
+            handleGovernorateChange={handleGovernorateChange}
+          />
         );
-
       case 4:
-        return (
-          <>
-            <Form.Item
-              name="educationlevel"
-              label="المستوى التعليمي"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <Select placeholder="اختر المستوى التعليمي" size="large">
-                <Option value="primary">ابتدائي</Option>
-                <Option value="secondary">إعدادي</Option>
-                <Option value="highschool">ثانوي</Option>
-                <Option value="bachelor">بكالوريا</Option>
-                <Option value="university">جامعي</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="supportingdocument"
-              label="شهائد الإثبات"
-              rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-              style={formItemStyle}
-            >
-              <Select placeholder="اختر نوع الشهادة" size="large">
-                <Option value="attendance-grades">شهادة حضور وبطاقة الأعداد الأخيرة للسنة المنقضية</Option>
-                <Option value="baccalaureate">شهادة البكالوريا</Option>
-                <Option value="university">شهادة تعليم جامعي</Option>
-                <Option value="other">شهادة أخرى</Option>
-              </Select>
-            </Form.Item>
-          </>
-        );
-
+        return <EducationStep formItemStyle={formItemStyle} />;
       default:
         return null;
     }
   };
 
-  // عرض البيانات في المودال
   const renderReviewContent = () => {
     if (!reviewData) return null;
 
     const labels = DataFormatterService.getDisplayLabels();
-    const governorateLabel = governorates.find(g => g.value === reviewData.governorate)?.label || reviewData.governorate;
+    const governorateLabel = GOVERNORATES.find(g => g.value === reviewData.governorate)?.label || reviewData.governorate;
 
     return (
       <div ref={printRef}>
         <div className="logo-container">
-    <img 
-      src="/assets/images/شعار.png" 
-      alt="شعار" 
-      className="logo"
-    />
-  </div>
+          <img src="/assets/images/شعار.png" alt="شعار" className="logo" />
+        </div>
         <div className="header">
           <h1>استمارة التسجيل في التطوع</h1>
           <p style={{ color: '#666', fontSize: '14px' }}>جمعية متطوعون في خدمة الحماية المدنية بن عروس</p>
@@ -825,7 +248,7 @@ const RegisterPage = () => {
           </div>
           <div className="field">
             <span className="field-label">الحالة العائلية:</span>
-            <span className="field-value">{labels.maritalStatus[reviewData.maritalstatus]}</span>
+            <span className="field-value">{labels.maritalstatus[reviewData.maritalstatus]}</span>
           </div>
           <div className="field">
             <span className="field-label">عدد الأبناء:</span>
@@ -878,173 +301,66 @@ const RegisterPage = () => {
     );
   };
 
-  // Affichage de succès
   if (submitSuccess) {
     return (
-      <div style={{ 
-        maxWidth: 900, 
-        margin: '0 auto', 
-        padding: '16px', 
-        direction: 'rtl',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <Card
-          style={{
-            textAlign: 'center',
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}
-          bodyStyle={{ padding: '40px' }}
-        >
-          <CheckCircleOutlined style={{ fontSize: 64, color: '#52c41a', marginBottom: 24 }} />
-          <Title level={2}>تم التسجيل بنجاح!</Title>
-          <Text type="secondary" style={{ fontSize: 16, display: 'block', marginTop: 16 }}>
-            شكراً لتسجيلك. تم تنزيل الفيش بنجاح وسيتم مراجعة طلبك والتواصل معك قريباً.
-          </Text>
-        </Card>
-      </div>
+      <SuccessScreen
+        formData={reviewData}
+        onDownloadPDF={handleDownloadPDF}
+        onReturnHome={handleReturnHome}
+      />
     );
   }
 
   return (
-    <div style={{ 
-      maxWidth: 900, 
-      margin: '0 auto', 
-      padding: '16px', 
-      direction: 'rtl',
-      minHeight: '100vh'
-    }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: '16px', direction: 'rtl', minHeight: '100vh' }}>
       <SchemaOrg schema={getRegisterActionSchema()} id="register-schema" />
-      <SchemaOrg schema={getBreadcrumbSchema(breadcrumbs)} id="breadcrumb-schema" />
+      <SchemaOrg schema={getBreadcrumbSchema(BREADCRUMBS)} id="breadcrumb-schema" />
       
-      <Card 
-        style={{ 
-          marginBottom: 16, 
-          textAlign: 'center',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
-        }}
-        bodyStyle={{ padding: '20px 16px' }}
-      >
+      <Card style={{ marginBottom: 16, textAlign: 'center', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }} bodyStyle={{ padding: '20px 16px' }}>
         <Title level={2} style={{ marginBottom: 8, fontSize: 'clamp(20px, 5vw, 28px)' }}>
-        التسجيل في التطوع
+          التسجيل في التطوع
         </Title>
         <Text type="secondary" style={{ fontSize: 'clamp(12px, 3.5vw, 14px)', display: 'block', lineHeight: 1.6 }}>
           انضم إلى جمعية متطوعون في خدمة الحماية المدنية بن عروس وكن جزءاً من فريق يخدم المجتمع
         </Text>
       </Card>
 
-      <Alert
-        message="تنبيه هام"
-        description="يرجى التحقق من صحة المعلومات المدخلة لأن أي خطأ في البيانات سيؤدي إلى رفض الملف تلقائياً."
-        type="warning"
-        icon={<ExclamationCircleOutlined />}
-        showIcon
-        style={{ 
-          marginBottom: 16,
-          borderRadius: '8px',
-          fontSize: 'clamp(12px, 3.5vw, 14px)'
-        }}
-      />
+      <DataValidationAlert />
 
-      <Card 
-        style={{ 
-          marginBottom: 16,
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          overflow: 'hidden'
-        }}
-        bodyStyle={{ padding: '20px 8px' }}
-      >
-        <div 
-          ref={stepsContainerRef}
-          style={{ 
-            overflowX: 'auto',
-            overflowY: 'hidden',
-            scrollBehavior: 'smooth',
-            WebkitOverflowScrolling: 'touch',
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#1890ff #f0f0f0'
-          }}
-        >
+      <Card style={{ marginBottom: 16, borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', overflow: 'hidden' }} bodyStyle={{ padding: '20px 8px' }}>
+        <div ref={stepsContainerRef} style={{ overflowX: 'auto', overflowY: 'hidden', scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
           <Steps 
             current={currentStep} 
-            items={steps.map((step, index) => ({
+            items={FORM_STEPS.map((step, index) => ({
               ...step,
-              status: completedSteps.includes(index) ? 'finish' : 
-                      index === currentStep ? 'process' : 'wait',
+              status: completedSteps.includes(index) ? 'finish' : index === currentStep ? 'process' : 'wait',
               icon: completedSteps.includes(index) ? <CheckOutlined /> : step.icon
             }))}
             responsive={false}
             size="small"
-            style={{
-              minWidth: '600px',
-              paddingBottom: '10px'
-            }}
+            style={{ minWidth: '600px', paddingBottom: '10px' }}
           />
         </div>
       </Card>
 
-      <Card
-        style={{
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          marginBottom: 16
-        }}
-        bodyStyle={{ padding: '20px 16px' }}
-      >
+      <Card style={{ borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', marginBottom: 16 }} bodyStyle={{ padding: '20px 16px' }}>
         <Spin spinning={loading} tip="جاري المعالجة...">
-          <Form
-            form={form}
-            layout="vertical"
-            scrollToFirstError
-          >
+          <Form form={form} layout="vertical" scrollToFirstError>
             {renderStepContent()}
 
-            <div style={{ 
-              marginTop: 24, 
-              display: 'flex', 
-              gap: '12px',
-              justifyContent: 'space-between',
-              borderTop: '1px solid #f0f0f0', 
-              paddingTop: 20,
-              flexWrap: 'wrap'
-            }}>
+            <div style={{ marginTop: 24, display: 'flex', gap: '12px', justifyContent: 'space-between', borderTop: '1px solid #f0f0f0', paddingTop: 20, flexWrap: 'wrap' }}>
               {currentStep > 0 && (
-                <Button 
-                  onClick={prev} 
-                  icon={<ArrowRightOutlined />}
-                  size="large"
-                  disabled={loading}
-                  style={{ flex: '1 1 auto', minWidth: '120px' }}
-                >
+                <Button onClick={prev} icon={<ArrowRightOutlined />} size="large" disabled={loading} style={{ flex: '1 1 auto', minWidth: '120px' }}>
                   السابق
                 </Button>
               )}
               
-              {currentStep < steps.length - 1 ? (
-                <Button 
-                  type="primary" 
-                  onClick={next} 
-                  icon={<ArrowLeftOutlined />}
-                  size="large"
-                  disabled={loading}
-                  style={{ flex: '1 1 auto', minWidth: '120px', marginRight: currentStep === 0 ? 'auto' : 0 }}
-                >
+              {currentStep < FORM_STEPS.length - 1 ? (
+                <Button type="primary" onClick={next} icon={<ArrowLeftOutlined />} size="large" disabled={loading} style={{ flex: '1 1 auto', minWidth: '120px', marginRight: currentStep === 0 ? 'auto' : 0 }}>
                   التالي
                 </Button>
               ) : (
-                <Button 
-                  type="primary" 
-                  onClick={handleReview}
-                  icon={<SendOutlined />}
-                  size="large"
-                  loading={loading}
-                  style={{ flex: '1 1 auto', minWidth: '120px' }}
-                >
+                <Button type="primary" onClick={handleReview} icon={<SendOutlined />} size="large" loading={loading} style={{ flex: '1 1 auto', minWidth: '120px' }}>
                   مراجعة وتسجيل
                 </Button>
               )}
@@ -1053,127 +369,23 @@ const RegisterPage = () => {
         </Spin>
       </Card>
 
-      {/* Modal de révision */}
       <Modal
-        title={
-          <Space style={{ fontSize: '18px', fontWeight: 'bold' }}>
-            <ExclamationCircleOutlined style={{ color: '#faad14' }} />
-            <span>مراجعة البيانات قبل التسجيل</span>
-          </Space>
-        }
+        title={<Space style={{ fontSize: '18px', fontWeight: 'bold' }}><span>مراجعة البيانات قبل التسجيل</span></Space>}
         open={showReviewModal}
         onCancel={() => setShowReviewModal(false)}
         width={800}
         style={{ direction: 'rtl' }}
         footer={[
-          <Button 
-            key="edit" 
-            icon={<EditOutlined />}
-            onClick={() => setShowReviewModal(false)}
-            size="large"
-          >
-            تعديل البيانات
-          </Button>,
-          <Button 
-            key="download" 
-            icon={<DownloadOutlined />}
-            onClick={handleDownloadPDF}
-            size="large"
-          >
-            معاينة PDF
-          </Button>,
-          <Button 
-            key="submit" 
-            type="primary" 
-            icon={<SaveOutlined />}
-            loading={loading}
-            onClick={handleFinalSubmit}
-            size="large"
-          >
-            حفظ وتسجيل
-          </Button>
+          <Button key="edit" icon={<EditOutlined />} onClick={() => setShowReviewModal(false)} size="large">تعديل البيانات</Button>,
+          <Button key="download" icon={<DownloadOutlined />} onClick={handleDownloadPDF} size="large">معاينة PDF</Button>,
+          <Button key="submit" type="primary" icon={<SaveOutlined />} loading={loading} onClick={handleFinalSubmit} size="large">حفظ وتسجيل</Button>
         ]}
       >
-        <Alert
-          message="تنبيه مهم"
-          description="يرجى مراجعة جميع البيانات بعناية. بعد الضغط على 'حفظ وتسجيل' سيتم إرسال طلبك وتنزيل الاستمارة تلقائياً."
-          type="warning"
-          showIcon
-          style={{ marginBottom: 20 }}
-        />
-        
+        <ReviewBeforeSubmitAlert />
         <div style={{ maxHeight: '60vh', overflowY: 'auto', padding: '10px 0' }}>
           {renderReviewContent()}
         </div>
       </Modal>
-
-      <style jsx>{`
-        /* Scrollbar personnalisée pour webkit */
-        div[style*="overflowX"]::-webkit-scrollbar {
-          height: 6px;
-        }
-        
-        div[style*="overflowX"]::-webkit-scrollbar-track {
-          background: #f0f0f0;
-          border-radius: 3px;
-        }
-        
-        div[style*="overflowX"]::-webkit-scrollbar-thumb {
-          background: gray;
-          border-radius: 3px;
-        }
-        
-        div[style*="overflowX"]::-webkit-scrollbar-thumb:hover {
-          background: gray;
-        }
-        
-        @media (max-width: 768px) {
-          .ant-steps-item-title {
-            font-size: 12px !important;
-          }
-          .ant-steps-item-icon {
-            width: 28px !important;
-            height: 28px !important;
-            font-size: 14px !important;
-          }
-        }
-        
-        @media print {
-          .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #1890ff;
-            padding-bottom: 20px;
-          }
-          .section {
-            margin-bottom: 25px;
-            page-break-inside: avoid;
-          }
-          .section-title {
-            background: orange;
-            color: white;
-            padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-          }
-          .field {
-            display: flex;
-            margin-bottom: 12px;
-            padding: 8px;
-            background: #f5f5f5;
-          }
-          .field-label {
-            font-weight: bold;
-            width: 200px;
-            color: #333;
-          }
-          .field-value {
-            flex: 1;
-            color: #666;
-          }
-        }
-      `}</style>
     </div>
   );
 };

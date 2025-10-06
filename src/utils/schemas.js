@@ -3,7 +3,7 @@ export const getOrganizationSchema = () => ({
   "@type": "GovernmentOrganization",
   "name": "Association des Volontaires de service de la Protection Civile - Benarous",
   "alternateName": "AVSPC Benarous",
-  "url": "https://inscription-avspc.netlify.app/",
+  "url": "https://inscription-avspcbenarous.netlify.app/",
   "description": "Association pour le recrutement et la formation des volontaires de la Protection Civile en Tunisie",
   "address": {
     "@type": "PostalAddress",
@@ -26,7 +26,7 @@ export const getWebsiteSchema = () => ({
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "AVSPC Benarous - Inscription Volontaires Protection Civile",
-  "url": "https://inscription-avspc.netlify.app/",
+  "url": "https://inscription-avspcbenarous.netlify.app/",
   "description": "Plateforme d'inscription au concours de volontaire de la Protection Civile",
   "publisher": {
     "@type": "Organization",
@@ -56,7 +56,7 @@ export const getEventSchema = () => ({
   "organizer": {
     "@type": "Organization",
     "name": "AVSPC Benarous",
-    "url": "https://inscription-avspc.netlify.app/"
+    "url": "https://inscription-avspcbenarous.netlify.app/"
   }
 });
 

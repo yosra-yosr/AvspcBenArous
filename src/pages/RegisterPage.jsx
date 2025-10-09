@@ -54,12 +54,13 @@ const RegisterPage = () => {
   
   // NOUVEAU: État pour la session d'inscription
   const [isSessionActive, setIsSessionActive] = useState(false); // Changez à true pour activer
- const [isInitialLoading, setIsInitialLoading] = useState(true);
+//  const [ setIsInitialLoading] = useState(true);
   useEffect(() => {
     // Si vous devez vérifier la session au chargement (via API)
     // Par exemple: checkRegistrationSession().then(setActive => setIsSessionActive(setActive));
 
    const checkSession = async () => {
+   
       try {
         const response = await volunteerApi.checkActiveSession();
         // **CORRECTION : Utiliser la propriété `isOpen` ou `active` de la réponse.**
@@ -78,7 +79,7 @@ const RegisterPage = () => {
         // En cas d'échec de l'API (erreur réseau/serveur), on bloque le formulaire par sécurité.
         setIsSessionActive(false); 
       } finally {
-        setIsInitialLoading(false);
+        // setIsInitialLoading(false);
       }
     };
      checkSession();

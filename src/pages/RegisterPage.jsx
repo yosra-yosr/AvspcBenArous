@@ -18,6 +18,7 @@ import {
 import { GOVERNORATES, REGIONS_DATA, BREADCRUMBS } from '../utils/constants';
 import DataFormatterService from '../services/DataFormatterService';
 import ErrorHandlerService from '../services/ErrorHandlerService';
+import SessionClosedNotification from '../components/common/SessionClosedNotification';
 
 const { Title, Text } = Typography;
 
@@ -822,22 +823,7 @@ const RegisterPage = () => {
 
   // NOUVEAU: Affichage conditionnel
   if (!isSessionActive) {
-    return (
-      <div style={{ maxWidth: 900, margin: '100px auto', padding: '16px', direction: 'rtl', minHeight: '80vh', textAlign: 'center' }}>
-        <Card style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid #ff6b35' }} bodyStyle={{ padding: '40px 20px' }}>
-          <Title level={2} style={{ color: '#ff6b35' }}>
-            🔔 إشعار هام 🔔
-          </Title>
-          <Text style={{ fontSize: '18px', display: 'block', marginTop: 20, color: '#2c3e50', lineHeight: 2 }}>
-            <strong style={{ display: 'block', fontSize: '24px', marginBottom: '10px' }}>
-              لا تزال جلسة التسجيل مغلقة.
-            </strong>
-            **سيتم تفعيل جلسة التسجيل لاحقًا.**
-            يرجى العودة في وقت آخر. شكراً لتفهمكم.
-          </Text>
-        </Card>
-      </div>
-    );
+  return <SessionClosedNotification />;
   }
 
   // ANCIEN CODE D'AFFICHAGE DU FORMULAIRE (Si isSessionActive est true)

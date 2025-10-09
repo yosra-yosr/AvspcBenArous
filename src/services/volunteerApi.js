@@ -139,6 +139,24 @@ const volunteerApi = {
     } catch (error) {
       throw error;
     }
+  },
+  
+  /**
+   * Vérifier si la session d'inscription est active.
+   * Consomme l'API GET /sessions/active
+   * @returns {Promise<Object>} Un objet avec la clé 'active' (boolean)
+   */
+  checkActiveSession: async () => {
+    try {
+      const response = await api.get('/sessions/active');
+      console.log(response.data)
+      return response.data; // Doit retourner { active: true } ou { active: false }
+    } catch (error) {
+      // En cas d'erreur réseau ou serveur, on suppose que la session est inactive par sécurité.
+      console.error('Erreur lors de la vérification de la session active:', error);
+      // Retourne un état inactif par défaut en cas d'échec de la connexion.
+      return { active: false };
+    }
   }
 };
 

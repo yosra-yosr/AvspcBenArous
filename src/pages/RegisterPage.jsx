@@ -51,8 +51,37 @@ const RegisterPage = () => {
   const [reviewData, setReviewData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const stepsContainerRef = useRef(null);
-
+  
+  // NOUVEAU: État pour la session d'inscription
+  const [isSessionActive, setIsSessionActive] = useState(false); // Changez à true pour activer
+ const [isInitialLoading, setIsInitialLoading] = useState(true);
   useEffect(() => {
+    // Si vous devez vérifier la session au chargement (via API)
+    // Par exemple: checkRegistrationSession().then(setActive => setIsSessionActive(setActive));
+
+   const checkSession = async () => {
+      try {
+        const response = await volunteerApi.checkActiveSession();
+        // **CORRECTION : Utiliser la propriété `isOpen` ou `active` de la réponse.**
+        // Basé sur votre image, la propriété est `isOpen`.
+        // Si elle est `true`, on active l'inscription.
+        const isActive = response && (response.isOpen === true || response.active === true);
+        setIsSessionActive(isActive);
+        
+        // Si la session est fermée, afficher un message temporaire (optionnel)
+        if (!isActive) {
+             message.warning('جلسة التسجيل مغلقة حاليًا.');
+        }
+        
+      } catch (error) {
+        console.error("Erreur lors de la vérification de la session:", error);
+        // En cas d'échec de l'API (erreur réseau/serveur), on bloque le formulaire par sécurité.
+        setIsSessionActive(false); 
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
+     checkSession();
     if (stepsContainerRef.current) {
       const container = stepsContainerRef.current;
       const stepWidth = container.scrollWidth / FORM_STEPS.length;
@@ -132,6 +161,7 @@ const RegisterPage = () => {
     }
   };
 
+  // MISE À JOUR MAJEURE: Fonction pour le téléchargement PDF
   const handleDownloadPDF = () => {
     const labels = DataFormatterService.getDisplayLabels();
     const governorateLabel = GOVERNORATES.find(g => g.value === reviewData.governorate)?.label || reviewData.governorate;
@@ -141,140 +171,138 @@ const RegisterPage = () => {
       <html dir="rtl" lang="ar">
       <head>
         <meta charset="UTF-8">
+        <title>استمارة التسجيل</title>
         <style>
-          @page { margin: 20mm; }
+          /* Styles optimisés pour l'impression en une page */
+          @page { margin: 15mm; }
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: white;
-            padding: 30px;
+            padding: 15px;
             color: #2c3e50;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 10pt; /* Taille de police plus petite pour gagner de la place */
           }
           .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 35px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #ff6b35;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ff6b35;
+            position: relative; /* Pour positionner le logo */
           }
           .logo {
-            width: auto;
-            height: auto;
+            width: 50px; /* Logo plus petit */
+            height: 50px; /* Logo plus petit */
+            position: absolute;
+            top: 0;
+            right: 0;
           }
           .header-text {
-            text-align: right;
+            text-align: center;
             flex: 1;
-            margin-right: 25px;
+            margin-right: 70px; /* Pour éviter le chevauchement avec le logo */
           }
           .header-text h1 {
             color: #2c3e50;
-            font-size: 24px;
+            font-size: 18px; /* Taille réduite */
             font-weight: bold;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
           }
           .header-text p {
             color: #7f8c8d;
-            font-size: 13px;
+            font-size: 11px; /* Taille réduite */
           }
           .section {
-            margin-bottom: 25px;
-            background: #ffffff;
-            padding: 0;
-            border-radius: 6px;
+            margin-bottom: 15px; /* Marge réduite */
             border: 1px solid #e0e0e0;
+            border-radius: 4px;
             overflow: hidden;
+            /* Empêche les sauts de page au milieu d'une section */
+            page-break-inside: avoid; 
           }
           .section-title {
-            background: linear-gradient(135deg, gray 0%, #ff8c5a 100%);
+            background: linear-gradient(135deg, #a6a6a6 0%, #ff8c5a 100%); /* Couleur mise à jour pour un meilleur contraste */
             color: white;
-            font-size: 16px;
+            font-size: 14px; /* Taille réduite */
             font-weight: bold;
-            padding: 12px 15px;
+            padding: 8px 10px; /* Padding réduit */
             margin: 0;
           }
           .section-content {
-            padding: 15px;
+            padding: 10px; /* Padding réduit */
+            display: flex;
+            flex-wrap: wrap; /* Permet aux champs de se mettre en ligne */
           }
           .field {
+            width: 50%; /* Deux colonnes par défaut */
             display: flex;
-            padding: 12px 10px;
+            padding: 6px 10px;
             border-bottom: 1px solid #f0f0f0;
-            background: #fafafa;
-            margin-bottom: 8px;
-            border-radius: 4px;
           }
-          .field:last-child {
-            margin-bottom: 0;
-          }
-          .field:nth-child(even) {
-            background: #ffffff;
+          .field:nth-child(2n-1) {
+            border-left: 1px solid #f0f0f0;
           }
           .field-label {
             color: #5a5a5a;
             font-weight: 700;
-            min-width: 200px;
-            font-size: 13px;
-            padding-left: 15px;
+            min-width: 120px; /* Réduit la largeur minimale */
+            font-size: 10pt;
+            padding-left: 10px;
             position: relative;
           }
           .field-label:after {
-            content: '';
+            content: ':';
             position: absolute;
             left: 5px;
             top: 50%;
             transform: translateY(-50%);
-            width: 3px;
-            height: 60%;
-            background: #ff6b35;
-            border-radius: 2px;
+            color: #ff6b35;
+            font-weight: 900;
           }
           .field-value {
             color: #2c3e50;
             flex: 1;
-            font-size: 13px;
+            font-size: 10pt;
             font-weight: 500;
-            padding: 2px 8px;
-            background: white;
-            border-radius: 3px;
-            border: 1px solid #e8e8e8;
+            word-wrap: break-word; /* Gère les longs textes */
+          }
+          .full-width-field {
+            width: 100%;
           }
           .footer {
-            margin-top: 40px;
+            margin-top: 20px;
             text-align: center;
-            padding-top: 20px;
+            padding-top: 15px;
             border-top: 2px solid #e0e0e0;
+            page-break-before: auto;
           }
           .footer-date {
             color: #7f8c8d;
-            font-size: 11px;
-            margin-bottom: 10px;
-            background: #f8f9fa;
-            padding: 8px;
+            font-size: 9pt;
+            margin-bottom: 8px;
+            padding: 6px;
             border-radius: 4px;
             display: inline-block;
           }
           .footer-signature {
             color: #2c3e50;
-            font-size: 12px;
-            margin-top: 35px;
+            font-size: 10pt;
+            margin-top: 25px;
             display: flex;
             justify-content: space-around;
-            padding: 0 30px;
+            padding: 0 10px;
           }
           .signature-box {
             text-align: center;
             flex: 1;
           }
           .signature-line {
-            width: 180px;
-            border-top: 2px solid #2c3e50;
-            margin: 30px auto 8px;
-          }
-          @media print {
-            body { padding: 15px; }
-            .section { page-break-inside: avoid; }
+            width: 150px; /* Ligne de signature plus courte */
+            border-top: 1px solid #2c3e50;
+            margin: 25px auto 5px;
           }
         </style>
       </head>
@@ -370,7 +398,7 @@ const RegisterPage = () => {
               <span class="field-value">${reviewData.region}</span>
             </div>
             ` : ''}
-            <div class="field">
+            <div class="field full-width-field">
               <span class="field-label">العنوان الكامل</span>
               <span class="field-value">${reviewData.address}</span>
             </div>
@@ -408,20 +436,27 @@ const RegisterPage = () => {
       </html>
     `;
 
-    // Ouvrir dans une nouvelle fenêtre pour imprimer en PDF
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(pdfContent);
-    printWindow.document.close();
-    
+    // Utilisation d'un iframe temporaire pour l'impression sans ouvrir de nouvel onglet
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(pdfContent);
+    doc.close();
+
     // Attendre le chargement puis déclencher l'impression
-    printWindow.onload = function() {
-      printWindow.focus();
+    iframe.contentWindow.onload = function() {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      // Retirer l'iframe après un court délai
       setTimeout(() => {
-        printWindow.print();
-      }, 250);
+        document.body.removeChild(iframe);
+      }, 1000);
     };
     
-    message.success('تم فتح نافذة الطباعة - اختر "حفظ كـ PDF"');
+    message.success('تم إعداد الفيش للطباعة - يرجى اختيار "حفظ كـ PDF"');
   };
 
   const handleFinalSubmit = async () => {
@@ -487,7 +522,8 @@ const RegisterPage = () => {
         return null;
     }
   };
-
+  
+  // Le reste de renderReviewContent (Edit mode et View mode) reste le même
   const renderReviewContent = () => {
     if (!reviewData) return null;
 
@@ -783,6 +819,27 @@ const RegisterPage = () => {
     </Button>
   ];
 
+  // NOUVEAU: Affichage conditionnel
+  if (!isSessionActive) {
+    return (
+      <div style={{ maxWidth: 900, margin: '100px auto', padding: '16px', direction: 'rtl', minHeight: '80vh', textAlign: 'center' }}>
+        <Card style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid #ff6b35' }} bodyStyle={{ padding: '40px 20px' }}>
+          <Title level={2} style={{ color: '#ff6b35' }}>
+            🔔 إشعار هام 🔔
+          </Title>
+          <Text style={{ fontSize: '18px', display: 'block', marginTop: 20, color: '#2c3e50', lineHeight: 2 }}>
+            <strong style={{ display: 'block', fontSize: '24px', marginBottom: '10px' }}>
+              لا تزال جلسة التسجيل مغلقة.
+            </strong>
+            **سيتم تفعيل جلسة التسجيل لاحقًا.**
+            يرجى العودة في وقت آخر. شكراً لتفهمكم.
+          </Text>
+        </Card>
+      </div>
+    );
+  }
+
+  // ANCIEN CODE D'AFFICHAGE DU FORMULAIRE (Si isSessionActive est true)
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: '16px', direction: 'rtl', minHeight: '100vh' }}>
       <SchemaOrg schema={getBreadcrumbSchema(BREADCRUMBS)} id="breadcrumb-schema" />

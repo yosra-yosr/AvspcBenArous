@@ -7,7 +7,7 @@ import {
   ClockCircleOutlined,
   PhoneOutlined
 } from '@ant-design/icons';
-import { SuccessRegistrationAlert, DocumentsInfoAlert, DeadlineWarningAlert } from '../common/AlertComponents';
+// import { SuccessRegistrationAlert, DocumentsInfoAlert, DeadlineWarningAlert } from '../common/AlertComponents';
 import RequiredDocuments from '../common/RequiredDocuments';
 
 const { Title, Text, Paragraph } = Typography;
@@ -48,9 +48,9 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
       </Card>
 
       {/* Alertes */}
-      <SuccessRegistrationAlert style={{ marginBottom: 16 }} />
+      {/* <SuccessRegistrationAlert style={{ marginBottom: 16 }} />
       <DeadlineWarningAlert days={7} style={{ marginBottom: 16 }} />
-      <DocumentsInfoAlert style={{ marginBottom: 24 }} />
+      <DocumentsInfoAlert style={{ marginBottom: 24 }} /> */}
 
       {/* Timeline des étapes suivantes */}
       <Card

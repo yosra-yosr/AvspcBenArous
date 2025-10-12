@@ -15,7 +15,7 @@ import SuccessScreen from '../components/registration/SuccessScreen';
 import {
   IdentityStep, PersonalDataStep, FamilyStep, ResidenceStep, EducationStep
 } from '../components/registration/FormSteps';
-import { GOVERNORATES, REGIONS_DATA, BREADCRUMBS } from '../utils/constants';
+import { GOVERNORATES, REGIONS_DATA, BREADCRUMBS,LOGO  } from '../utils/constants';
 import DataFormatterService from '../services/DataFormatterService';
 import ErrorHandlerService from '../services/ErrorHandlerService';
 import SessionClosedNotification from '../components/common/SessionClosedNotification';
@@ -201,7 +201,7 @@ const RegisterPage = () => {
             /* REMPLACEMENT BASE64 DU FILIGRANE : 
                Veuillez remplacer l'URL ci-dessous par votre image ENCODÉE EN BASE64 pour le filigrane. 
                C'est crucial pour la fiabilité dans le PDF. */
-            background-image: url('/assets/images/شعار.png'); 
+            background-image: url('LOGO.src'); 
             
             background-repeat: no-repeat;
             background-position: center center;

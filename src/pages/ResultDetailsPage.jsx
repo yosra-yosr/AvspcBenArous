@@ -38,7 +38,7 @@ const ResultDetailsPage = () => {
         return {
           color: 'success',
           icon: <CheckCircleOutlined />,
-          text: 'مقبول ✅',
+          text: 'مقبول ',
           bgColor: '#f6ffed',
           borderColor: '#b7eb8f'
         };
@@ -46,7 +46,7 @@ const ResultDetailsPage = () => {
         return {
           color: 'error',
           icon: <CloseCircleOutlined />,
-          text: 'مرفوض ❌',
+          text: 'مرفوض ',
           bgColor: '#fff2e8',
           borderColor: '#ffbb96'
         };
@@ -55,7 +55,7 @@ const ResultDetailsPage = () => {
         return {
           color: 'processing',
           icon: <ClockCircleOutlined />,
-          text: 'قيد المراجعة ⏳',
+          text: 'قيد المراجعة ',
           bgColor: '#e6f7ff',
           borderColor: 'orange'
         };
@@ -77,11 +77,11 @@ const ResultDetailsPage = () => {
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
         {/* Bouton retour */}
         <Button 
-          icon={<LeftOutlined />} 
-          onClick={() => navigate('/results')}
+          icon={<HomeOutlined />} 
+          onClick={() => navigate('/')}
           style={{ marginBottom: '20px' }}
         >
-          العودة إلى البحث
+          العودة إلى الصفحة الرئيسية
         </Button>
 
         {/* Carte principale */}
@@ -129,9 +129,9 @@ const ResultDetailsPage = () => {
               description={
                 <div>
                   <p>نحن سعداء بقبولك كمتطوع في جمعيتنا. سيتم التواصل معك قريباً لتحديد موعد البدء.</p>
-                  <p style={{ marginTop: '10px', fontWeight: 'bold' }}>
+                  {/* <p style={{ marginTop: '10px', fontWeight: 'bold' }}>
                     {volunteerData.message || 'تم العثور على النتيجة بنجاح'}
-                  </p>
+                  </p> */}
                 </div>
               }
               type="success"
@@ -331,7 +331,7 @@ const ResultDetailsPage = () => {
             </Text>
             <Text>
               <MailOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
-              <strong>البريد الإلكتروني:</strong> contact@avspcbenarous.tn
+              <strong>البريد الإلكتروني:</strong> avspcbenarous2023@gmail.com
             </Text>
             <Text>
               <HomeOutlined style={{ marginLeft: '8px', color: '#667eea' }} />

@@ -42,7 +42,7 @@ const LocationPage = () => {
             <strong>الفاكس:</strong> <a href="tel:+21690769362" dir="ltr" className="phone-number">+216 90 769 362</a>
           </div>
           <div>
-            <strong>البريد الإلكتروني:</strong> info@avspc-benarrous.tn
+            <strong>البريد الإلكتروني:</strong> avspcbenarous2023@gmail.com
           </div>
         </div>
       )

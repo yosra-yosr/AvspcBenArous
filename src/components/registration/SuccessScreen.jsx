@@ -1,23 +1,43 @@
 // src/components/registration/SuccessScreen.jsx
-import { Card, Typography, Space, Button, Timeline } from 'antd';
+import { Card, Typography, Space, Button, Timeline, Alert, List } from 'antd';
 import { 
   CheckCircleOutlined, 
   DownloadOutlined,
   HomeOutlined,
   ClockCircleOutlined,
-  PhoneOutlined
+  PhoneOutlined,
+  FileTextOutlined,
+  WarningOutlined
 } from '@ant-design/icons';
-// import { SuccessRegistrationAlert, DocumentsInfoAlert, DeadlineWarningAlert } from '../common/AlertComponents';
-import RequiredDocuments from '../common/RequiredDocuments';
 
 const { Title, Text, Paragraph } = Typography;
 
 const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
+  const scrollToDocuments = () => {
+    document.getElementById('required-documents-section')?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'center'
+    });
+  };
+
+  // Liste des documents requis selon l'image
+  const requiredDocuments = [
+    'مطلب ترشح باسم المدير الجهوي للحماية المدنية بن عروس. الموضوع : الانخراط في جمعية متطوعوعون في خدمة الحماية المدنية بن عروس)',
+    'الانخراط في جمعية 25 دينار',
+    '8 صور شخصية',
+    'بطاقة عدد 3 لا يتجاوز تاريخ استخراجها ثلاثة أشهر',
+    'شهادة طبية تفيد السلامة الصحية للمترشح',
+    'عدد 02 نسخة من الشهادة العلمية أو تكوين مهني إن وجدت',
+    '8 نسخ من بطاقة التعريف الوطنية',
+    '3 ظروف مضمون الوصول',
+    'ظرف كبير'
+  ];
+
   return (
     <div style={{ 
-      maxWidth: 900, 
+      maxWidth: '900px', 
       margin: '0 auto', 
-      padding: '16px', 
+      padding: '12px', 
       direction: 'rtl',
       minHeight: '100vh'
     }}>
@@ -27,39 +47,79 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
           textAlign: 'center',
           borderRadius: '12px',
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          marginBottom: 24
+          marginBottom: '16px'
         }}
-        bodyStyle={{ padding: '40px 20px' }}
+        bodyStyle={{ 
+          padding: window.innerWidth < 768 ? '24px 12px' : '40px 20px' 
+        }}
       >
         <CheckCircleOutlined 
           style={{ 
-            fontSize: 72, 
+            fontSize: window.innerWidth < 768 ? 56 : 72, 
             color: '#52c41a', 
-            marginBottom: 24,
+            marginBottom: '16px',
             display: 'block'
           }} 
         />
-        <Title level={2} style={{ marginBottom: 16, color: '#52c41a' }}>
+        <Title 
+          level={window.innerWidth < 768 ? 3 : 2} 
+          style={{ marginBottom: '12px', color: '#52c41a' }}
+        >
           تم التسجيل بنجاح!
         </Title>
-        <Text type="secondary" style={{ fontSize: 16, display: 'block' }}>
+        <Text type="secondary" style={{ fontSize: window.innerWidth < 768 ? 14 : 16, display: 'block' }}>
           رقم الطلب: <Text strong>#{formData?.idNumber || 'N/A'}</Text>
         </Text>
       </Card>
 
-      {/* Alertes */}
-      {/* <SuccessRegistrationAlert style={{ marginBottom: 16 }} />
-      <DeadlineWarningAlert days={7} style={{ marginBottom: 16 }} />
-      <DocumentsInfoAlert style={{ marginBottom: 24 }} /> */}
+      {/* Alerte Call-to-Action Documents */}
+      <Alert
+        message={
+          <Space direction="vertical" size={4} style={{ width: '100%' }}>
+            <Text strong style={{ fontSize: window.innerWidth < 768 ? 14 : 16, color: '#d46b08' }}>
+               خطوة مهمة جداً: تحضير الوثائق المطلوبة
+            </Text>
+            <Text style={{ fontSize: window.innerWidth < 768 ? 12 : 14 }}>
+              يجب عليك إحضار جميع الوثائق المذكورة أدناه خلال 7 أيام
+            </Text>
+          </Space>
+        }
+        type="warning"
+        showIcon
+        icon={<WarningOutlined style={{ fontSize: window.innerWidth < 768 ? 20 : 24 }} />}
+        style={{ 
+          marginBottom: '16px',
+          borderRadius: '12px',
+          border: '2px solid #faad14',
+          boxShadow: '0 4px 12px rgba(250, 173, 20, 0.2)'
+        }}
+        action={
+          <Button 
+            size={window.innerWidth < 768 ? 'middle' : 'large'}
+            type="primary" 
+            danger
+            icon={<FileTextOutlined />}
+            onClick={scrollToDocuments}
+            style={{ 
+              fontWeight: 'bold',
+              fontSize: window.innerWidth < 768 ? '14px' : '16px',
+              marginTop: window.innerWidth < 768 ? '8px' : '0'
+            }}
+          >
+            {window.innerWidth < 768 ? 'الوثائق' : 'عرض قائمة الوثائق'}
+          </Button>
+        }
+      />
 
       {/* Timeline des étapes suivantes */}
       <Card
-        title="الخطوات القادمة"
+        title={<span style={{ fontSize: window.innerWidth < 768 ? 16 : 18 }}>الخطوات القادمة</span>}
         style={{ 
           borderRadius: '12px',
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          marginBottom: 24
+          marginBottom: '16px'
         }}
+        bodyStyle={{ padding: window.innerWidth < 768 ? '12px' : '24px' }}
       >
         <Timeline
           items={[
@@ -68,9 +128,11 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
               dot: <CheckCircleOutlined style={{ fontSize: '16px' }} />,
               children: (
                 <div>
-                  <Text strong>تم التسجيل الإلكتروني</Text>
+                  <Text strong style={{ fontSize: window.innerWidth < 768 ? 13 : 14 }}>
+                    تم التسجيل الإلكتروني
+                  </Text>
                   <br />
-                  <Text type="secondary" style={{ fontSize: '13px' }}>
+                  <Text type="secondary" style={{ fontSize: window.innerWidth < 768 ? 11 : 13 }}>
                     تم حفظ بياناتك بنجاح في النظام
                   </Text>
                 </div>
@@ -81,43 +143,62 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
               dot: <DownloadOutlined style={{ fontSize: '16px' }} />,
               children: (
                 <div>
-                  <Text strong>تنزيل استمارة التسجيل</Text>
+                  <Text strong style={{ fontSize: window.innerWidth < 768 ? 13 : 14 }}>
+                    تنزيل استمارة التسجيل
+                  </Text>
                   <br />
-                  <Text type="secondary" style={{ fontSize: '13px' }}>
-                    قم بتنزيل وطباعة الاستمارة (إن لم يتم التنزيل تلقائياً)
+                  <Text type="secondary" style={{ fontSize: window.innerWidth < 768 ? 11 : 13 }}>
+                    قم بتنزيل وطباعة الاستمارة
                   </Text>
                   <br />
                   <Button 
                     type="link" 
+                    size="small"
                     icon={<DownloadOutlined />}
                     onClick={onDownloadPDF}
                     style={{ padding: '4px 0', marginTop: 8 }}
                   >
-                    إعادة تنزيل الاستمارة
+                    إعادة تنزيل
                   </Button>
                 </div>
               )
             },
             {
               color: 'orange',
-              dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
+              dot: <FileTextOutlined style={{ fontSize: '16px' }} />,
               children: (
                 <div>
-                  <Text strong>تحضير الوثائق المطلوبة</Text>
+                  <Text strong style={{ color: '#fa8c16', fontSize: window.innerWidth < 768 ? 13 : 14 }}>
+                    تحضير الوثائق المطلوبة
+                  </Text>
                   <br />
-                  <Text type="secondary" style={{ fontSize: '13px' }}>
+                  <Text type="secondary" style={{ fontSize: window.innerWidth < 768 ? 11 : 13 }}>
                     راجع القائمة أدناه وجهز جميع المستندات
                   </Text>
+                  <br />
+                  <Button 
+                    type="link" 
+                    danger
+                    size="small"
+                    icon={<FileTextOutlined />}
+                    onClick={scrollToDocuments}
+                    style={{ padding: '4px 0', marginTop: 8, fontWeight: 'bold' }}
+                  >
+                    قائمة الوثائق
+                  </Button>
                 </div>
               )
             },
             {
               color: 'gray',
+              dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
               children: (
                 <div>
-                  <Text strong>إيداع الملف في المكتب</Text>
+                  <Text strong style={{ fontSize: window.innerWidth < 768 ? 13 : 14 }}>
+                    إيداع الملف في المكتب
+                  </Text>
                   <br />
-                  <Text type="secondary" style={{ fontSize: '13px' }}>
+                  <Text type="secondary" style={{ fontSize: window.innerWidth < 768 ? 11 : 13 }}>
                     توجه إلى مكتب الجمعية خلال 7 أيام مع جميع الوثائق
                   </Text>
                 </div>
@@ -127,9 +208,11 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
               color: 'gray',
               children: (
                 <div>
-                  <Text strong>مراجعة الملف والاتصال بك</Text>
+                  <Text strong style={{ fontSize: window.innerWidth < 768 ? 13 : 14 }}>
+                    مراجعة الملف والاتصال بك
+                  </Text>
                   <br />
-                  <Text type="secondary" style={{ fontSize: '13px' }}>
+                  <Text type="secondary" style={{ fontSize: window.innerWidth < 768 ? 11 : 13 }}>
                     سيتم التواصل معك لتحديد موعد المقابلة
                   </Text>
                 </div>
@@ -139,73 +222,146 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
         />
       </Card>
 
-      {/* Liste des documents requis */}
-      <RequiredDocuments 
-        educationLevel={formData?.educationlevel} 
-        style={{ marginBottom: 24 }}
-      />
+      {/* Liste des documents requis - Section principale */}
+      <div id="required-documents-section">
+        <Card
+          title={
+            <Space>
+              <FileTextOutlined style={{ color: '#1890ff' }} />
+              <span style={{ fontSize: window.innerWidth < 768 ? 16 : 18 }}>
+                الوثائق المطلوبة
+              </span>
+            </Space>
+          }
+          style={{ 
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            marginBottom: '16px',
+            border: '2px solid #1890ff'
+          }}
+          bodyStyle={{ padding: window.innerWidth < 768 ? '12px' : '24px' }}
+        >
+          <Alert
+            message="يرجى تحضير جميع الوثائق التالية"
+            type="info"
+            showIcon
+            style={{ marginBottom: '16px' }}
+          />
+          
+          <List
+            dataSource={requiredDocuments}
+            renderItem={(item, index) => (
+              <List.Item
+                style={{
+                  padding: window.innerWidth < 768 ? '12px 8px' : '16px 12px',
+                  borderBottom: '1px solid #f0f0f0'
+                }}
+              >
+                <Space align="start" style={{ width: '100%' }}>
+                  <div
+                    style={{
+                      minWidth: window.innerWidth < 768 ? '24px' : '32px',
+                      height: window.innerWidth < 768 ? '24px' : '32px',
+                      borderRadius: '50%',
+                      background: '#1890ff',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      fontSize: window.innerWidth < 768 ? '12px' : '14px',
+                      flexShrink: 0
+                    }}
+                  >
+                    {index + 1}
+                  </div>
+                  <Text
+                    style={{
+                      fontSize: window.innerWidth < 768 ? '13px' : '15px',
+                      lineHeight: '1.6',
+                      flex: 1
+                    }}
+                  >
+                    {item}
+                  </Text>
+                </Space>
+              </List.Item>
+            )}
+          />
+        </Card>
+      </div>
 
       {/* Informations importantes */}
       <Card
         style={{ 
           borderRadius: '12px',
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          marginBottom: 24,
+          marginBottom: '16px',
           background: '#fff7e6',
           border: '1px solid #ffd591'
         }}
+        bodyStyle={{ padding: window.innerWidth < 768 ? '12px' : '24px' }}
       >
-        <Space direction="vertical" size={12} style={{ width: '100%' }}>
-          <Title level={5} style={{ margin: 0, color: '#d46b08' }}>
+        <Space direction="vertical" size={window.innerWidth < 768 ? 8 : 12} style={{ width: '100%' }}>
+          <Title level={5} style={{ margin: 0, color: '#d46b08', fontSize: window.innerWidth < 768 ? 14 : 16 }}>
             ملاحظات هامة:
           </Title>
-          <Paragraph style={{ margin: 0 }}>
+          <Paragraph style={{ margin: 0, fontSize: window.innerWidth < 768 ? 13 : 14 }}>
             • يجب إيداع جميع الوثائق خلال <Text strong style={{ color: '#f5222d' }}>7 أيام</Text> من تاريخ التسجيل
           </Paragraph>
-          <Paragraph style={{ margin: 0 }}>
+          <Paragraph style={{ margin: 0, fontSize: window.innerWidth < 768 ? 13 : 14 }}>
             • تأكد من أن جميع النسخ واضحة ومقروءة
           </Paragraph>
-          <Paragraph style={{ margin: 0 }}>
+          <Paragraph style={{ margin: 0, fontSize: window.innerWidth < 768 ? 13 : 14 }}>
             • الوثائق الرسمية يجب أن لا تتجاوز 3 أشهر من تاريخ الإصدار
           </Paragraph>
-          <Paragraph style={{ margin: 0 }}>
+          <Paragraph style={{ margin: 0, fontSize: window.innerWidth < 768 ? 13 : 14 }}>
             • احتفظ بنسخة من استمارة التسجيل معك
+          </Paragraph>
+          <Paragraph style={{ margin: 0, fontSize: window.innerWidth < 768 ? 13 : 14 }}>
+            • ضرورة إحضار جميع الوثائق المذكورة في القائمة أعلاه
           </Paragraph>
         </Space>
       </Card>
 
-      {/* Boutons d'action */}
+      {/* Boutons d'action - Responsive */}
       <Space 
+        direction={window.innerWidth < 768 ? 'vertical' : 'horizontal'}
         style={{ 
           width: '100%', 
           justifyContent: 'center',
-          flexWrap: 'wrap',
-          gap: '12px'
+          gap: window.innerWidth < 768 ? '8px' : '12px'
         }}
       >
         <Button
           type="primary"
-          size="large"
+          size={window.innerWidth < 768 ? 'middle' : 'large'}
           icon={<DownloadOutlined />}
           onClick={onDownloadPDF}
+          block={window.innerWidth < 768}
+          style={{ fontSize: window.innerWidth < 768 ? 14 : 16 }}
         >
-          تنزيل الاستمارة مرة أخرى
+          {window.innerWidth < 768 ? 'تنزيل الاستمارة' : 'تنزيل الاستمارة مرة أخرى'}
         </Button>
         
         <Button
-          size="large"
+          size={window.innerWidth < 768 ? 'middle' : 'large'}
           icon={<PhoneOutlined />}
           href="tel:71234567"
+          block={window.innerWidth < 768}
+          style={{ fontSize: window.innerWidth < 768 ? 14 : 16 }}
         >
           الاتصال بالمكتب
         </Button>
         
         <Button
-          size="large"
+          size={window.innerWidth < 768 ? 'middle' : 'large'}
           icon={<HomeOutlined />}
           onClick={onReturnHome}
+          block={window.innerWidth < 768}
+          style={{ fontSize: window.innerWidth < 768 ? 14 : 16 }}
         >
-          العودة إلى الصفحة الرئيسية
+          {window.innerWidth < 768 ? 'الصفحة الرئيسية' : 'العودة إلى الصفحة الرئيسية'}
         </Button>
       </Space>
     </div>

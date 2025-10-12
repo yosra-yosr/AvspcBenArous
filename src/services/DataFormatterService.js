@@ -9,6 +9,7 @@ class DataFormatterService {
       idNumber: formData.idNumber,
       idIssueDate: formData.idIssueDate ? dayjs(formData.idIssueDate).format('YYYY-MM-DD') : null,
       phone: formData.phone,
+      email: formData.email,
       firstName: formData.firstName,
       lastName: formData.lastName,
       birthDate: formData.birthDate ? dayjs(formData.birthDate).format('YYYY-MM-DD') : null,

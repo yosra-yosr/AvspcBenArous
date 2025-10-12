@@ -31,7 +31,7 @@ const FORM_STEPS = [
 ];
 
 const STEP_FIELDS = {
-  0: ['idNumber', 'idIssueDate', 'phone'],
+  0: ['idNumber', 'idIssueDate', 'phone','email'],
   1: ['firstName', 'lastName', 'birthDate', 'gender'],
   2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession', 'fatherphone'],
   3: ['governorate', 'address'],
@@ -373,6 +373,10 @@ const RegisterPage = () => {
               <span class="field-label">رقم الهاتف الشخصي</span>
               <span class="field-value">${reviewData.phone}</span>
             </div>
+            <div class="field">
+              <span class="field-label">البريد الإلكتروني</span>
+              <span class="field-value">${reviewData.email}</span>
+            </div>
           </div>
         </div>
 
@@ -491,7 +495,7 @@ const RegisterPage = () => {
       }, 1000);
     };
     
-    message.success('تم إعداد الفيش للطباعة - يرجى اختيار "حفظ كـ PDF"');
+    message.success('تم إعداد استمارة التسجيل في التطوع للطباعة - يرجى اختيار "حفظ كـ PDF"');
   };
 
   const handleFinalSubmit = async () => {
@@ -508,7 +512,7 @@ const RegisterPage = () => {
         setShowReviewModal(false);
         
         message.success({
-          content: response.message || 'تم تسجيل المتطوع بنجاح وتنزيل الفيش',
+          content: response.message || 'تم تسجيل المتطوع بنجاح وتنزيل استمارة التسجيل في التطوع',
           duration: 5
         });
       }
@@ -582,7 +586,12 @@ const RegisterPage = () => {
             </Col>
             <Col span={8}>
               <Form.Item name="phone" label="رقم الهاتف" rules={[{ required: true }]}>
-                <Input />
+                <Input type='number' />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="email" label="البريد الإلكتروني" rules={[{ required: true }]}>
+                <Input type='email'/>
               </Form.Item>
             </Col>
           </Row>
@@ -728,6 +737,10 @@ const RegisterPage = () => {
             <Col span={8}>
               <Text strong style={{ color: '#5a5a5a' }}>رقم الهاتف:</Text>
               <div style={{ color: '#2c3e50', marginTop: 5 }}>{reviewData.phone}</div>
+            </Col>
+             <Col span={8}>
+              <Text strong style={{ color: '#5a5a5a' }}>البريد الإلكتروني:</Text>
+              <div style={{ color: '#2c3e50', marginTop: 5 }}>{reviewData.email}</div>
             </Col>
           </Row>
         </div>

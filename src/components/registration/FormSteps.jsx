@@ -43,6 +43,18 @@ export const IdentityStep = ({ formItemStyle }) => (
     >
       <Input placeholder="12345678" maxLength={8} size="large" />
     </Form.Item>
+     {/* ➕ NOUVEAU: Champ Email */}
+    <Form.Item
+      name="email"
+      label="البريد الإلكتروني"
+      rules={[
+        { required: true, message: ERROR_MESSAGES.REQUIRED },
+        { type: 'email', message: ERROR_MESSAGES.INVALID_EMAIL } // Validation de base de Ant Design
+      ]}
+      style={formItemStyle}
+    >
+      <Input placeholder="example@domain.com" size="large" />
+    </Form.Item>
   </>
 );
 
@@ -178,7 +190,11 @@ export const FamilyStep = ({ formItemStyle }) => (
     <Form.Item
       name="profession"
       label="المهنة"
-      rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
+      rules={[
+          { required: true, message: ERROR_MESSAGES.REQUIRED },
+          ValidationService.getArabicOnlyRule(),
+        { min: VALIDATION_RULES.NAME.MIN_LENGTH, message: ERROR_MESSAGES.MIN_LENGTH }
+      ]}
       style={formItemStyle}
     >
       <Input placeholder="مهندس" size="large" />
@@ -241,7 +257,11 @@ export const ResidenceStep = ({
     <Form.Item
       name="address"
       label="العنوان الشخصي الكامل"
-      rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
+      rules={[
+          { required: true, message: ERROR_MESSAGES.REQUIRED },
+          ValidationService.getArabicOnlyRule(),
+        { min: VALIDATION_RULES.NAME.MIN_LENGTH, message: ERROR_MESSAGES.MIN_LENGTH }
+      ]}
       style={formItemStyle}
     >
       <Input.TextArea rows={3} placeholder="أدخل العنوان الكامل" size="large" />

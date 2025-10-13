@@ -166,7 +166,7 @@ export const FamilyStep = ({ formItemStyle }) => (
 
     <Form.Item
       name="maritalstatus"
-      label="الحالة العائلية"
+      label="الحالة العائلية للمترشح" 
       rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
       style={formItemStyle}
     >
@@ -180,7 +180,7 @@ export const FamilyStep = ({ formItemStyle }) => (
 
     <Form.Item
       name="children"
-      label="عدد الأبناء"
+      label="عدد أبناء المترشح" 
       rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
       style={formItemStyle}
     >
@@ -242,9 +242,20 @@ export const ResidenceStep = ({
       </Select>
     </Form.Item>
 
-    <Form.Item name="region" label="المنطقة" style={formItemStyle}>
+    <Form.Item
+      name="region" 
+      label="المنطقة" 
+      dependencies={['governorate']} // Dépend du champ 'governorate'
+      rules={[
+        ({ getFieldValue }) => ({
+          required: getFieldValue('governorate') === 'ben_arous',
+          message: ERROR_MESSAGES.REQUIRED, // Utilisez votre message d'erreur standard
+        }),
+      ]}
+      style={formItemStyle}
+    >
       <Select
-        placeholder={selectedGovernorate === 'ben_arous' ? 'اختر المنطقة (اختياري)' : 'لا توجد مناطق لهذه الولاية'}
+        placeholder={selectedGovernorate === 'ben_arous' ? 'اختر المنطقة (إجباري)' : 'لا توجد مناطق لهذه الولاية'}
         disabled={selectedGovernorate !== 'ben_arous'}
         size="large"
       >

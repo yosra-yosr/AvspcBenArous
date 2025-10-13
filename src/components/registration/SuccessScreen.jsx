@@ -80,8 +80,8 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
                خطوة مهمة جداً: تحضير الوثائق المطلوبة
             </Text>
             <Text style={{ fontSize: window.innerWidth < 768 ? 12 : 14 }}>
-              يجب عليك إحضار جميع الوثائق المذكورة أدناه خلال 7 أيام
-            </Text>
+              يجب عليك إحضار جميع الوثائق المذكورة أدناه إلى حين الإتصال بك
+              </Text>
           </Space>
         }
         type="warning"
@@ -199,7 +199,7 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
                   </Text>
                   <br />
                   <Text type="secondary" style={{ fontSize: window.innerWidth < 768 ? 11 : 13 }}>
-                    توجه إلى مكتب الجمعية خلال 7 أيام مع جميع الوثائق
+                    توجه إلى مكتب الجمعية مع جميع الوثائق
                   </Text>
                 </div>
               )

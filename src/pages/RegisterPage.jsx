@@ -15,7 +15,7 @@ import SuccessScreen from '../components/registration/SuccessScreen';
 import {
   IdentityStep, PersonalDataStep, FamilyStep, ResidenceStep, EducationStep
 } from '../components/registration/FormSteps';
-import { GOVERNORATES, REGIONS_DATA, BREADCRUMBS,LOGO  } from '../utils/constants';
+import { GOVERNORATES, REGIONS_DATA, BREADCRUMBS  } from '../utils/constants';
 import DataFormatterService from '../services/DataFormatterService';
 import ErrorHandlerService from '../services/ErrorHandlerService';
 import SessionClosedNotification from '../components/common/SessionClosedNotification';

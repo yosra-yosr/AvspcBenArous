@@ -298,11 +298,11 @@ const ResultDetailsPage = () => {
 
               <Button 
                 icon={<LeftOutlined />}
-                onClick={() => navigate('/results')}
+                onClick={() => navigate('/')}
                 size="large"
                 style={{ borderRadius: '8px' }}
               >
-                بحث جديد
+                العودة إلى الصفحة الرّئيسيّة
               </Button>
             </Space>
           </div>

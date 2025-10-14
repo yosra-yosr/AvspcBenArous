@@ -1,5 +1,6 @@
 // src/pages/RegisterPage.jsx
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, Button, Steps, Card, Typography, message, Spin, Modal, Space, Input, Select, DatePicker, Row, Col } from 'antd';
 import {
   IdcardOutlined, UserOutlined, TeamOutlined, EnvironmentOutlined,
@@ -34,7 +35,7 @@ const STEP_FIELDS = {
   0: ['idNumber', 'idIssueDate', 'phone','email'],
   1: ['firstName', 'lastName', 'birthDate', 'gender'],
   2: ['fatherName', 'grandFatherName', 'motherFirstName', 'motherLastName', 'maritalstatus', 'children', 'profession', 'fatherphone'],
-  3: ['governorate', 'address'],
+  3: ['governorate', 'region','address'],
   4: ['educationlevel', 'supportingdocument']
 };
 
@@ -52,7 +53,7 @@ const RegisterPage = () => {
   const [reviewData, setReviewData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const stepsContainerRef = useRef(null);
-  
+  const navigate = useNavigate();
   // NOUVEAU: État pour la session d'inscription
   const [isSessionActive, setIsSessionActive] = useState(false); // Changez à true pour activer
 //  const [ setIsInitialLoading] = useState(true);
@@ -112,7 +113,7 @@ const RegisterPage = () => {
     try {
       const fieldsToValidate = STEP_FIELDS[currentStep];
       await form.validateFields(fieldsToValidate);
-      
+      console.log(form.validateFields(fieldsToValidate))
       const currentValues = form.getFieldsValue(fieldsToValidate);
       setFormData(prev => ({ ...prev, ...currentValues }));
       
@@ -533,6 +534,7 @@ const RegisterPage = () => {
     setFormData({});
     setCompletedSteps([]);
     setReviewData(null);
+    navigate('/');
   };
 
   const renderStepContent = () => {
@@ -544,7 +546,7 @@ const RegisterPage = () => {
       case 1:
         return <PersonalDataStep formItemStyle={formItemStyle} />;
       case 2:
-        return <FamilyStep formItemStyle={formItemStyle} />;
+        return <FamilyStep formItemStyle={formItemStyle} form={form} />;
       case 3:
         return (
           <ResidenceStep

@@ -114,7 +114,7 @@ export const PersonalDataStep = ({ formItemStyle }) => (
 );
 
 // Step 3: Famille
-export const FamilyStep = ({ formItemStyle }) => (
+export const FamilyStep = ({ formItemStyle,form }) => (
   <>
     <Form.Item
       name="fatherName"
@@ -164,13 +164,21 @@ export const FamilyStep = ({ formItemStyle }) => (
       <Input placeholder="السالمي" size="large" />
     </Form.Item>
 
-    <Form.Item
+     <Form.Item
       name="maritalstatus"
       label="الحالة العائلية للمترشح" 
       rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
       style={formItemStyle}
     >
-      <Select placeholder="اختر الحالة العائلية" size="large">
+      <Select 
+        placeholder="اختر الحالة العائلية" 
+        size="large"
+        // 💡 Logique de réinitialisation:
+        onChange={(value) => {
+          // 1. Réinitialise 'children' à 0 à chaque changement
+          form.setFieldsValue({ children: 0 }); 
+        }}
+      >
         <Option value="single">أعزب</Option>
         <Option value="married">متزوج</Option>
         <Option value="divorced">مطلق</Option>
@@ -178,13 +186,31 @@ export const FamilyStep = ({ formItemStyle }) => (
       </Select>
     </Form.Item>
 
-    <Form.Item
-      name="children"
-      label="عدد أبناء المترشح" 
-      rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
-      style={formItemStyle}
-    >
-      <InputNumber min={0} max={20} style={{ width: '100%' }} size="large" />
+    <Form.Item noStyle dependencies={['maritalstatus']}>
+      {({ getFieldValue }) => {
+        const status = getFieldValue('maritalstatus');
+        const isSingle = status === 'single';
+
+        if (isSingle) {
+            // 2. Si le statut est 'single', on s'assure que la valeur du formulaire est 0.
+            // setFieldsValue(0) a déjà été appelé par onChange, mais on peut le répéter 
+            // pour garantir l'état au chargement.
+            // On ne rend rien pour masquer le champ.
+            return null;
+        }
+
+        // 3. Afficher le champ pour les autres statuts
+        return (
+          <Form.Item
+            name="children"
+            label="عدد أبناء المترشح"
+            rules={[{ required: true, message: ERROR_MESSAGES.REQUIRED }]}
+            style={formItemStyle}
+          >
+            <InputNumber min={0} max={20} style={{ width: '100%' }} size="large" />
+          </Form.Item>
+        );
+      }}
     </Form.Item>
 
     <Form.Item

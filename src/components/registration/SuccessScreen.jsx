@@ -307,7 +307,7 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
             ملاحظات هامة:
           </Title>
           <Paragraph style={{ margin: 0, fontSize: window.innerWidth < 768 ? 13 : 14 }}>
-            • يجب إيداع جميع الوثائق خلال <Text strong style={{ color: '#f5222d' }}>7 أيام</Text> من تاريخ التسجيل
+            • يجب إيداع جميع الوثائق  <Text strong style={{ color: '#f5222d' }}> إلى حين الإتصال بك</Text>   
           </Paragraph>
           <Paragraph style={{ margin: 0, fontSize: window.innerWidth < 768 ? 13 : 14 }}>
             • تأكد من أن جميع النسخ واضحة ومقروءة

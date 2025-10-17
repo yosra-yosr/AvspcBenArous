@@ -1,3 +1,15 @@
 # https://www.robotstxt.org/robotstxt.html
+# robots.txt pour votre site
+
+# Autoriser tous les robots
 User-agent: *
-Disallow:
+Allow: /
+
+# Bloquer les pages sensibles (si nécessaire)
+# Disallow: /admin/
+# Disallow: /api/
+
+# Sitemap
+Sitemap: https://inscription-avspcbenarous.netlify.app/sitemap.xml
+
+

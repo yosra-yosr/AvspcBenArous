@@ -9,21 +9,64 @@ import {
   FileTextOutlined,
   WarningOutlined
 } from '@ant-design/icons';
+import ReactGA from 'react-ga4';
 
 const { Title, Text, Paragraph } = Typography;
 
 const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
   const scrollToDocuments = () => {
+    // Tracker l'événement dans Google Analytics
+    ReactGA.event({
+      category: 'User Interaction',
+      action: 'Click CTA Documents',
+      label: 'Alert Documents Button',
+      value: 1
+    });
+
     document.getElementById('required-documents-section')?.scrollIntoView({ 
       behavior: 'smooth',
       block: 'center'
     });
   };
 
+  const handleDownloadPDF = () => {
+    // Tracker le téléchargement du PDF
+    ReactGA.event({
+      category: 'Document',
+      action: 'Download PDF',
+      label: `Registration Form - ID: ${formData?.idNumber || 'N/A'}`,
+      value: 1
+    });
+    
+    onDownloadPDF();
+  };
+
+  const handlePhoneClick = () => {
+    // Tracker l'appel téléphonique
+    ReactGA.event({
+      category: 'Contact',
+      action: 'Click Call Office',
+      label: 'Phone Button',
+      value: 1
+    });
+  };
+
+  const handleReturnHome = () => {
+    // Tracker le retour à l'accueil
+    ReactGA.event({
+      category: 'Navigation',
+      action: 'Return to Home',
+      label: 'Success Screen',
+      value: 1
+    });
+    
+    onReturnHome();
+  };
+
   // Liste des documents requis selon l'image
   const requiredDocuments = [
     'مطلب ترشح باسم المدير الجهوي للحماية المدنية بن عروس. الموضوع : الانخراط في جمعية متطوعوعون في خدمة الحماية المدنية بن عروس)',
-    'الانخراط في جمعية 25 دينار',
+    'الانخروط في جمعية 25 دينار',
     '8 صور شخصية',
     'بطاقة عدد 3 لا يتجاوز تاريخ استخراجها ثلاثة أشهر',
     'شهادة طبية تفيد السلامة الصحية للمترشح',
@@ -155,7 +198,7 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
                     type="link" 
                     size="small"
                     icon={<DownloadOutlined />}
-                    onClick={onDownloadPDF}
+                    onClick={handleDownloadPDF}
                     style={{ padding: '4px 0', marginTop: 8 }}
                   >
                     إعادة تنزيل
@@ -337,7 +380,7 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
           type="primary"
           size={window.innerWidth < 768 ? 'middle' : 'large'}
           icon={<DownloadOutlined />}
-          onClick={onDownloadPDF}
+          onClick={handleDownloadPDF}
           block={window.innerWidth < 768}
           style={{ fontSize: window.innerWidth < 768 ? 14 : 16 }}
         >
@@ -348,6 +391,7 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
           size={window.innerWidth < 768 ? 'middle' : 'large'}
           icon={<PhoneOutlined />}
           href="tel:71234567"
+          onClick={handlePhoneClick}
           block={window.innerWidth < 768}
           style={{ fontSize: window.innerWidth < 768 ? 14 : 16 }}
         >
@@ -357,7 +401,7 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
         <Button
           size={window.innerWidth < 768 ? 'middle' : 'large'}
           icon={<HomeOutlined />}
-          onClick={onReturnHome}
+          onClick={handleReturnHome}
           block={window.innerWidth < 768}
           style={{ fontSize: window.innerWidth < 768 ? 14 : 16 }}
         >

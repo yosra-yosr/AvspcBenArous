@@ -9,19 +9,19 @@ import {
   FileTextOutlined,
   WarningOutlined
 } from '@ant-design/icons';
-import ReactGA from 'react-ga4';
+import { 
+  trackDocumentsCTA,
+  trackDownloadPDF,
+  trackPhoneCall,
+  trackReturnHome 
+} from '../../utils/analytics';
 
 const { Title, Text, Paragraph } = Typography;
 
 const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
   const scrollToDocuments = () => {
     // Tracker l'événement dans Google Analytics
-    ReactGA.event({
-      category: 'User Interaction',
-      action: 'Click CTA Documents',
-      label: 'Alert Documents Button',
-      value: 1
-    });
+    trackDocumentsCTA();
 
     document.getElementById('required-documents-section')?.scrollIntoView({ 
       behavior: 'smooth',
@@ -31,34 +31,19 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
 
   const handleDownloadPDF = () => {
     // Tracker le téléchargement du PDF
-    ReactGA.event({
-      category: 'Document',
-      action: 'Download PDF',
-      label: `Registration Form - ID: ${formData?.idNumber || 'N/A'}`,
-      value: 1
-    });
+    trackDownloadPDF(formData?.idNumber);
     
     onDownloadPDF();
   };
 
   const handlePhoneClick = () => {
     // Tracker l'appel téléphonique
-    ReactGA.event({
-      category: 'Contact',
-      action: 'Click Call Office',
-      label: 'Phone Button',
-      value: 1
-    });
+    trackPhoneCall();
   };
 
   const handleReturnHome = () => {
     // Tracker le retour à l'accueil
-    ReactGA.event({
-      category: 'Navigation',
-      action: 'Return to Home',
-      label: 'Success Screen',
-      value: 1
-    });
+    trackReturnHome();
     
     onReturnHome();
   };

@@ -4,7 +4,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   HomeOutlined,
   InfoCircleOutlined,
-  PictureOutlined,
   EyeOutlined,
   PhoneOutlined,
   UserAddOutlined,
@@ -55,7 +54,7 @@ const Header = ({ isMobile }) => {
   const menuItems = [
     { key: 'home', icon: <HomeOutlined />, label: 'الرئيسية' },
     { key: 'goals', icon: <InfoCircleOutlined />, label: 'أهداف الجمعية' },
-    { key: 'gallery', icon: <PictureOutlined />, label: 'معرض الصور' },
+    // { key: 'gallery', icon: <PictureOutlined />, label: 'معرض الصور' },
     { key: 'location', icon: <EnvironmentOutlined />, label: 'الموقع' },
     { key: 'contact', icon: <PhoneOutlined />, label: 'اتصل بنا' },
   ];
@@ -92,7 +91,7 @@ const Header = ({ isMobile }) => {
 
   const getLogoTextSize = () => {
     if (isSmallMobile) return '13px';
-    if (isMediumMobile) return '15px';
+    if (isMediumMobile) return '17px';
     if (isTablet) return '17px';
     return '20px';
   };
@@ -106,7 +105,7 @@ const Header = ({ isMobile }) => {
 
   const getMenuFontSize = () => {
     if (isTablet) return '13px';
-    return '14px';
+    return '15px';
   };
 
   const getButtonSize = () => {
@@ -205,7 +204,7 @@ const Header = ({ isMobile }) => {
             border: 'none',
             background: 'transparent',
             fontSize: getMenuFontSize(),
-            fontWeight: 500,
+            fontWeight: 600,
             maxWidth: '700px'
           }}
           items={menuItems}
@@ -291,7 +290,7 @@ const Header = ({ isMobile }) => {
           onClick={handleMenuClick}
           style={{
             border: 'none',
-            fontSize: isSmallMobile ? '14px' : '15px'
+            fontSize: isSmallMobile ? '16px' : '17px'
           }}
           items={menuItems.map(item => ({
             ...item,

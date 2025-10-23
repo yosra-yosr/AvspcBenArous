@@ -7,7 +7,7 @@ import {
   TeamOutlined,
   SmileOutlined
 } from '@ant-design/icons';
-import SEOHelmet from '../components/common/SEOHelmet';
+import SEOHead from '../components/common/SEOHead';
 
 const { Title, Text } = Typography;
 
@@ -99,10 +99,11 @@ const GoalsPage = () => {
   return (
     <>
       {/* SEO pour la page des objectifs */}
-      <SEOHelmet
+      <SEOHead
         title="أهداف الجمعية | جمعية متطوعي الحماية المدنية بن عروس"
         description="تعرف على أهداف جمعية متطوعي الحماية المدنية بن عروس: دعم التكوين في الإسعاف والإطفاء والإنقاذ، نشر ثقافة التطوع، تنشئة الأطفال على السلامة"
         keywords="أهداف الجمعية, تكوين متطوعين, إسعاف, إطفاء, إنقاذ, تطوع, الحماية المدنية"
+        image = "https://inscription-avspcbenarous.netlify.app/assets/images/شعار.png"
         url="https://inscription-avspcbenarous.netlify.app/goals"
       />
 

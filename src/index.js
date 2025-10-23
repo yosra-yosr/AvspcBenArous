@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ConfigProvider } from 'antd';
-import { HelmetProvider } from 'react-helmet-async';
 import arEG from 'antd/locale/ar_EG';
 import App from './App';
 import './styles/global.css';
@@ -11,7 +10,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <HelmetProvider>
       <ConfigProvider 
         locale={arEG}
         direction="rtl"
@@ -25,6 +23,5 @@ root.render(
       >
         <App />
       </ConfigProvider>
-    </HelmetProvider>
   </React.StrictMode>
 );

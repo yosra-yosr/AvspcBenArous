@@ -301,7 +301,7 @@ const Header = ({ isMobile }) => {
               borderLeft: '4px solid #ff6b35',
               background: 'rgba(255, 107, 53, 0.05)'
             } : {
-              padding: '12px 16px'
+              padding: '0px 16px'
             }
           }))}
         />

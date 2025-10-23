@@ -7,6 +7,7 @@ import {
   TeamOutlined,
   SmileOutlined
 } from '@ant-design/icons';
+import SEOHelmet from '../components/common/SEOHelmet';
 
 const { Title, Text } = Typography;
 
@@ -96,148 +97,159 @@ const GoalsPage = () => {
   };
 
   return (
-    <div style={{ 
-      padding: '100px 20px 80px', 
-      maxWidth: '900px', 
-      margin: '0 auto',
-      backgroundColor: '#fafafa',
-      minHeight: '100vh'
-    }}>
-      <Title level={2} style={{ 
-        textAlign: 'center', 
-        color: '#ff6b35', 
-        marginBottom: '50px',
-        fontSize: '2.2rem'
+    <>
+      {/* SEO pour la page des objectifs */}
+      <SEOHelmet
+        title="أهداف الجمعية | جمعية متطوعي الحماية المدنية بن عروس"
+        description="تعرف على أهداف جمعية متطوعي الحماية المدنية بن عروس: دعم التكوين في الإسعاف والإطفاء والإنقاذ، نشر ثقافة التطوع، تنشئة الأطفال على السلامة"
+        keywords="أهداف الجمعية, تكوين متطوعين, إسعاف, إطفاء, إنقاذ, تطوع, الحماية المدنية"
+        url="https://inscription-avspcbenarous.netlify.app/goals"
+      />
+
+      <div style={{ 
+        padding: '100px 20px 80px', 
+        maxWidth: '900px', 
+        margin: '0 auto',
+        backgroundColor: '#fafafa',
+        minHeight: '100vh'
       }}>
-         أهداف الجمعية
-      </Title>
+        <Title level={2} style={{ 
+          textAlign: 'center', 
+          color: '#ff6b35', 
+          marginBottom: '50px',
+          fontSize: '2.2rem'
+        }}>
+           أهداف الجمعية
+        </Title>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {goals.map((goal, index) => (
-          <Card
-            key={index}
-            onClick={() => toggleGoal(goal.id)}
-            style={{
-              borderRadius: '8px',
-              border: `2px solid ${expandedGoal === goal.id ? goal.color : '#e0e0e0'}`,
-              cursor: 'pointer',
-              backgroundColor: 'white',
-              overflow: 'hidden'
-            }}
-            styles={{
-              body: { padding: '0' }
-            }}
-          >
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              padding: '20px',
-              gap: '15px'
-            }}>
-              <div style={{
-                fontSize: '28px',
-                color: goal.color,
-                width: '50px',
-                textAlign: 'center'
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {goals.map((goal, index) => (
+            <Card
+              key={index}
+              onClick={() => toggleGoal(goal.id)}
+              style={{
+                borderRadius: '8px',
+                border: `2px solid ${expandedGoal === goal.id ? goal.color : '#e0e0e0'}`,
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                overflow: 'hidden'
+              }}
+              styles={{
+                body: { padding: '0' }
+              }}
+            >
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                padding: '20px',
+                gap: '15px'
               }}>
-                {goal.icon}
-              </div>
-              <Text style={{ 
-                fontSize: '1.1rem', 
-                flex: 1,
-                fontWeight: expandedGoal === goal.id ? '600' : '400'
-              }}>
-                {goal.text}
-              </Text>
-              <div style={{
-                fontSize: '1.5rem',
-                color: goal.color,
-                transform: expandedGoal === goal.id ? 'rotate(90deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s'
-              }}>
-                ‹
-              </div>
-            </div>
-
-            {expandedGoal === goal.id && (
-              <div style={{
-                padding: '0 20px 20px 20px',
-                borderTop: `1px solid ${goal.color}20`,
-                marginTop: '10px',
-                paddingTop: '20px'
-              }}>
-                <Text strong style={{ 
-                  display: 'block', 
-                  marginBottom: '15px',
+                <div style={{
+                  fontSize: '28px',
                   color: goal.color,
-                  fontSize: '1rem'
+                  width: '50px',
+                  textAlign: 'center'
                 }}>
-                  الأنشطة والبرامج:
+                  {goal.icon}
+                </div>
+                <Text style={{ 
+                  fontSize: '1.1rem', 
+                  flex: 1,
+                  fontWeight: expandedGoal === goal.id ? '600' : '400'
+                }}>
+                  {goal.text}
                 </Text>
-                <div style={{ 
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-                  gap: '15px'
+                <div style={{
+                  fontSize: '1.5rem',
+                  color: goal.color,
+                  transform: expandedGoal === goal.id ? 'rotate(90deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s'
                 }}>
-                  {goal.activities.map((activity, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        position: 'relative',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        border: `2px solid ${goal.color}40`,
-                        backgroundColor: 'white',
-                        cursor: 'pointer',
-                        transition: 'transform 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    >
-                      <img 
-                        src={activity.image} 
-                        alt={activity.text}
-                        style={{
-                          width: '100%',
-                          height: '150px',
-                          objectFit: 'cover',
-                          display: 'block'
-                        }}
-                      />
-                      <div style={{
-                        padding: '10px',
-                        backgroundColor: 'white',
-                        borderTop: `3px solid ${goal.color}`
-                      }}>
-                        <Text style={{
-                          fontSize: '0.85rem',
-                          color: '#333',
-                          display: 'block',
-                          lineHeight: '1.4'
-                        }}>
-                          {activity.text}
-                        </Text>
-                      </div>
-                    </div>
-                  ))}
+                  ‹
                 </div>
               </div>
-            )}
-          </Card>
-        ))}
-      </div>
 
-      <Card style={{
-        marginTop: '30px',
-        backgroundColor: '#fff3e0',
-        border: '1px solid #ffb74d',
-        borderRadius: '8px'
-      }}>
-        <Text style={{ textAlign: 'center', display: 'block', color: '#555' }}>
-          ℹ️ انقر على أي هدف لعرض الأنشطة المرتبطة به
-        </Text>
-      </Card>
-    </div>
+              {expandedGoal === goal.id && (
+                <div style={{
+                  padding: '0 20px 20px 20px',
+                  borderTop: `1px solid ${goal.color}20`,
+                  marginTop: '10px',
+                  paddingTop: '20px'
+                }}>
+                  <Text strong style={{ 
+                    display: 'block', 
+                    marginBottom: '15px',
+                    color: goal.color,
+                    fontSize: '1rem'
+                  }}>
+                    الأنشطة والبرامج:
+                  </Text>
+                  <div style={{ 
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                    gap: '15px'
+                  }}>
+                    {goal.activities.map((activity, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          position: 'relative',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          border: `2px solid ${goal.color}40`,
+                          backgroundColor: 'white',
+                          cursor: 'pointer',
+                          transition: 'transform 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        <img 
+                          src={activity.image} 
+                          alt={`${activity.text} - جمعية الحماية المدنية بن عروس`}
+                          loading="lazy"
+                          style={{
+                            width: '100%',
+                            height: '150px',
+                            objectFit: 'cover',
+                            display: 'block'
+                          }}
+                        />
+                        <div style={{
+                          padding: '10px',
+                          backgroundColor: 'white',
+                          borderTop: `3px solid ${goal.color}`
+                        }}>
+                          <Text style={{
+                            fontSize: '0.85rem',
+                            color: '#333',
+                            display: 'block',
+                            lineHeight: '1.4'
+                          }}>
+                            {activity.text}
+                          </Text>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </Card>
+          ))}
+        </div>
+
+        <Card style={{
+          marginTop: '30px',
+          backgroundColor: '#fff3e0',
+          border: '1px solid #ffb74d',
+          borderRadius: '8px'
+        }}>
+          <Text style={{ textAlign: 'center', display: 'block', color: '#555' }}>
+            ℹ️ انقر على أي هدف لعرض الأنشطة المرتبطة به
+          </Text>
+        </Card>
+      </div>
+    </>
   );
 };
 

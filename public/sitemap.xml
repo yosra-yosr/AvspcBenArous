@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   
   <!-- Page d'accueil -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,7 +13,7 @@
   <!-- Page Objectifs -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/goals</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -20,7 +21,7 @@
   <!-- Page Galerie -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/gallery</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -28,7 +29,7 @@
   <!-- Page Résultats -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/results</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -36,7 +37,7 @@
   <!-- Page Détails des Résultats -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/result-details</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -44,7 +45,7 @@
   <!-- Page Localisation -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/location</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -52,7 +53,7 @@
   <!-- Page Contact -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/contact</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -60,7 +61,7 @@
   <!-- Page Inscription -->
   <url>
     <loc>https://inscription-avspcbenarous.netlify.app/register</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>

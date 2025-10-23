@@ -157,7 +157,7 @@ const Header = ({ isMobile }) => {
         minWidth: 0
       }}>
         <img 
-          src="/assets/images/شعار.png" 
+          src="/assets/images/logo.webp" 
           alt="شعار" 
           style={{ 
             height: getLogoPrimarySize(),

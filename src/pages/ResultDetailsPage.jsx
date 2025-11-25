@@ -27,35 +27,40 @@ const ResultDetailsPage = () => {
     if (location.state?.volunteerData) {
       setVolunteerData(location.state.volunteerData);
     } else {
-      // Si pas de données, rediriger vers la page de recherche
       navigate('/results');
     }
   }, [location, navigate]);
 
-  const getStatusConfig = (status) => {
-    switch (status) {
+  const getStatusConfig = (statusCode) => {
+    switch (statusCode) {
       case 'approved':
+      case 'interview_scheduled':
+      case 'interview_passed':
+      case 'stagiaire':
+      case 'certified_volunteer':
         return {
           color: 'success',
           icon: <CheckCircleOutlined />,
-          text: 'مقبول ',
+          text: 'مقبول',
           bgColor: '#f6ffed',
           borderColor: '#b7eb8f'
         };
       case 'rejected':
+      case 'interview_failed':
         return {
           color: 'error',
           icon: <CloseCircleOutlined />,
-          text: 'مرفوض ',
+          text: 'مرفوض',
           bgColor: '#fff2e8',
           borderColor: '#ffbb96'
         };
       case 'pending':
+      case 'under_review':
       default:
         return {
           color: 'processing',
           icon: <ClockCircleOutlined />,
-          text: 'قيد المراجعة ',
+          text: 'قيد المراجعة',
           bgColor: '#e6f7ff',
           borderColor: 'orange'
         };
@@ -70,12 +75,11 @@ const ResultDetailsPage = () => {
     return null;
   }
 
-  const statusConfig = getStatusConfig(volunteerData.status);
+  const statusConfig = getStatusConfig(volunteerData.statusCode);
 
   return (
-    <div style={{ minHeight: '70vh', background: '#f5f5f5', padding: '20px' }} >
+    <div style={{ minHeight: '70vh', background: '#f5f5f5', padding: '20px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-        {/* Bouton retour */}
         <Button 
           icon={<HomeOutlined />} 
           onClick={() => navigate('/')}
@@ -84,7 +88,6 @@ const ResultDetailsPage = () => {
           العودة إلى الصفحة الرئيسية
         </Button>
 
-        {/* Carte principale */}
         <Card 
           style={{ 
             borderRadius: '15px', 
@@ -118,35 +121,32 @@ const ResultDetailsPage = () => {
                 borderRadius: '20px'
               }}
             >
-              {statusConfig.text}
+              {volunteerData.statusLabelAr || statusConfig.text}
             </Tag>
           </div>
 
-          {/* Message personnalisé selon le statut */}
-          {volunteerData.status === 'approved' && (
+          {/* Messages selon le statut */}
+          {['approved', 'interview_passed', 'stagiaire', 'certified_volunteer'].includes(volunteerData.statusCode) && (
             <Alert
               message="مبروك! تم قبول تسجيلك"
-              description={
-                <div>
-                  <p>نحن سعداء بقبولك كمتطوع في جمعيتنا. سيتم التواصل معك قريباً لتحديد موعد البدء.</p>
-                  {/* <p style={{ marginTop: '10px', fontWeight: 'bold' }}>
-                    {volunteerData.message || 'تم العثور على النتيجة بنجاح'}
-                  </p> */}
-                </div>
-              }
+              description="نحن سعداء بقبولك كمتطوع في جمعيتنا. سيتم التواصل معك قريباً لتحديد موعد البدء."
               type="success"
               showIcon
               style={{ marginBottom: '30px', borderRadius: '8px' }}
             />
           )}
 
-          {volunteerData.status === 'rejected' && (
+          {['rejected', 'interview_failed'].includes(volunteerData.statusCode) && (
             <Alert
               message="نأسف لعدم قبول طلبك"
               description={
                 <div>
-                  <p><strong>السبب:</strong> {volunteerData.rejectionReason || 'لم يتم تحديد سبب'}</p>
-                  <p style={{ marginTop: '10px' }}>يمكنك إعادة التقديم مرة أخرى بعد تحسين ملفك أو التواصل مع الإدارة للمزيد من المعلومات.</p>
+                  {volunteerData.lastStatusReason && (
+                    <p><strong>السبب:</strong> {volunteerData.lastStatusReason}</p>
+                  )}
+                  <p style={{ marginTop: '10px' }}>
+                    يمكنك إعادة التقديم مرة أخرى بعد تحسين ملفك أو التواصل مع الإدارة للمزيد من المعلومات.
+                  </p>
                 </div>
               }
               type="error"
@@ -155,7 +155,7 @@ const ResultDetailsPage = () => {
             />
           )}
 
-          {volunteerData.status === 'pending' && (
+          {['pending', 'under_review'].includes(volunteerData.statusCode) && (
             <Alert
               message="طلبك قيد المراجعة"
               description="سيتم مراجعة طلبك من قبل فريقنا وسنتواصل معك قريباً. الرجاء الانتظار."
@@ -177,25 +177,29 @@ const ResultDetailsPage = () => {
             <Descriptions.Item 
               label={<><UserOutlined style={{ marginLeft: '8px' }} /> الاسم الكامل</>}
             >
-              <Text strong>{volunteerData.nom} {volunteerData.prenom}</Text>
+              <Text strong>{volunteerData.firstName} {volunteerData.lastName}</Text>
             </Descriptions.Item>
 
             <Descriptions.Item 
               label={<><IdcardOutlined style={{ marginLeft: '8px' }} /> رقم بطاقة التعريف</>}
             >
-              {volunteerData.numCin}
+              {volunteerData.idNumber}
             </Descriptions.Item>
 
             <Descriptions.Item 
               label={<><CalendarOutlined style={{ marginLeft: '8px' }} /> تاريخ الولادة</>}
             >
-              {dayjs(volunteerData.dateNaissance).format('DD/MM/YYYY')}
+              {dayjs(volunteerData.birthDate).format('DD/MM/YYYY')}
+            </Descriptions.Item>
+
+            <Descriptions.Item label="الجنس">
+              {volunteerData.gender === 'male' ? 'ذكر' : 'أنثى'}
             </Descriptions.Item>
 
             <Descriptions.Item 
               label={<><PhoneOutlined style={{ marginLeft: '8px' }} /> رقم الهاتف</>}
             >
-              {volunteerData.tel}
+              {volunteerData.phone}
             </Descriptions.Item>
 
             <Descriptions.Item 
@@ -207,52 +211,72 @@ const ResultDetailsPage = () => {
             <Descriptions.Item 
               label={<><HomeOutlined style={{ marginLeft: '8px' }} /> العنوان</>}
             >
-              {volunteerData.adresse}
+              {volunteerData.address}
             </Descriptions.Item>
 
-            {volunteerData.delegation && (
+            {volunteerData.region && (
               <Descriptions.Item label="المعتمدية">
-                {volunteerData.delegation}
+                {volunteerData.region}
               </Descriptions.Item>
             )}
 
-            {volunteerData.gouvernorat && (
+            {volunteerData.governorate && (
               <Descriptions.Item label="الولاية">
-                {volunteerData.gouvernorat}
+                {volunteerData.governorate}
+              </Descriptions.Item>
+            )}
+
+            {volunteerData.educationLevel && (
+              <Descriptions.Item label="المستوى التعليمي">
+                {volunteerData.educationLevel}
+              </Descriptions.Item>
+            )}
+
+            {volunteerData.profession && (
+              <Descriptions.Item label="المهنة">
+                {volunteerData.profession}
+              </Descriptions.Item>
+            )}
+
+            {volunteerData.maritalStatus && (
+              <Descriptions.Item label="الحالة الاجتماعية">
+                {volunteerData.maritalStatus === 'single' ? 'أعزب/عزباء' : 
+                 volunteerData.maritalStatus === 'married' ? 'متزوج/ة' : 
+                 volunteerData.maritalStatus === 'divorced' ? 'مطلق/ة' : 'أرمل/ة'}
               </Descriptions.Item>
             )}
           </Descriptions>
 
-          {/* Informations complémentaires */}
-          {(volunteerData.niveauEtude || volunteerData.experience || volunteerData.disponibilite) && (
+          {/* Informations familiales */}
+          {(volunteerData.fatherName || volunteerData.motherFirstName) && (
             <>
               <Divider />
               <Title level={4} style={{ marginBottom: '20px', marginTop: '30px' }}>
-                معلومات إضافية
+                معلومات العائلة
               </Title>
 
               <Descriptions bordered column={1} size="middle">
-                {volunteerData.niveauEtude && (
-                  <Descriptions.Item label="المستوى التعليمي">
-                    {volunteerData.niveauEtude}
+                {volunteerData.fatherName && (
+                  <Descriptions.Item label="اسم الأب">
+                    {volunteerData.fatherName}
                   </Descriptions.Item>
                 )}
 
-                {volunteerData.experience && (
-                  <Descriptions.Item label="الخبرة">
-                    {volunteerData.experience}
+                {volunteerData.grandFatherName && (
+                  <Descriptions.Item label="اسم الجد">
+                    {volunteerData.grandFatherName}
                   </Descriptions.Item>
                 )}
 
-                {volunteerData.disponibilite && (
-                  <Descriptions.Item label="التوفر">
-                    {volunteerData.disponibilite}
+                {volunteerData.motherFirstName && (
+                  <Descriptions.Item label="اسم الأم">
+                    {volunteerData.motherFirstName} {volunteerData.motherLastName}
                   </Descriptions.Item>
                 )}
 
-                {volunteerData.competences && (
-                  <Descriptions.Item label="المهارات">
-                    {volunteerData.competences}
+                {volunteerData.fatherPhone && (
+                  <Descriptions.Item label="هاتف الأب">
+                    {volunteerData.fatherPhone}
                   </Descriptions.Item>
                 )}
               </Descriptions>
@@ -274,6 +298,12 @@ const ResultDetailsPage = () => {
             {volunteerData.updatedAt && volunteerData.updatedAt !== volunteerData.createdAt && (
               <Descriptions.Item label="آخر تحديث">
                 {dayjs(volunteerData.updatedAt).format('DD/MM/YYYY - HH:mm')}
+              </Descriptions.Item>
+            )}
+
+            {volunteerData.sessionName && (
+              <Descriptions.Item label="دورة التسجيل">
+                {volunteerData.sessionName}
               </Descriptions.Item>
             )}
           </Descriptions>
@@ -302,7 +332,7 @@ const ResultDetailsPage = () => {
                 size="large"
                 style={{ borderRadius: '8px' }}
               >
-                العودة إلى الصفحة الرّئيسيّة
+                العودة إلى الصفحة الرئيسية
               </Button>
             </Space>
           </div>
@@ -322,12 +352,12 @@ const ResultDetailsPage = () => {
           <Paragraph style={{ marginBottom: '10px' }}>
             إذا كان لديك أي استفسارات أو تحتاج إلى مزيد من المعلومات، يمكنك التواصل معنا عبر:
           </Paragraph>
-          <Space direction="vertical" size="small" >
-            <Text >
+          <Space direction="vertical" size="small">
+            <Text>
               <PhoneOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
               <strong>الهاتف:</strong>
-              <a href="tel:+21656202702" dir="ltr" className="phone-number">+216 56 202 702</a>
-              <a href="tel:+21690769362" dir="ltr" className="phone-number">+216 90 769 362</a>
+              <a href="tel:+21656202702" dir="ltr" style={{ marginLeft: '5px' }}>+216 56 202 702</a>
+              <a href="tel:+21690769362" dir="ltr" style={{ marginLeft: '5px' }}>+216 90 769 362</a>
             </Text>
             <Text>
               <MailOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
@@ -340,7 +370,6 @@ const ResultDetailsPage = () => {
           </Space>
         </Card>
 
-        {/* Note de bas de page */}
         <div style={{ textAlign: 'center', marginTop: '30px', color: '#718096', fontSize: '13px' }}>
           <Paragraph>
             💡 <strong>نصيحة:</strong> احفظ هذه الصفحة أو اطبعها للرجوع إليها لاحقاً

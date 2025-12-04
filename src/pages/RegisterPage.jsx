@@ -56,35 +56,27 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   // NOUVEAU: État pour la session d'inscription
   const [isSessionActive, setIsSessionActive] = useState(false); // Changez à true pour activer
-//  const [ setIsInitialLoading] = useState(true);
+const [, setIsInitialLoading] = useState(true); // CORRECTION
   useEffect(() => {
-    // Si vous devez vérifier la session au chargement (via API)
-    // Par exemple: checkRegistrationSession().then(setActive => setIsSessionActive(setActive));
-
-   const checkSession = async () => {
-   
-      try {
-        const response = await volunteerApi.checkActiveSession();
-        // **CORRECTION : Utiliser la propriété `isOpen` ou `active` de la réponse.**
-        // Basé sur votre image, la propriété est `isOpen`.
-        // Si elle est `true`, on active l'inscription.
-        const isActive = response && (response.isOpen === true || response.active === true);
-        setIsSessionActive(isActive);
-        
-        // Si la session est fermée, afficher un message temporaire (optionnel)
-        if (!isActive) {
-             message.warning('جلسة التسجيل مغلقة حاليًا.');
-        }
-        
-      } catch (error) {
-        console.error("Erreur lors de la vérification de la session:", error);
-        // En cas d'échec de l'API (erreur réseau/serveur), on bloque le formulaire par sécurité.
-        setIsSessionActive(false); 
-      } finally {
-        // setIsInitialLoading(false);
+  const checkSession = async () => {
+    try {
+      const response = await volunteerApi.checkActiveSession();
+      const isActive = response && (response.isOpen === true || response.active === true);
+      setIsSessionActive(isActive);
+      
+      if (!isActive) {
+        message.warning('جلسة التسجيل مغلقة حاليًا.');
       }
-    };
-     checkSession();
+      
+    } catch (error) {
+      console.error("Erreur lors de la vérification de la session:", error);
+      setIsSessionActive(false); 
+    } finally {
+      setIsInitialLoading(false); // CORRECTION : utilisez la fonction
+    }
+  };
+  
+  checkSession();
     if (stepsContainerRef.current) {
       const container = stepsContainerRef.current;
       const stepWidth = container.scrollWidth / FORM_STEPS.length;
@@ -109,24 +101,25 @@ const RegisterPage = () => {
     }
   };
 
-  const next = async () => {
-    try {
-      const fieldsToValidate = STEP_FIELDS[currentStep];
-      await form.validateFields(fieldsToValidate);
-      console.log(form.validateFields(fieldsToValidate))
-      const currentValues = form.getFieldsValue(fieldsToValidate);
-      setFormData(prev => ({ ...prev, ...currentValues }));
-      
-      if (!completedSteps.includes(currentStep)) {
-        setCompletedSteps([...completedSteps, currentStep]);
-      }
-      
-      setCurrentStep(currentStep + 1);
-      message.success(`تم الانتقال إلى الخطوة ${currentStep + 2}`);
-    } catch (error) {
-      message.error('يرجى ملء جميع الحقول المطلوبة بشكل صحيح');
+const next = async () => {
+  try {
+    const fieldsToValidate = STEP_FIELDS[currentStep];
+    // ENLEVEZ le console.log qui bloque l'exécution
+    await form.validateFields(fieldsToValidate);
+    console.log(form.validateFields(fieldsToValidate))
+    const currentValues = form.getFieldsValue(fieldsToValidate);
+    setFormData(prev => ({ ...prev, ...currentValues }));
+    
+    if (!completedSteps.includes(currentStep)) {
+      setCompletedSteps([...completedSteps, currentStep]);
     }
-  };
+    
+    setCurrentStep(currentStep + 1);
+    message.success(`تم الانتقال إلى الخطوة ${currentStep + 2}`);
+  } catch (error) {
+    message.error('يرجى ملء جميع الحقول المطلوبة بشكل صحيح');
+  }
+};
 
   const prev = () => {
     setCurrentStep(currentStep - 1);

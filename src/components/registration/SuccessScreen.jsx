@@ -48,7 +48,9 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
     
     onReturnHome();
   };
-
+ const handleDownloadFiche = () => {
+    trackDownloadFicheInstructions();
+  };
   // Liste des documents requis selon l'image
   const requiredDocuments = [
     {

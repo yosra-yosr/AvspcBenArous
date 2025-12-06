@@ -38,9 +38,9 @@ const LocationPage = () => {
           <div style={{ marginBottom: '8px' }}>
             <strong>هاتف:</strong> <a href="tel:+21671456123" dir="ltr" className="phone-number">+216 56 202 702</a>
           </div>
-          <div style={{ marginBottom: '8px' }}>
+          {/* <div style={{ marginBottom: '8px' }}>
             <strong>الفاكس:</strong> <a href="tel:+21690769362" dir="ltr" className="phone-number">+216 90 769 362</a>
-          </div>
+          </div> */}
           <div>
             <strong>البريد الإلكتروني:</strong> avspcbenarous2023@gmail.com
           </div>
@@ -50,7 +50,7 @@ const LocationPage = () => {
     {
       icon: <CarOutlined />,
       title: 'وسائل المواصلات',
-      description: 'يمكن الوصول إلينا بسهولة عبر الحافلات العمومية والمترو، وتتوفر مواقف سيارات مجانية'
+      description: 'يمكن الوصول إلينا بسهولة عبر الحافلات العمومية'
     }
   ];
 

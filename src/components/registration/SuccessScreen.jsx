@@ -13,7 +13,8 @@ import {
   trackDocumentsCTA,
   trackDownloadPDF,
   trackPhoneCall,
-  trackReturnHome 
+  trackReturnHome,
+  trackDownloadFicheInstructions  
 } from '../../utils/analytics';
 
 const { Title, Text, Paragraph } = Typography;
@@ -50,15 +51,57 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
 
   // Liste des documents requis selon l'image
   const requiredDocuments = [
-    'مطلب ترشح باسم المدير الجهوي للحماية المدنية بن عروس. الموضوع : الانخراط في جمعية متطوعوعون في خدمة الحماية المدنية بن عروس)',
-    'الانخروط في جمعية 25 دينار',
-    '8 صور شخصية',
-    'بطاقة عدد 3 لا يتجاوز تاريخ استخراجها ثلاثة أشهر',
-    'شهادة طبية تفيد السلامة الصحية للمترشح',
-    'عدد 02 نسخة من الشهادة العلمية أو تكوين مهني إن وجدت',
-    '8 نسخ من بطاقة التعريف الوطنية',
-    '3 ظروف مضمون الوصول',
-    'ظرف كبير'
+    {
+      id: 1,
+      text: 'مطلب ترشح باسم المدير الجهوي للحماية المدنية بن عروس. الموضوع : الانخراط في جمعية متطوعوعون في خدمة الحماية المدنية بن عروس)',
+      type: 'text'
+    },
+    {
+      id: 2,
+      text: 'بطاقة الإرشادات: تعمير بطاقة الإرشادات باللغة العربية وطباعتها وسحبها ثم إمضائها وإرفاقها وجوباً بملف الترشح',
+      type: 'link',
+      fileName: 'بطاقة_الإرشادات_التطوع_الحماية_المدنية.pdf'
+    },
+    {
+      id: 3,
+      text: 'الانخراط في الجمعية 25 دينار',
+      type: 'text'
+    },
+    {
+      id: 4,
+      text: '8 صور شخصية',
+      type: 'text'
+    },
+    {
+      id: 5,
+      text: 'بطاقة عدد 3 لا تتجاوز 3 أشهر من تاريخ استخراجها أو الوصل',
+      type: 'text'
+    },
+    {
+      id: 6,
+      text: 'شهادة طبية تفيد السلامة الصحية للمترشح',
+      type: 'text'
+    },
+    {
+      id: 7,
+      text: 'عدد 02 نسخة من الشهادة العلمية أو تكوين مهني إن وجدت',
+      type: 'text'
+    },
+    {
+      id: 8,
+      text: '8 نسخ من بطاقة التعريف الوطنية',
+      type: 'text'
+    },
+    {
+      id: 9,
+      text: '3 ظروف مضمون الوصول',
+      type: 'text'
+    },
+    {
+      id: 10,
+      text: 'ظرف كبير',
+      type: 'text'
+    }
   ];
 
   return (
@@ -301,17 +344,41 @@ const SuccessScreen = ({ formData, onDownloadPDF, onReturnHome }) => {
                       flexShrink: 0
                     }}
                   >
-                    {index + 1}
+                    {item.id}
                   </div>
-                  <Text
-                    style={{
-                      fontSize: window.innerWidth < 768 ? '13px' : '15px',
-                      lineHeight: '1.6',
-                      flex: 1
-                    }}
-                  >
-                    {item}
-                  </Text>
+                  <div style={{ flex: 1 }}>
+                    <Text
+                      style={{
+                        fontSize: window.innerWidth < 768 ? '13px' : '15px',
+                        lineHeight: '1.6'
+                      }}
+                    >
+                      {item.type === 'link' ? (
+                        <>
+                          <span>{item.text}</span>
+                          <br />
+                          <Button
+                            type="link"
+                            icon={<DownloadOutlined />}
+                            href="/downloads/fiche-instructions.pdf"
+                            download={item.fileName}
+                            onClick={handleDownloadFiche}
+                            style={{
+                              padding: '4px 0',
+                              marginTop: 4,
+                              fontSize: window.innerWidth < 768 ? '12px' : '14px',
+                              color: '#1890ff',
+                              textDecoration: 'underline'
+                            }}
+                          >
+                            (اضغط هنا لتحميل بطاقة الإرشادات)
+                          </Button>
+                        </>
+                      ) : (
+                        item.text
+                      )}
+                    </Text>
+                  </div>
                 </Space>
               </List.Item>
             )}

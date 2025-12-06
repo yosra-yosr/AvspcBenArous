@@ -357,7 +357,7 @@ const ResultDetailsPage = () => {
               <PhoneOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
               <strong>الهاتف:</strong>
               <a href="tel:+21656202702" dir="ltr" style={{ marginLeft: '5px' }}>+216 56 202 702</a>
-              <a href="tel:+21690769362" dir="ltr" style={{ marginLeft: '5px' }}>+216 90 769 362</a>
+              {/* <a href="tel:+21690769362" dir="ltr" style={{ marginLeft: '5px' }}>+216 90 769 362</a> */}
             </Text>
             <Text>
               <MailOutlined style={{ marginLeft: '8px', color: '#667eea' }} />

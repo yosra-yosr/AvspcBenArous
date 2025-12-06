@@ -15,7 +15,7 @@ const ContactPage = () => {
       title: 'اتصل بنا',
       description: 'فريقنا متاح للرد على استفساراتكم',
       primary: '56 20 27 02',
-      secondary: '90 76 93 62',
+      // secondary: ' ',
       prefix: '+216',
       link: 'tel:+21656202702'
     },
@@ -31,7 +31,7 @@ const ContactPage = () => {
       icon: <FacebookOutlined />,
       title: 'تابعنا',
       description: 'آخر الأخبار والفعاليات على صفحتنا',
-      primary: 'AVSPCBNAROUS',
+      primary: 'AVSPCBenArous',
       secondary: 'على فيسبوك',
       link: 'https://www.facebook.com/AVSPCBNAROUS'
     }
@@ -42,8 +42,7 @@ const ContactPage = () => {
       icon: <ClockCircleOutlined />,
       title: 'ساعات العمل',
       items: [
-        { label: 'الأيام العادية', value: 'الاثنين - الجمعة: 8:00 - 18:00' },
-        { label: 'نهاية الأسبوع', value: 'السبت: 9:00 - 14:00' },
+        { label: 'الأيام العادية', value: 'الاثنين - الجمعة: 8:30 - 17:00' },
         { label: 'خدمة الطوارئ', value: 'متاحة 24/7' }
       ]
     },
@@ -51,9 +50,9 @@ const ContactPage = () => {
       icon: <EnvironmentOutlined />,
       title: 'موقعنا',
       items: [
-        { label: 'العنوان', value: 'بن عروس، تونس' },
+        { label: 'العنوان', value: 'الإدارة الجهويّة للحماية المدنية ببن عروس، نهج الصوف' },
         { label: 'الرمز البريدي', value: '2013' },
-        { label: 'المنطقة', value: 'ولاية بن عروس' }
+        { label: 'المنطقة', value: 'بن عروس' }
       ],
       action: {
         text: 'عرض على الخريطة',

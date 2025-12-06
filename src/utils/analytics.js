@@ -91,3 +91,14 @@ export const trackFormStep = (stepNumber, stepName) => {
     stepNumber
   );
 };
+
+export const trackDownloadFicheInstructions = () => {
+  if (window.gtag) {
+    window.gtag('event', 'download_fiche_instructions', {
+      event_category: 'engagement',
+      event_label: 'fiche_instructions_download'
+    });
+  }
+  // Log pour le développement
+  console.log('Fiche instructions téléchargée');
+};

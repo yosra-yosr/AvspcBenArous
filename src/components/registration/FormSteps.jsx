@@ -320,6 +320,7 @@ export const EducationStep = ({ formItemStyle }) => (
         <Option value="secondary">إعدادي</Option>
         <Option value="highschool">ثانوي</Option>
         <Option value="bachelor">بكالوريا</Option>
+        <Option value="formation_professionnelle">تكوين مهني</Option>
         <Option value="university">جامعي</Option>
       </Select>
     </Form.Item>

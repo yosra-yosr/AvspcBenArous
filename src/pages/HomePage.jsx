@@ -1,6 +1,6 @@
 import HeroSection from '../components/home/HeroSection';
 import FeaturesSection from '../components/home/FeaturesSection';
-import TestimonialsSection from '../components/home/TestimonialsSection';
+// import TestimonialsSection from '../components/home/TestimonialsSection';
 import CallToActionSection from '../components/home/CallToActionSection';
 import SchemaOrg from '../components/common/SchemaOrg';
 import { getOrganizationSchema, getWebsiteSchema, getEventSchema } from '../utils/schemas';
@@ -26,7 +26,7 @@ const HomePage = () => {
       <main> 
         <HeroSection />
         <FeaturesSection />
-        <TestimonialsSection /> 
+        {/* <TestimonialsSection />  */}
         <CallToActionSection />
       </main>
     </>

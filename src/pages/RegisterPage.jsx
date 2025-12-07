@@ -696,18 +696,22 @@ const next = async () => {
             <Col span={12}>
               <Form.Item name="educationlevel" label="المستوى التعليمي" rules={[{ required: true }]}>
                 <Select>
-                  <Select.Option value="primary">ابتدائي</Select.Option>
-                  <Select.Option value="secondary">ثانوي</Select.Option>
-                  <Select.Option value="university">جامعي</Select.Option>
+                    <Select.Option value="primary">ابتدائي</Select.Option>
+                    <Select.Option value="secondary">إعدادي</Select.Option>
+                    <Select.Option value="highschool">ثانوي</Select.Option>
+                    <Select.Option value="bachelor">بكالوريا</Select.Option>
+                    <Select.Option value="formation_professionnelle">تكوين مهني</Select.Option>
+                    <Select.Option value="university">جامعي</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item name="supportingdocument" label="شهادة الإثبات" rules={[{ required: true }]}>
                 <Select>
-                  <Select.Option value="cin">بطاقة تعريف</Select.Option>
-                  <Select.Option value="passport">جواز سفر</Select.Option>
-                  <Select.Option value="diploma">شهادة</Select.Option>
+                  <Select.Option value="attendance-grades">شهادة حضور وبطاقة الأعداد الأخيرة للسنة المنقضية</Select.Option>
+                  <Select.Option value="baccalaureate">شهادة البكالوريا</Select.Option>
+                  <Select.Option value="university">شهادة تعليم جامعي</Select.Option>
+                  <Select.Option value="other">شهادة أخرى</Select.Option>
                 </Select>
               </Form.Item>
             </Col>

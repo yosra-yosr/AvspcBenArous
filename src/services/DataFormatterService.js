@@ -49,7 +49,7 @@ class DataFormatterService {
         'secondary': 'إعدادي',
         'highschool': 'ثانوي',
         'bachelor': 'بكالوريا',
-        'formation_professionnelle':'تكوين مهني',
+        'formation':'تكوين مهني',
         'university': 'جامعي'
       },
       supportingDoc: {

@@ -700,7 +700,7 @@ const next = async () => {
                     <Select.Option value="secondary">إعدادي</Select.Option>
                     <Select.Option value="highschool">ثانوي</Select.Option>
                     <Select.Option value="bachelor">بكالوريا</Select.Option>
-                    <Select.Option value="formation_professionnelle">تكوين مهني</Select.Option>
+                    <Select.Option value="formation">تكوين مهني</Select.Option>
                     <Select.Option value="university">جامعي</Select.Option>
                 </Select>
               </Form.Item>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Card, Typography, Tag, Descriptions, Button, Alert, Space, Divider } from 'antd';
+import { Card, Typography, Tag, Descriptions, Button, Alert, Space, Divider, message } from 'antd';
 import { 
   CheckCircleOutlined, 
   CloseCircleOutlined, 
@@ -12,9 +12,14 @@ import {
   CalendarOutlined,
   IdcardOutlined,
   LeftOutlined,
-  PrinterOutlined
+  PrinterOutlined,
+  DownloadOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+
+// Importez les composants nécessaires
+import RequiredDocuments from '../components/registration/RequiredDocuments';
+import { generateRegistrationPDF, downloadPDF } from '../utils/pdfGenerator';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -71,11 +76,98 @@ const ResultDetailsPage = () => {
     window.print();
   };
 
+const handleDownloadRegistrationForm = () => {
+  if (!volunteerData) {
+    message.error('لا توجد بيانات للتحميل');
+    return;
+  }
+
+  try {
+    console.log('📋 Données originales du volontaire:', volunteerData);
+    
+    // Maintenant avec les nouveaux champs de l'API
+    const pdfData = {
+      // Champs d'identité - NOUVEAU: idIssueDate est maintenant retourné par l'API
+      idNumber: volunteerData.idNumber || '',
+      idIssueDate: volunteerData.idIssueDate || '', // Maintenant disponible!
+      phone: volunteerData.phone || '',
+      email: volunteerData.email || '',
+      
+      // Données personnelles
+      firstName: volunteerData.firstName || '',
+      lastName: volunteerData.lastName || '',
+      birthDate: volunteerData.birthDate || '',
+      gender: volunteerData.gender || '',
+      
+      // Famille
+      fatherName: volunteerData.fatherName || '',
+      grandFatherName: volunteerData.grandFatherName || '',
+      motherFirstName: volunteerData.motherFirstName || '',
+      motherLastName: volunteerData.motherLastName || '',
+      maritalstatus: volunteerData.maritalStatus || '',
+      children: volunteerData.children || 0,
+      profession: volunteerData.profession || '',
+      fatherphone: volunteerData.fatherPhone || '',
+      
+      // Résidence
+      governorate: volunteerData.governorate || '',
+      region: volunteerData.region || '',
+      address: volunteerData.address || '',
+      
+      // Éducation - NOUVEAU: supportingDocument est maintenant retourné par l'API
+      educationlevel: volunteerData.educationLevel || '',
+      supportingdocument: volunteerData.supportingDocument || '' // Maintenant disponible!
+    };
+    
+    console.log('📄 Données pour PDF:', pdfData);
+    console.log('🔍 idIssueDate:', pdfData.idIssueDate);
+    console.log('🔍 supportingdocument:', pdfData.supportingdocument);
+    
+    // Si supportingdocument est vide, utiliser une valeur par défaut basée sur l'éducation
+    if (!pdfData.supportingdocument && pdfData.educationlevel) {
+      const educationLevel = pdfData.educationlevel || '';
+      
+      if (educationLevel === 'bachelor' || educationLevel === 'baccalaureate') {
+        pdfData.supportingdocument = 'baccalaureate';
+      } else if (educationLevel === 'university') {
+        pdfData.supportingdocument = 'university';
+      } else if (['primary', 'secondary', 'highschool'].includes(educationLevel)) {
+        pdfData.supportingdocument = 'attendance-grades';
+      } else {
+        pdfData.supportingdocument = 'other';
+      }
+      
+      console.log('🔄 Valeur par défaut pour supportingdocument:', pdfData.supportingdocument);
+    }
+    
+    // Si idIssueDate est vide, utiliser une date par défaut
+    if (!pdfData.idIssueDate) {
+      pdfData.idIssueDate = dayjs().subtract(1, 'year').format('YYYY-MM-DD');
+      console.log('🔄 Date d\'émission par défaut:', pdfData.idIssueDate);
+    }
+    
+    const pdfContent = generateRegistrationPDF(pdfData);
+    downloadPDF(pdfContent);
+    
+    message.success('تم إعداد استمارة التسجيل للطباعة - يرجى اختيار "حفظ كـ PDF"');
+  } catch (error) {
+    console.error('❌ Erreur lors de la génération du PDF:', error);
+    message.error('حدث خطأ أثناء تحضير استمارة التسجيل');
+  }
+};
+
+  const handleDownloadInstructions = () => {
+    message.info('سيتم تحميل بطاقة الإرشادات قريباً');
+    // Vous pouvez ajouter ici la logique pour télécharger le fichier PDF d'instructions
+    window.open('/downloads/fiche-instructions.pdf', '_blank');
+  };
+
   if (!volunteerData) {
     return null;
   }
 
   const statusConfig = getStatusConfig(volunteerData.statusCode);
+  const isPendingStatus = ['pending', 'under_review'].includes(volunteerData.statusCode);
 
   return (
     <div style={{ minHeight: '70vh', background: '#f5f5f5', padding: '20px' }}>
@@ -155,7 +247,7 @@ const ResultDetailsPage = () => {
             />
           )}
 
-          {['pending', 'under_review'].includes(volunteerData.statusCode) && (
+          {isPendingStatus && (
             <Alert
               message="طلبك قيد المراجعة"
               description="سيتم مراجعة طلبك من قبل فريقنا وسنتواصل معك قريباً. الرجاء الانتظار."
@@ -163,6 +255,32 @@ const ResultDetailsPage = () => {
               showIcon
               style={{ marginBottom: '30px', borderRadius: '8px' }}
             />
+          )}
+
+          {/* Afficher les documents requis pour les statuts pending */}
+          {isPendingStatus && (
+            <>
+              <Divider />
+              <RequiredDocuments onDownloadFicheInstructions={handleDownloadInstructions} />
+              
+              {/* Bouton pour télécharger la fiche d'inscription */}
+              <div style={{ textAlign: 'center', margin: '20px 0' }}>
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  onClick={handleDownloadRegistrationForm}
+                  size="large"
+                  style={{
+                    background: '#ff6b35',
+                    borderColor: '#ff6b35',
+                    borderRadius: '8px',
+                    padding: '10px 30px'
+                  }}
+                >
+                  تحميل استمارة التسجيل
+                </Button>
+              </div>
+            </>
           )}
 
           <Divider />
@@ -326,6 +444,18 @@ const ResultDetailsPage = () => {
                 طباعة النتيجة
               </Button>
 
+              {isPendingStatus && (
+                <Button 
+                  type="default"
+                  icon={<DownloadOutlined />}
+                  onClick={handleDownloadRegistrationForm}
+                  size="large"
+                  style={{ borderRadius: '8px' }}
+                >
+                  تحميل الاستمارة
+                </Button>
+              )}
+
               <Button 
                 icon={<LeftOutlined />}
                 onClick={() => navigate('/')}
@@ -357,7 +487,6 @@ const ResultDetailsPage = () => {
               <PhoneOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
               <strong>الهاتف:</strong>
               <a href="tel:+21656202702" dir="ltr" style={{ marginLeft: '5px' }}>+216 56 202 702</a>
-              {/* <a href="tel:+21690769362" dir="ltr" style={{ marginLeft: '5px' }}>+216 90 769 362</a> */}
             </Text>
             <Text>
               <MailOutlined style={{ marginLeft: '8px', color: '#667eea' }} />

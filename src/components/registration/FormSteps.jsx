@@ -293,7 +293,8 @@ export const ResidenceStep = ({
 
     <Form.Item
       name="address"
-      label="مقر السكن الحالي (العنوان الكامل)"
+      label="العنوان الحالي"
+      // label="مقر السكن الحالي (العنوان الكامل)"
       rules={[
           { required: true, message: ERROR_MESSAGES.REQUIRED },
           ValidationService.getArabicOnlyRule(),

@@ -440,7 +440,7 @@ const next = async () => {
             </div>
             ` : ''}
             <div class="field full-width-field">
-              <span class="field-label">العنوان الكامل</span>
+              <span class="field-label">العنوان الحالي</span>
               <span class="field-value">${reviewData.address}</span>
             </div>
           </div>
@@ -810,7 +810,7 @@ const next = async () => {
               </Col>
             )}
             <Col span={reviewData.region ? 8 : 16}>
-              <Text strong style={{ color: '#5a5a5a' }}>العنوان الكامل:</Text>
+              <Text strong style={{ color: '#5a5a5a' }}>العنوان الحالي :</Text>
               <div style={{ color: '#2c3e50', marginTop: 5 }}>{reviewData.address}</div>
             </Col>
           </Row>

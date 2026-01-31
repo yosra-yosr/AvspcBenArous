@@ -256,7 +256,7 @@ export const generateRegistrationPDF = (data) => {
           </div>
           ` : ''}
           <div class="field full-width-field">
-            <span class="field-label">العنوان الكامل</span>
+            <span class="field-label">العنوان الحالي</span>
             <span class="field-value">${data.address || ''}</span>
           </div>
         </div>

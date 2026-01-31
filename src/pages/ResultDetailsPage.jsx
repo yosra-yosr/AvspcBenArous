@@ -327,13 +327,13 @@ const handleDownloadRegistrationForm = () => {
             </Descriptions.Item>
 
             <Descriptions.Item 
-              label={<><HomeOutlined style={{ marginLeft: '8px' }} /> العنوان</>}
+              label={<><HomeOutlined style={{ marginLeft: '8px' }} /> العنوان الحالي</>}
             >
               {volunteerData.address}
             </Descriptions.Item>
 
             {volunteerData.region && (
-              <Descriptions.Item label="المعتمدية">
+              <Descriptions.Item label="المنطقة">
                 {volunteerData.region}
               </Descriptions.Item>
             )}

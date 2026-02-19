@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Card, Typography, Tag, Descriptions, Button, Alert, Space, Divider, message } from 'antd';
+import { Card, Typography, Tag, Descriptions, Button, Alert, Space, Divider, message, Grid } from 'antd';
 import { 
   CheckCircleOutlined, 
   CloseCircleOutlined, 
@@ -22,10 +22,12 @@ import RequiredDocuments from '../components/registration/RequiredDocuments';
 import { generateRegistrationPDF, downloadPDF } from '../utils/pdfGenerator';
 
 const { Title, Paragraph, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const ResultDetailsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const screens = useBreakpoint();
   const [volunteerData, setVolunteerData] = useState(null);
 
   useEffect(() => {
@@ -76,89 +78,69 @@ const ResultDetailsPage = () => {
     window.print();
   };
 
-const handleDownloadRegistrationForm = () => {
-  if (!volunteerData) {
-    message.error('لا توجد بيانات للتحميل');
-    return;
-  }
+  const handleDownloadRegistrationForm = () => {
+    if (!volunteerData) {
+      message.error('لا توجد بيانات للتحميل');
+      return;
+    }
 
-  try {
-    console.log('📋 Données originales du volontaire:', volunteerData);
-    
-    // Maintenant avec les nouveaux champs de l'API
-    const pdfData = {
-      // Champs d'identité - NOUVEAU: idIssueDate est maintenant retourné par l'API
-      idNumber: volunteerData.idNumber || '',
-      idIssueDate: volunteerData.idIssueDate || '', // Maintenant disponible!
-      phone: volunteerData.phone || '',
-      email: volunteerData.email || '',
+    try {
+      console.log('📋 Données originales du volontaire:', volunteerData);
       
-      // Données personnelles
-      firstName: volunteerData.firstName || '',
-      lastName: volunteerData.lastName || '',
-      birthDate: volunteerData.birthDate || '',
-      gender: volunteerData.gender || '',
+      const pdfData = {
+        idNumber: volunteerData.idNumber || '',
+        idIssueDate: volunteerData.idIssueDate || '',
+        phone: volunteerData.phone || '',
+        email: volunteerData.email || '',
+        firstName: volunteerData.firstName || '',
+        lastName: volunteerData.lastName || '',
+        birthDate: volunteerData.birthDate || '',
+        gender: volunteerData.gender || '',
+        fatherName: volunteerData.fatherName || '',
+        grandFatherName: volunteerData.grandFatherName || '',
+        motherFirstName: volunteerData.motherFirstName || '',
+        motherLastName: volunteerData.motherLastName || '',
+        maritalstatus: volunteerData.maritalStatus || '',
+        children: volunteerData.children || 0,
+        profession: volunteerData.profession || '',
+        fatherphone: volunteerData.fatherPhone || '',
+        governorate: volunteerData.governorate || '',
+        region: volunteerData.region || '',
+        address: volunteerData.address || '',
+        educationlevel: volunteerData.educationLevel || '',
+        supportingdocument: volunteerData.supportingDocument || ''
+      };
       
-      // Famille
-      fatherName: volunteerData.fatherName || '',
-      grandFatherName: volunteerData.grandFatherName || '',
-      motherFirstName: volunteerData.motherFirstName || '',
-      motherLastName: volunteerData.motherLastName || '',
-      maritalstatus: volunteerData.maritalStatus || '',
-      children: volunteerData.children || 0,
-      profession: volunteerData.profession || '',
-      fatherphone: volunteerData.fatherPhone || '',
-      
-      // Résidence
-      governorate: volunteerData.governorate || '',
-      region: volunteerData.region || '',
-      address: volunteerData.address || '',
-      
-      // Éducation - NOUVEAU: supportingDocument est maintenant retourné par l'API
-      educationlevel: volunteerData.educationLevel || '',
-      supportingdocument: volunteerData.supportingDocument || '' // Maintenant disponible!
-    };
-    
-    console.log('📄 Données pour PDF:', pdfData);
-    console.log('🔍 idIssueDate:', pdfData.idIssueDate);
-    console.log('🔍 supportingdocument:', pdfData.supportingdocument);
-    
-    // Si supportingdocument est vide, utiliser une valeur par défaut basée sur l'éducation
-    if (!pdfData.supportingdocument && pdfData.educationlevel) {
-      const educationLevel = pdfData.educationlevel || '';
-      
-      if (educationLevel === 'bachelor' || educationLevel === 'baccalaureate') {
-        pdfData.supportingdocument = 'baccalaureate';
-      } else if (educationLevel === 'university') {
-        pdfData.supportingdocument = 'university';
-      } else if (['primary', 'secondary', 'highschool'].includes(educationLevel)) {
-        pdfData.supportingdocument = 'attendance-grades';
-      } else {
-        pdfData.supportingdocument = 'other';
+      if (!pdfData.supportingdocument && pdfData.educationlevel) {
+        const educationLevel = pdfData.educationlevel || '';
+        
+        if (educationLevel === 'bachelor' || educationLevel === 'baccalaureate') {
+          pdfData.supportingdocument = 'baccalaureate';
+        } else if (educationLevel === 'university') {
+          pdfData.supportingdocument = 'university';
+        } else if (['primary', 'secondary', 'highschool'].includes(educationLevel)) {
+          pdfData.supportingdocument = 'attendance-grades';
+        } else {
+          pdfData.supportingdocument = 'other';
+        }
       }
       
-      console.log('🔄 Valeur par défaut pour supportingdocument:', pdfData.supportingdocument);
+      if (!pdfData.idIssueDate) {
+        pdfData.idIssueDate = dayjs().subtract(1, 'year').format('YYYY-MM-DD');
+      }
+      
+      const pdfContent = generateRegistrationPDF(pdfData);
+      downloadPDF(pdfContent);
+      
+      message.success('تم إعداد استمارة التسجيل للطباعة - يرجى اختيار "حفظ كـ PDF"');
+    } catch (error) {
+      console.error('❌ Erreur lors de la génération du PDF:', error);
+      message.error('حدث خطأ أثناء تحضير استمارة التسجيل');
     }
-    
-    // Si idIssueDate est vide, utiliser une date par défaut
-    if (!pdfData.idIssueDate) {
-      pdfData.idIssueDate = dayjs().subtract(1, 'year').format('YYYY-MM-DD');
-      console.log('🔄 Date d\'émission par défaut:', pdfData.idIssueDate);
-    }
-    
-    const pdfContent = generateRegistrationPDF(pdfData);
-    downloadPDF(pdfContent);
-    
-    message.success('تم إعداد استمارة التسجيل للطباعة - يرجى اختيار "حفظ كـ PDF"');
-  } catch (error) {
-    console.error('❌ Erreur lors de la génération du PDF:', error);
-    message.error('حدث خطأ أثناء تحضير استمارة التسجيل');
-  }
-};
+  };
 
   const handleDownloadInstructions = () => {
     message.info('سيتم تحميل بطاقة الإرشادات قريباً');
-    // Vous pouvez ajouter ici la logique pour télécharger le fichier PDF d'instructions
     window.open('/downloads/fiche-instructions.pdf', '_blank');
   };
 
@@ -168,48 +150,71 @@ const handleDownloadRegistrationForm = () => {
 
   const statusConfig = getStatusConfig(volunteerData.statusCode);
   const isPendingStatus = ['pending', 'under_review'].includes(volunteerData.statusCode);
+  const isMobile = !screens.md;
 
   return (
-    <div style={{ minHeight: '70vh', background: '#f5f5f5', padding: '20px' }}>
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+    <div style={{ 
+      minHeight: '70vh', 
+      background: '#f5f5f5', 
+      padding: isMobile ? '10px' : '20px' 
+    }}>
+      <div style={{ 
+        maxWidth: '900px', 
+        margin: '0 auto',
+        width: '100%'
+      }}>
         <Button 
           icon={<HomeOutlined />} 
           onClick={() => navigate('/')}
-          style={{ marginBottom: '20px' }}
+          style={{ 
+            marginBottom: isMobile ? '10px' : '20px',
+            fontSize: isMobile ? '14px' : '16px',
+            height: isMobile ? '36px' : '40px'
+          }}
+          size={isMobile ? 'middle' : 'large'}
         >
           العودة إلى الصفحة الرئيسية
         </Button>
 
         <Card 
           style={{ 
-            borderRadius: '15px', 
+            borderRadius: isMobile ? '10px' : '15px', 
             boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-            marginBottom: '20px'
+            marginBottom: '20px',
+            overflow: 'hidden'
           }}
+          bodyStyle={{ padding: isMobile ? '16px' : '24px' }}
         >
           {/* En-tête avec statut */}
           <div style={{ 
             textAlign: 'center', 
-            padding: '30px 20px',
+            padding: isMobile ? '20px 10px' : '30px 20px',
             background: statusConfig.bgColor,
-            borderRadius: '15px 15px 0 0',
-            marginTop: '-24px',
-            marginLeft: '-24px',
-            marginRight: '-24px',
-            marginBottom: '30px',
+            borderRadius: isMobile ? '10px 10px 0 0' : '15px 15px 0 0',
+            marginTop: isMobile ? '-16px' : '-24px',
+            marginLeft: isMobile ? '-16px' : '-24px',
+            marginRight: isMobile ? '-16px' : '-24px',
+            marginBottom: isMobile ? '20px' : '30px',
             borderBottom: `3px solid ${statusConfig.borderColor}`
           }}>
-            <div style={{ fontSize: '60px', marginBottom: '10px' }}>
+            <div style={{ 
+              fontSize: isMobile ? '40px' : '60px', 
+              marginBottom: isMobile ? '5px' : '10px' 
+            }}>
               {statusConfig.icon}
             </div>
-            <Title level={2} style={{ marginBottom: '10px', color: '#1a202c' }}>
+            <Title level={isMobile ? 3 : 2} style={{ 
+              marginBottom: isMobile ? '5px' : '10px', 
+              color: '#1a202c',
+              fontSize: isMobile ? '20px' : '24px'
+            }}>
               نتيجة التسجيل
             </Title>
             <Tag 
               color={statusConfig.color} 
               style={{ 
-                fontSize: '18px', 
-                padding: '8px 20px',
+                fontSize: isMobile ? '14px' : '18px', 
+                padding: isMobile ? '4px 12px' : '8px 20px',
                 borderRadius: '20px'
               }}
             >
@@ -224,7 +229,11 @@ const handleDownloadRegistrationForm = () => {
               description="نحن سعداء بقبولك كمتطوع في جمعيتنا. سيتم التواصل معك قريباً لتحديد موعد البدء."
               type="success"
               showIcon
-              style={{ marginBottom: '30px', borderRadius: '8px' }}
+              style={{ 
+                marginBottom: isMobile ? '20px' : '30px', 
+                borderRadius: '8px',
+                fontSize: isMobile ? '14px' : '16px'
+              }}
             />
           )}
 
@@ -243,7 +252,11 @@ const handleDownloadRegistrationForm = () => {
               }
               type="error"
               showIcon
-              style={{ marginBottom: '30px', borderRadius: '8px' }}
+              style={{ 
+                marginBottom: isMobile ? '20px' : '30px', 
+                borderRadius: '8px',
+                fontSize: isMobile ? '14px' : '16px'
+              }}
             />
           )}
 
@@ -253,14 +266,18 @@ const handleDownloadRegistrationForm = () => {
               description="سيتم مراجعة طلبك من قبل فريقنا وسنتواصل معك قريباً. الرجاء الانتظار."
               type="info"
               showIcon
-              style={{ marginBottom: '30px', borderRadius: '8px' }}
+              style={{ 
+                marginBottom: isMobile ? '20px' : '30px', 
+                borderRadius: '8px',
+                fontSize: isMobile ? '14px' : '16px'
+              }}
             />
           )}
 
           {/* Afficher les documents requis pour les statuts pending */}
           {isPendingStatus && (
             <>
-              <Divider />
+              <Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
               <RequiredDocuments 
                 onDownloadFicheInstructions={handleDownloadInstructions}
                 onDownloadRegistrationForm={handleDownloadRegistrationForm}
@@ -268,29 +285,45 @@ const handleDownloadRegistrationForm = () => {
             </>
           )}
 
-          <Divider />
+          <Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
 
           {/* Informations personnelles */}
-          <Title level={4} style={{ marginBottom: '20px' }}>
+          <Title level={isMobile ? 5 : 4} style={{ 
+            marginBottom: isMobile ? '15px' : '20px',
+            fontSize: isMobile ? '16px' : '20px'
+          }}>
             <UserOutlined style={{ marginLeft: '8px' }} />
             المعلومات الشخصية
           </Title>
 
-          <Descriptions bordered column={1} size="middle">
+          <Descriptions 
+            bordered 
+            column={1} 
+            size={isMobile ? "small" : "middle"}
+            labelStyle={{ 
+              fontWeight: 'bold',
+              width: isMobile ? '120px' : '180px',
+              fontSize: isMobile ? '13px' : '14px'
+            }}
+            contentStyle={{
+              fontSize: isMobile ? '13px' : '14px',
+              wordBreak: 'break-word'
+            }}
+          >
             <Descriptions.Item 
-              label={<><UserOutlined style={{ marginLeft: '8px' }} /> الاسم الكامل</>}
+              label={<><UserOutlined style={{ marginLeft: '5px' }} /> الاسم الكامل</>}
             >
               <Text strong>{volunteerData.firstName} {volunteerData.lastName}</Text>
             </Descriptions.Item>
 
             <Descriptions.Item 
-              label={<><IdcardOutlined style={{ marginLeft: '8px' }} /> رقم بطاقة التعريف</>}
+              label={<><IdcardOutlined style={{ marginLeft: '5px' }} /> رقم بطاقة التعريف</>}
             >
-              {volunteerData.idNumber}
+              <span style={{ direction: 'ltr', display: 'inline-block' }}>{volunteerData.idNumber}</span>
             </Descriptions.Item>
 
             <Descriptions.Item 
-              label={<><CalendarOutlined style={{ marginLeft: '8px' }} /> تاريخ الولادة</>}
+              label={<><CalendarOutlined style={{ marginLeft: '5px' }} /> تاريخ الولادة</>}
             >
               {dayjs(volunteerData.birthDate).format('DD/MM/YYYY')}
             </Descriptions.Item>
@@ -300,19 +333,25 @@ const handleDownloadRegistrationForm = () => {
             </Descriptions.Item>
 
             <Descriptions.Item 
-              label={<><PhoneOutlined style={{ marginLeft: '8px' }} /> رقم الهاتف</>}
+              label={<><PhoneOutlined style={{ marginLeft: '5px' }} /> رقم الهاتف</>}
             >
-              {volunteerData.phone}
+              <span style={{ direction: 'ltr', display: 'inline-block' }}>{volunteerData.phone}</span>
             </Descriptions.Item>
 
             <Descriptions.Item 
-              label={<><MailOutlined style={{ marginLeft: '8px' }} /> البريد الإلكتروني</>}
+              label={<><MailOutlined style={{ marginLeft: '5px' }} /> البريد الإلكتروني</>}
             >
-              {volunteerData.email}
+              <span style={{ 
+                direction: 'ltr', 
+                display: 'inline-block',
+                wordBreak: 'break-all'
+              }}>
+                {volunteerData.email}
+              </span>
             </Descriptions.Item>
 
             <Descriptions.Item 
-              label={<><HomeOutlined style={{ marginLeft: '8px' }} /> العنوان الحالي</>}
+              label={<><HomeOutlined style={{ marginLeft: '5px' }} /> العنوان الحالي</>}
             >
               {volunteerData.address}
             </Descriptions.Item>
@@ -353,12 +392,29 @@ const handleDownloadRegistrationForm = () => {
           {/* Informations familiales */}
           {(volunteerData.fatherName || volunteerData.motherFirstName) && (
             <>
-              <Divider />
-              <Title level={4} style={{ marginBottom: '20px', marginTop: '30px' }}>
+              <Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
+              <Title level={isMobile ? 5 : 4} style={{ 
+                marginBottom: isMobile ? '15px' : '20px',
+                marginTop: isMobile ? '10px' : '30px',
+                fontSize: isMobile ? '16px' : '20px'
+              }}>
                 معلومات العائلة
               </Title>
 
-              <Descriptions bordered column={1} size="middle">
+              <Descriptions 
+                bordered 
+                column={1} 
+                size={isMobile ? "small" : "middle"}
+                labelStyle={{ 
+                  fontWeight: 'bold',
+                  width: isMobile ? '120px' : '180px',
+                  fontSize: isMobile ? '13px' : '14px'
+                }}
+                contentStyle={{
+                  fontSize: isMobile ? '13px' : '14px',
+                  wordBreak: 'break-word'
+                }}
+              >
                 {volunteerData.fatherName && (
                   <Descriptions.Item label="اسم الأب">
                     {volunteerData.fatherName}
@@ -379,7 +435,9 @@ const handleDownloadRegistrationForm = () => {
 
                 {volunteerData.fatherPhone && (
                   <Descriptions.Item label="هاتف الأب">
-                    {volunteerData.fatherPhone}
+                    <span style={{ direction: 'ltr', display: 'inline-block' }}>
+                      {volunteerData.fatherPhone}
+                    </span>
                   </Descriptions.Item>
                 )}
               </Descriptions>
@@ -387,13 +445,30 @@ const handleDownloadRegistrationForm = () => {
           )}
 
           {/* Dates importantes */}
-          <Divider />
-          <Title level={4} style={{ marginBottom: '20px', marginTop: '30px' }}>
+          <Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
+          <Title level={isMobile ? 5 : 4} style={{ 
+            marginBottom: isMobile ? '15px' : '20px',
+            marginTop: isMobile ? '10px' : '30px',
+            fontSize: isMobile ? '16px' : '20px'
+          }}>
             <CalendarOutlined style={{ marginLeft: '8px' }} />
             التواريخ المهمة
           </Title>
 
-          <Descriptions bordered column={1} size="middle">
+          <Descriptions 
+            bordered 
+            column={1} 
+            size={isMobile ? "small" : "middle"}
+            labelStyle={{ 
+              fontWeight: 'bold',
+              width: isMobile ? '120px' : '180px',
+              fontSize: isMobile ? '13px' : '14px'
+            }}
+            contentStyle={{
+              fontSize: isMobile ? '13px' : '14px',
+              wordBreak: 'break-word'
+            }}
+          >
             <Descriptions.Item label="تاريخ التسجيل">
               {dayjs(volunteerData.createdAt).format('DD/MM/YYYY - HH:mm')}
             </Descriptions.Item>
@@ -412,18 +487,28 @@ const handleDownloadRegistrationForm = () => {
           </Descriptions>
 
           {/* Actions */}
-          <div style={{ marginTop: '30px', textAlign: 'center' }}>
-            <Space size="middle">
+          <div style={{ 
+            marginTop: isMobile ? '20px' : '30px', 
+            textAlign: 'center' 
+          }}>
+            <Space 
+              size={isMobile ? "small" : "middle"} 
+              direction={isMobile ? "vertical" : "horizontal"}
+              style={{ width: isMobile ? '100%' : 'auto' }}
+            >
               <Button 
                 type="primary" 
                 icon={<PrinterOutlined />}
                 onClick={handlePrint}
-                size="large"
+                size={isMobile ? "middle" : "large"}
+                block={isMobile}
                 style={{
                   background: 'linear-gradient(135deg, #667eea, #764ba2)',
                   border: 'none',
                   borderRadius: '8px',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                  height: isMobile ? '40px' : '48px',
+                  fontSize: isMobile ? '14px' : '16px'
                 }}
               >
                 طباعة النتيجة
@@ -434,8 +519,13 @@ const handleDownloadRegistrationForm = () => {
                   type="default"
                   icon={<DownloadOutlined />}
                   onClick={handleDownloadRegistrationForm}
-                  size="large"
-                  style={{ borderRadius: '8px' }}
+                  size={isMobile ? "middle" : "large"}
+                  block={isMobile}
+                  style={{ 
+                    borderRadius: '8px',
+                    height: isMobile ? '40px' : '48px',
+                    fontSize: isMobile ? '14px' : '16px'
+                  }}
                 >
                   تحميل الاستمارة
                 </Button>
@@ -444,8 +534,13 @@ const handleDownloadRegistrationForm = () => {
               <Button 
                 icon={<LeftOutlined />}
                 onClick={() => navigate('/')}
-                size="large"
-                style={{ borderRadius: '8px' }}
+                size={isMobile ? "middle" : "large"}
+                block={isMobile}
+                style={{ 
+                  borderRadius: '8px',
+                  height: isMobile ? '40px' : '48px',
+                  fontSize: isMobile ? '14px' : '16px'
+                }}
               >
                 العودة إلى الصفحة الرئيسية
               </Button>
@@ -456,36 +551,51 @@ const handleDownloadRegistrationForm = () => {
         {/* Carte d'informations de contact */}
         <Card 
           style={{ 
-            borderRadius: '15px', 
+            borderRadius: isMobile ? '10px' : '15px', 
             boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
             background: '#f9fafb'
           }}
+          bodyStyle={{ padding: isMobile ? '16px' : '20px' }}
         >
-          <Title level={5} style={{ marginBottom: '15px' }}>
+          <Title level={isMobile ? 5 : 5} style={{ 
+            marginBottom: isMobile ? '10px' : '15px',
+            fontSize: isMobile ? '16px' : '18px'
+          }}>
             هل تحتاج إلى مساعدة؟
           </Title>
-          <Paragraph style={{ marginBottom: '10px' }}>
+          <Paragraph style={{ 
+            marginBottom: isMobile ? '8px' : '10px',
+            fontSize: isMobile ? '14px' : '16px'
+          }}>
             إذا كان لديك أي استفسارات أو تحتاج إلى مزيد من المعلومات، يمكنك التواصل معنا عبر:
           </Paragraph>
-          <Space direction="vertical" size="small">
-            <Text>
+          <Space direction="vertical" size={isMobile ? "small" : "small"} style={{ width: '100%' }}>
+            <Text style={{ fontSize: isMobile ? '14px' : '15px', display: 'flex', alignItems: 'center' }}>
               <PhoneOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
               <strong>الهاتف:</strong>
-              <a href="tel:+21656202702" dir="ltr" style={{ marginLeft: '5px' }}>+216 56 202 702</a>
+              <a href="tel:+21656202702" dir="ltr" style={{ marginRight: '5px', wordBreak: 'break-all' }}>+216 56 202 702</a>
             </Text>
-            <Text>
+            <Text style={{ fontSize: isMobile ? '14px' : '15px', display: 'flex', alignItems: 'center' }}>
               <MailOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
-              <strong>البريد الإلكتروني:</strong> avspcbenarous2023@gmail.com
+              <strong>البريد الإلكتروني:</strong>
+              <span style={{ marginRight: '5px', wordBreak: 'break-all' }}>avspcbenarous2023@gmail.com</span>
             </Text>
-            <Text>
+            <Text style={{ fontSize: isMobile ? '14px' : '15px', display: 'flex', alignItems: 'center' }}>
               <HomeOutlined style={{ marginLeft: '8px', color: '#667eea' }} />
-              <strong>العنوان:</strong> مقر الجمعية، بن عروس
+              <strong>العنوان:</strong>
+              <span style={{ marginRight: '5px' }}>مقر الجمعية، بن عروس</span>
             </Text>
           </Space>
         </Card>
 
-        <div style={{ textAlign: 'center', marginTop: '30px', color: '#718096', fontSize: '13px' }}>
-          <Paragraph>
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: isMobile ? '20px' : '30px', 
+          color: '#718096', 
+          fontSize: isMobile ? '12px' : '13px',
+          padding: isMobile ? '0 10px' : '0'
+        }}>
+          <Paragraph style={{ fontSize: isMobile ? '12px' : '13px' }}>
             💡 <strong>نصيحة:</strong> احفظ هذه الصفحة أو اطبعها للرجوع إليها لاحقاً
           </Paragraph>
         </div>

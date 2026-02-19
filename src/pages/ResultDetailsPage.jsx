@@ -261,25 +261,10 @@ const handleDownloadRegistrationForm = () => {
           {isPendingStatus && (
             <>
               <Divider />
-              <RequiredDocuments onDownloadFicheInstructions={handleDownloadInstructions} />
-              
-              {/* Bouton pour télécharger la fiche d'inscription */}
-              <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                <Button
-                  type="primary"
-                  icon={<DownloadOutlined />}
-                  onClick={handleDownloadRegistrationForm}
-                  size="large"
-                  style={{
-                    background: '#ff6b35',
-                    borderColor: '#ff6b35',
-                    borderRadius: '8px',
-                    padding: '10px 30px'
-                  }}
-                >
-                  تحميل استمارة التسجيل
-                </Button>
-              </div>
+              <RequiredDocuments 
+                onDownloadFicheInstructions={handleDownloadInstructions}
+                onDownloadRegistrationForm={handleDownloadRegistrationForm}
+              />
             </>
           )}
 

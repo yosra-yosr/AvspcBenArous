@@ -5,11 +5,17 @@ import { trackDownloadFicheInstructions } from '../../utils/analytics';
 
 const { Text } = Typography;
 
-const RequiredDocuments = ({ onDownloadFicheInstructions }) => {
+const RequiredDocuments = ({ onDownloadFicheInstructions, onDownloadRegistrationForm }) => {
   const handleDownloadFiche = () => {
     trackDownloadFicheInstructions();
     if (onDownloadFicheInstructions) {
       onDownloadFicheInstructions();
+    }
+  };
+
+  const handleDownloadRegistration = () => {
+    if (onDownloadRegistrationForm) {
+      onDownloadRegistrationForm();
     }
   };
 
@@ -23,13 +29,18 @@ const RequiredDocuments = ({ onDownloadFicheInstructions }) => {
     {
       id: 2,
       text: 'نسخة من إستمارة التسجيل',
-      type: 'text'
+      type: 'link',
+      fileName: 'استمارة_التسجيل.pdf',
+      onClick: handleDownloadRegistration,
+      buttonText: '(اضغط هنا لتحميل استمارة التسجيل)'
     },
     {
       id: 3,
       text: 'بطاقة الإرشادات: تعمير بطاقة الإرشادات باللغة العربية وطباعتها وسحبها ثم إمضائها وإرفاقها وجوباً بملف الترشح',
       type: 'link',
-      fileName: 'بطاقة_الإرشادات_التطوع_الحماية_المدنية.pdf'
+      fileName: 'بطاقة_الإرشادات_التطوع_الحماية_المدنية.pdf',
+      onClick: handleDownloadFiche,
+      buttonText: '(اضغط هنا لتحميل بطاقة الإرشادات)'
     },
     {
       id: 4,
@@ -101,7 +112,7 @@ const RequiredDocuments = ({ onDownloadFicheInstructions }) => {
         
         <List
           dataSource={requiredDocuments}
-          renderItem={(item, index) => (
+          renderItem={(item) => (
             <List.Item
               style={{
                 padding: window.innerWidth < 768 ? '12px 8px' : '16px 12px',
@@ -141,7 +152,7 @@ const RequiredDocuments = ({ onDownloadFicheInstructions }) => {
                           type="link"
                           icon={<DownloadOutlined />}
                           download={item.fileName}
-                          onClick={handleDownloadFiche}
+                          onClick={item.onClick}
                           style={{
                             padding: '4px 0',
                             marginTop: 4,
@@ -150,7 +161,7 @@ const RequiredDocuments = ({ onDownloadFicheInstructions }) => {
                             textDecoration: 'underline'
                           }}
                         >
-                          (اضغط هنا لتحميل بطاقة الإرشادات)
+                          {item.buttonText}
                         </Button>
                       </>
                     ) : (

@@ -18,16 +18,16 @@ class DataFormatterService {
       grandFatherName: formData.grandFatherName,
       motherFirstName: formData.motherFirstName,
       motherLastName: formData.motherLastName,
-      maritalstatus: formData.maritalstatus,
+      maritalStatus: formData.maritalstatus,
       children: parseInt(formData.children) || 0,
       profession: formData.profession,
-      fatherphone: formData.fatherphone, // Changé de fatherPhone à fatherphone
+      fatherPhone: formData.fatherphone,
       governorate: formData.governorate,
-      governoratelabel: governorateLabel, // Ajout du label
+      governorateLabel: governorateLabel,
       region: formData.region || null,
       address: formData.address,
-      educationlevel: formData.educationlevel, // Changé de educationLevel à educationlevel
-      supportingdocument: formData.supportingdocument, // Changé de supportingDocument à supportingdocument
+      educationLevel: formData.educationlevel,
+      supportingDocument: formData.supportingdocument,
       registrationDate: dayjs().format('YYYY-MM-DD HH:mm:ss')
     };
   }

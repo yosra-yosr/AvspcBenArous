@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import SchemaOrg from '../components/common/SchemaOrg';
 import { getBreadcrumbSchema } from '../utils/schemas';
 import volunteerApi from '../services/volunteerApi';
+import  toast  from 'react-toast-notification';
 
 const { Title, Paragraph } = Typography;
 
@@ -177,6 +178,7 @@ const ResultsPage = () => {
         // Réinitialiser les tentatives en cas de succès
         localStorage.removeItem('attemptCount');
         setAttempts(0);
+        toast.success('success');
         
         // Rediriger vers la page de détail avec les données
         navigate('/result-details', { 
@@ -186,6 +188,7 @@ const ResultsPage = () => {
         });
       } else {
         incrementAttempts();
+        toast.error('لم يتم العثور على نتائج. الرجاء التحقق من البيانات المدخلة.')
         setError('❌ لم يتم العثور على نتائج. الرجاء التحقق من البيانات المدخلة.');
       }
     } catch (err) {
@@ -196,6 +199,7 @@ const ResultsPage = () => {
       } else if (err.response?.status === 429) {
         setError('⚠️ عدد كبير جداً من المحاولات. الرجاء المحاولة لاحقاً.');
       } else {
+        toast.error('حدث خطأ في الاتصال. الرجاء المحاولة لاحقاً.');
         setError('❌ حدث خطأ في الاتصال. الرجاء المحاولة لاحقاً.');
       }
     } finally {

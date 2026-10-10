@@ -19,17 +19,24 @@ class DataFormatterService {
       motherFirstName: formData.motherFirstName,
       motherLastName: formData.motherLastName,
       
-      // ✅ CORRECTIONS: Utiliser les noms sans majuscules comme attendu par le backend
-      maritalstatus: formData.maritalstatus,      // ← Changé: maritalStatus → maritalstatus
+      // ✅ Noms en lowercase comme attendu par le backend
+      maritalstatus: formData.maritalstatus,
       children: parseInt(formData.children) || 0,
       profession: formData.profession,
-      fatherphone: formData.fatherphone,          // ← Changé: fatherPhone → fatherphone
+      fatherphone: formData.fatherphone,
       governorate: formData.governorate,
       governorateLabel: governorateLabel,
       region: formData.region || null,
       address: formData.address,
-      educationlevel: formData.educationlevel,    // ← Changé: educationLevel → educationlevel
-      supportingdocument: formData.supportingdocument, // ← Changé: supportingDocument → supportingdocument
+      educationlevel: formData.educationlevel,
+      supportingdocument: formData.supportingdocument,
+      
+      // ✅ NOUVEAU: Adresse sur la carte CIN
+      birthaddress: formData.birthaddress || formData.birthAddress || null,
+      
+      // ✅ NOUVEAU: URL Cloudinary du CV (si uploadé)
+      cvUrl: formData.cvUrl || null,
+      
       registrationDate: dayjs().format('YYYY-MM-DD HH:mm:ss')
     };
   }

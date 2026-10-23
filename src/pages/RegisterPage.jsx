@@ -5,7 +5,7 @@ import { Form, Button, Steps, Card, Typography, message, Spin, Modal, Space, Inp
 import {
   IdcardOutlined, UserOutlined, TeamOutlined, EnvironmentOutlined,
   SafetyCertificateOutlined, ArrowRightOutlined, ArrowLeftOutlined,
-  SendOutlined, EditOutlined, SaveOutlined, DownloadOutlined, CheckOutlined, FileTextOutlined
+  SendOutlined, EditOutlined, SaveOutlined, CheckOutlined, FileTextOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import volunteerApi from '../services/volunteerApi';
@@ -1238,9 +1238,9 @@ const handleReview = async () => {
     <Button key="edit" icon={<EditOutlined />} onClick={handleEdit} size="large" style={{ borderColor: '#ff6b35', color: '#ff6b35' }}>
       تعديل البيانات
     </Button>,
-    <Button key="download" icon={<DownloadOutlined />} onClick={handleDownloadPDF} size="large">
-      تحميل PDF
-    </Button>,
+    // <Button key="download" icon={<DownloadOutlined />} onClick={handleDownloadPDF} size="large">
+    //   تحميل PDF
+    // </Button>,
     <Button key="submit" type="primary" icon={<SaveOutlined />} loading={loading} onClick={handleFinalSubmit} size="large" style={{ background: '#ff6b35', borderColor: '#ff6b35' }}>
       حفظ وتسجيل
     </Button>

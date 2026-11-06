@@ -20,6 +20,8 @@ import dayjs from 'dayjs';
 // Importez les composants nécessaires
 import RequiredDocuments from '../components/registration/RequiredDocuments';
 import { generateRegistrationPDF, downloadPDF } from '../utils/pdfGenerator';
+// En haut du fichier, ajouter l'import :
+import MissingDocumentsCard from '../components/registration/MissingDocumentsCard';
 
 const { Title, Paragraph, Text } = Typography;
 const { useBreakpoint } = Grid;
@@ -284,7 +286,10 @@ const ResultDetailsPage = () => {
               />
             </>
           )}
-
+{/* Afficher les documents manquants pour tous les candidats */}
+<Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
+<MissingDocumentsCard volunteer={volunteerData} />
+<Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
           <Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
 
           {/* Informations personnelles */}

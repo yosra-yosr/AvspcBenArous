@@ -179,7 +179,7 @@ const ResultsPage = () => {
         localStorage.removeItem('attemptCount');
         setAttempts(0);
         toast.success('success');
-        
+        console.log(response)
         // Rediriger vers la page de détail avec les données
         navigate('/result-details', { 
           state: { 

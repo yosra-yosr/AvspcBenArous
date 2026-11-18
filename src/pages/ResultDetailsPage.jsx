@@ -228,7 +228,7 @@ const ResultDetailsPage = () => {
           {['approved', 'interview_passed', 'stagiaire', 'certified_volunteer'].includes(volunteerData.statusCode) && (
             <Alert
               message="مبروك! تم قبول تسجيلك"
-              description="نحن سعداء بقبولك كمتطوع في جمعيتنا. سيتم التواصل معك قريباً لتحديد موعد البدء."
+              description="يسرنا إبلاغكم بأنه تم قبول ملفك للمرحلة القادمة لإجراء الاختبار النفسي التقني. سيتم التواصل معك قريباً لتحديد موعد البدء."
               type="success"
               showIcon
               style={{ 
